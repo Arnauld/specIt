@@ -11,10 +11,17 @@ public class Part {
     
     public Part(int offset, Keyword keyword, String rawContent, String keywordAlias) {
         super();
+        integrityCheck(rawContent, keywordAlias);
         this.offset = offset;
         this.keyword = keyword;
         this.rawContent = rawContent;
         this.keywordAlias = keywordAlias;
+    }
+
+    private static void integrityCheck(String rawContent, String keywordAlias) {
+        int indexOf = rawContent.indexOf(keywordAlias);
+        if(indexOf<0)
+            throw new IllegalArgumentException("Keyword alias is not in raw content!");
     }
 
     public int getOffset() {
@@ -57,7 +64,11 @@ public class Part {
         if (getClass() != obj.getClass())
             return false;
         Part other = (Part) obj;
-        return (offset == other.offset) && Equals.areEquals(rawContent, other.rawContent);
+        return (offset == other.offset)
+                && Equals.areEquals(rawContent, other.rawContent)
+                // noT required but they both contribute to the object's state
+                && keyword == other.keyword
+                && Equals.areEquals(keywordAlias, other.keywordAlias);
     }
 
     @Override
@@ -66,5 +77,10 @@ public class Part {
                 "offset=" + offset +
                 ", rawContent='" + rawContent + '\'' +
                 '}';
+    }
+
+    public String contentAfterAlias() {
+        int startingIndex = rawContent.indexOf(keywordAlias)+keywordAlias.length();
+        return rawContent.substring(startingIndex);
     }
 }
