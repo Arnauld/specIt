@@ -1,24 +1,31 @@
-package specit;
+package specit.element;
 
 import specit.util.Equals;
 
-public class Part {
+public class RawPart {
     
     private final int offset;
     private final Keyword keyword;
     private final String rawContent;
     private final String keywordAlias;
     
-    public Part(int offset, Keyword keyword, String rawContent, String keywordAlias) {
+    public RawPart(int offset, Keyword keyword, String rawContent, String keywordAlias) {
         super();
-        integrityCheck(rawContent, keywordAlias);
+        integrityCheck(keyword, rawContent, keywordAlias);
         this.offset = offset;
         this.keyword = keyword;
         this.rawContent = rawContent;
         this.keywordAlias = keywordAlias;
     }
 
-    private static void integrityCheck(String rawContent, String keywordAlias) {
+    private static void integrityCheck(Keyword keyword, String rawContent, String keywordAlias) {
+        if(rawContent==null)
+            throw new IllegalArgumentException("Raw content must be defined");
+        if(keywordAlias==null) {
+            if(keyword!=Keyword.Unknown)
+                throw new IllegalArgumentException("Undefined alias requires the Unknown keyword");
+            return;
+        }
         int indexOf = rawContent.indexOf(keywordAlias);
         if(indexOf<0)
             throw new IllegalArgumentException("Keyword alias is not in raw content!");
@@ -63,7 +70,7 @@ public class Part {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Part other = (Part) obj;
+        RawPart other = (RawPart) obj;
         return (offset == other.offset)
                 && Equals.areEquals(rawContent, other.rawContent)
                 // noT required but they both contribute to the object's state
@@ -73,14 +80,20 @@ public class Part {
 
     @Override
     public String toString() {
-        return "Part{" +
+        return "RawPart{" +
                 "offset=" + offset +
                 ", rawContent='" + rawContent + '\'' +
                 '}';
     }
 
     public String contentAfterAlias() {
+        if(keywordAlias==null)
+            return rawContent;
         int startingIndex = rawContent.indexOf(keywordAlias)+keywordAlias.length();
         return rawContent.substring(startingIndex);
+    }
+
+    public RawPart withRawContent(String rawContent) {
+        return new RawPart(offset, keyword, rawContent, keywordAlias);
     }
 }

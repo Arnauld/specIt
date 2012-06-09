@@ -1,30 +1,36 @@
 package specit.parser;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import specit.Keyword;
-import specit.Part;
+import specit.element.Alias;
+import specit.element.Conf;
+import specit.element.Keyword;
+import specit.element.RawPart;
 import specit.util.CharIterator;
 import specit.util.CharIterators;
 import specit.util.CharSequences;
+import specit.util.NotThreadSafe;
 
+@NotThreadSafe
 public class Parser {
     
-    private Map<String, Keyword> aliases = new HashMap<String, Keyword>();
+    private Conf conf;
 
-    public Parser withAlias(Keyword kw, String value) {
-        aliases.put(value, kw);
-        return this;
+    public Parser() {
+        this(Conf.getDefault());
+    }
+
+    public Parser(Conf conf) {
+        this.conf = conf;
     }
 
     public void scan(CharSequence content, Listener listener) {
         scan(CharIterators.createFrom(content), 0, listener);
     }
 
-    private Map.Entry<String,Keyword> lastEntry;
-
     public void scan(CharIterator it, int baseOffset, Listener listener) {
+
+        // temporary state kept during a scan.
+        Alias lastAlias = null;
+
         int offset = baseOffset;
         Line line = new Line();
         Block block = new Block();
@@ -37,11 +43,11 @@ public class Parser {
 
             line.append((char)read);
             if(isNewlineCharacter(read)) {
-                Map.Entry<String,Keyword> entry = line.startingAliasEntry();
+                Alias entry = line.startingAliasEntry();
                 if(entry!=null) {
-                    block.emitTo(listener, lastEntryKeyOrDefault(), lastEntryValueOrDefault());
+                    block.emitTo(listener, aliasOrDefault(lastAlias), keywordOrDefault(lastAlias));
                     block.reset(line.offset);
-                    lastEntry = entry;
+                    lastAlias = entry;
                 }
                 line.emitTo(block);
                 // line is reset without any char, offset must be the next one
@@ -51,26 +57,26 @@ public class Parser {
         }
 
         // remaining
-        Map.Entry<String,Keyword> entry = line.startingAliasEntry();
+        Alias entry = line.startingAliasEntry();
         if(entry!=null) {
-            block.emitTo(listener, lastEntryKeyOrDefault(), lastEntryValueOrDefault());
+            block.emitTo(listener, aliasOrDefault(lastAlias), keywordOrDefault(lastAlias));
             block.reset(line.offset);
-            lastEntry = entry;
+            lastAlias = entry;
         }
         line.emitTo(block);
-        block.emitTo(listener, lastEntryKeyOrDefault(), lastEntryValueOrDefault());
+        block.emitTo(listener, aliasOrDefault(lastAlias), keywordOrDefault(lastAlias));
     }
 
-    private Keyword lastEntryValueOrDefault() {
-        if(lastEntry==null)
+    private static Keyword keywordOrDefault(Alias alias) {
+        if(alias==null)
             return Keyword.Unknown;
-        return lastEntry.getValue();
+        return alias.getKeyword();
     }
 
-    private String lastEntryKeyOrDefault() {
-        if(lastEntry==null)
+    private static String aliasOrDefault(Alias alias) {
+        if(alias==null)
             return null;
-        return lastEntry.getKey();
+        return alias.getKeywordAlias();
     }
 
     private class Block {
@@ -83,8 +89,8 @@ public class Parser {
         public void emitTo(Listener listener, String aliasUsed, Keyword keyword) {
             if(buffer.length()>0) {
                 String content = buffer.toString();
-                Part part = new Part(offset, keyword, content, aliasUsed);
-                listener.on(part);
+                RawPart rawPart = new RawPart(offset, keyword, content, aliasUsed);
+                listener.on(rawPart);
             }
         }
     }
@@ -99,10 +105,10 @@ public class Parser {
             this.offset = offset;
             this.buffer.setLength(0);
         }
-        public Map.Entry<String,Keyword> startingAliasEntry () {
-            for(Map.Entry<String,Keyword> entry : aliases.entrySet()) {
-                if(CharSequences.startsWithIgnoringChars(buffer, entry.getKey(), "\t ")) {
-                    return entry;
+        public Alias startingAliasEntry() {
+            for(Alias alias : conf.aliases()) {
+                if(CharSequences.startsWithIgnoringChars(buffer, alias.getKeywordAlias(), conf.ignoredCharactersOnPartStart())) {
+                    return alias;
                 }
             }
             return null;

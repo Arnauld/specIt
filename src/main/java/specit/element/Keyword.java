@@ -1,10 +1,10 @@
-package specit;
+package specit.element;
 
 public enum Keyword {
     Unknown,
     Narrative,
     Scenario,
-    Include,
+    Require,
     Background,
     Given,
     When,
