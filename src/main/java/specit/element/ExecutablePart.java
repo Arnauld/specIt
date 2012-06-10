@@ -60,4 +60,16 @@ public abstract class ExecutablePart extends Element {
     public boolean hasRequire() {
         return !requires.isEmpty();
     }
+
+    public List<ExecutablePart> getExecutableParts() {
+        return executableParts;
+    }
+
+    public List<Example> getExamples() {
+        return examples;
+    }
+
+    public List<Require> getRequires() {
+        return requires;
+    }
 }

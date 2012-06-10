@@ -2,7 +2,7 @@ package specit.parser;
 
 import org.junit.Before;
 import org.junit.Test;
-import specit.element.Conf;
+import specit.Conf;
 import specit.element.Keyword;
 import specit.element.RawPart;
 

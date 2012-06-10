@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class Story extends Element {
 
-    private ExecutablePart executablePart;
+    private ExecutablePart currentExecutablePart;
     //
     private Narrative narrative;
     private List<ExecutablePart> scenarioList = New.arrayList();
@@ -32,14 +32,19 @@ public class Story extends Element {
 
     public void addScenario(Scenario scenario) {
         scenarioList.add(scenario);
-        executablePart = scenario;
+        currentExecutablePart = scenario;
     }
 
+    /**
+     *
+     * @param background
+     * @see #isBackgroundAccepted()
+     */
     public void addBackground(Background background) {
         if(!isBackgroundAccepted())
             throw new IllegalStateException("Background cannot be declared once scenario started");
         backgroundList.add(background);
-        executablePart = background;
+        currentExecutablePart = background;
     }
 
     /**
@@ -48,9 +53,9 @@ public class Story extends Element {
      * @return
      */
     public boolean isBackgroundAccepted() {
-        if (executablePart == null)
+        if (currentExecutablePart == null)
             return true;
-        if (executablePart instanceof Background)
+        if (currentExecutablePart instanceof Background)
             return true;
         return false;
     }
@@ -61,10 +66,10 @@ public class Story extends Element {
      * @return
      */
     public ExecutablePart executablePart(RawPart rawPart) {
-        if (executablePart == null) {
-            executablePart = createDefaultExecutablePart(rawPart);
+        if (currentExecutablePart == null) {
+            currentExecutablePart = createDefaultExecutablePart(rawPart);
         }
-        return executablePart;
+        return currentExecutablePart;
     }
 
     private ExecutablePart createDefaultExecutablePart(RawPart rawPart) {
@@ -73,13 +78,31 @@ public class Story extends Element {
         return defaultExecutablePart;
     }
 
+    /**
+     *
+     * @param narrative
+     * @see #isNarrativeAccepted()
+     */
     public void setNarrative(Narrative narrative) {
-        if (!scenarioList.isEmpty() || !backgroundList.isEmpty())
+        if (isNarrativeAccepted())
             throw new IllegalStateException("Narrative should be declared first!!");
         this.narrative = narrative;
     }
 
+    /**
+     * Indicates whether the story can accept a narrative
+     *
+     * @return
+     */
+    public boolean isNarrativeAccepted() {
+        return !scenarioList.isEmpty() || !backgroundList.isEmpty();
+    }
+
     public List<ExecutablePart> getScenarioList() {
         return scenarioList;
+    }
+
+    public List<ExecutablePart> getBackgroundList() {
+        return backgroundList;
     }
 }

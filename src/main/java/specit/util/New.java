@@ -1,9 +1,6 @@
 package specit.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -45,6 +42,9 @@ public class New {
         return map;
     }
 
+    public static <K,V> HashMap<K, V> hashMap(Map<? extends K, ? extends V> values) {
+        return new HashMap<K, V>(values);
+    }
 
     public static <T> LinkedList<T> linkedList() {
         return new LinkedList<T>();
@@ -61,4 +61,5 @@ public class New {
     public static <T> CopyOnWriteArrayList<T> copyOnWriteArrayList() {
         return new CopyOnWriteArrayList<T>();
     }
+
 }

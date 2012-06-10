@@ -1,6 +1,10 @@
 package specit.element;
 
 import specit.util.Equals;
+import specit.util.New;
+
+import java.util.List;
+import java.util.Map;
 
 public class RawPart {
     
@@ -8,14 +12,27 @@ public class RawPart {
     private final Keyword keyword;
     private final String rawContent;
     private final String keywordAlias;
-    
+    private final List<Comment> nestedComments;
+    private final List<Map<String, String>> variablesRows;
+
     public RawPart(int offset, Keyword keyword, String rawContent, String keywordAlias) {
+        this(offset, keyword, rawContent, keywordAlias, New.<Comment>arrayList(), New.<Map<String, String>>arrayList());
+    }
+
+    public RawPart(int offset,
+                   Keyword keyword,
+                   String rawContent,
+                   String keywordAlias,
+                   List<Comment> nestedComments,
+                   List<Map<String, String>> variablesRows) {
         super();
         integrityCheck(keyword, rawContent, keywordAlias);
         this.offset = offset;
         this.keyword = keyword;
         this.rawContent = rawContent;
         this.keywordAlias = keywordAlias;
+        this.nestedComments = nestedComments;
+        this.variablesRows = variablesRows;
     }
 
     private static void integrityCheck(Keyword keyword, String rawContent, String keywordAlias) {
@@ -31,19 +48,19 @@ public class RawPart {
             throw new IllegalArgumentException("Keyword alias is not in raw content!");
     }
 
-    public int getOffset() {
+    public final int getOffset() {
         return offset;
     }
 
-    public String getRawContent() {
+    public final String getRawContent() {
         return rawContent;
     }
 
-    public Keyword getKeyword() {
+    public final Keyword getKeyword() {
         return keyword;
     }
 
-    public String getKeywordAlias() {
+    public final String getKeywordAlias() {
         return keywordAlias;
     }
 
@@ -93,7 +110,11 @@ public class RawPart {
         return rawContent.substring(startingIndex);
     }
 
-    public RawPart withRawContent(String rawContent) {
-        return new RawPart(offset, keyword, rawContent, keywordAlias);
+    public List<Map<String, String>> getVariablesRows() {
+        return variablesRows;
+    }
+
+    public List<Comment> getNestedComments() {
+        return nestedComments;
     }
 }

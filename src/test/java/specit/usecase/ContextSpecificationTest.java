@@ -2,7 +2,7 @@ package specit.usecase;
 
 import org.junit.Before;
 import org.junit.Test;
-import specit.element.Conf;
+import specit.Conf;
 import specit.element.Keyword;
 import specit.element.RawPart;
 import specit.parser.ListenerCollector;
@@ -27,6 +27,10 @@ public class ContextSpecificationTest {
         listener = new ListenerCollector();
         conf = new Conf();
         parser = new Parser(conf);
+
+        // Given When Then
+        // Arrange Act Assert
+        // When Should
     }
 
     @Test

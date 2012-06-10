@@ -1,24 +1,23 @@
 package specit.parser;
 
 import specit.element.Alias;
-import specit.element.Conf;
+import specit.Conf;
+import specit.element.Comment;
 import specit.element.Keyword;
 import specit.element.RawPart;
 import specit.util.CharIterator;
 import specit.util.CharIterators;
 import specit.util.CharSequences;
-import specit.util.NotThreadSafe;
 
-@NotThreadSafe
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 public class Parser {
     
-    private Conf conf;
+    private final ParserConf conf;
 
-    public Parser() {
-        this(Conf.getDefault());
-    }
-
-    public Parser(Conf conf) {
+    public Parser(ParserConf conf) {
         this.conf = conf;
     }
 
@@ -79,6 +78,20 @@ public class Parser {
         return alias.getKeywordAlias();
     }
 
+    private void emitPart(Listener listener, int offset, String keywordAlias, Keyword keyword, String content) {
+        List<Comment> comments = conf.commentParser().parseComments(offset, content);
+        List<Map<String,String>> variables;
+        if(keyword==Keyword.Example) {
+            variables = conf.exampleVariablesParser().parseVariablesRows(content);
+        }
+        else {
+            variables = Collections.emptyList();
+        }
+
+        RawPart rawPart = new RawPart(offset, keyword, content, keywordAlias, comments, variables);
+        listener.on(rawPart);
+    }
+
     private class Block {
         private StringBuilder buffer = new StringBuilder();
         private int offset;
@@ -89,8 +102,8 @@ public class Parser {
         public void emitTo(Listener listener, String aliasUsed, Keyword keyword) {
             if(buffer.length()>0) {
                 String content = buffer.toString();
-                RawPart rawPart = new RawPart(offset, keyword, content, aliasUsed);
-                listener.on(rawPart);
+
+                emitPart(listener, offset, aliasUsed, keyword, content);
             }
         }
     }
