@@ -61,7 +61,6 @@ public class StoryBuilderTest {
                         "| bob  |     12|\n" +
                         "| alice|   1257|\n"))
                 .getStory();
-
         //
         story.traverse(new DumpVisitor());
     }

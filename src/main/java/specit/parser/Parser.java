@@ -79,10 +79,12 @@ public class Parser {
     }
 
     private void emitPart(Listener listener, int offset, String keywordAlias, Keyword keyword, String content) {
+            System.out.println("Parser.emitPart(" + keyword + "): ");
         List<Comment> comments = conf.commentParser().parseComments(offset, content);
         List<Map<String,String>> variables;
         if(keyword==Keyword.Example) {
             variables = conf.exampleVariablesParser().parseVariablesRows(content);
+            System.out.println("Parser.emitPart(" + keyword + "): " + variables);
         }
         else {
             variables = Collections.emptyList();

@@ -111,6 +111,7 @@ public class RawPart {
     }
 
     public List<Map<String, String>> getVariablesRows() {
+        System.out.println("RawPart.getVariablesRows(" + variablesRows + ")");
         return variablesRows;
     }
 
