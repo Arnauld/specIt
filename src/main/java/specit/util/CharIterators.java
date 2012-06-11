@@ -1,6 +1,9 @@
 package specit.util;
 
-public class CharIterators {
+public final class CharIterators {
+
+    private CharIterators() {
+    }
 
     public static CharIterator createFrom(final CharSequence text) {
         return new CharIterator() {
@@ -8,8 +11,9 @@ public class CharIterators {
 
             @Override
             public int read() {
-                if(pos<text.length())
+                if(pos<text.length()) {
                     return text.charAt(pos++);
+                }
                 return -1;
             }
         };

@@ -1,7 +1,5 @@
 package specit.element;
 
-import java.util.List;
-
 /**
  *
  */

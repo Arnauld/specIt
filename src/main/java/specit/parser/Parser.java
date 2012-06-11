@@ -37,8 +37,9 @@ public class Parser {
         line.reset(offset);
         while(true) {
             int read = it.read();
-            if(read==CharIterator.EOF)
+            if(read==CharIterator.EOF) {
                 break;
+            }
 
             line.append((char)read);
             if(isNewlineCharacter(read)) {
@@ -67,24 +68,24 @@ public class Parser {
     }
 
     private static Keyword keywordOrDefault(Alias alias) {
-        if(alias==null)
+        if(alias==null) {
             return Keyword.Unknown;
+        }
         return alias.getKeyword();
     }
 
     private static String aliasOrDefault(Alias alias) {
-        if(alias==null)
+        if(alias==null) {
             return null;
+        }
         return alias.getKeywordAlias();
     }
 
     private void emitPart(Listener listener, int offset, String keywordAlias, Keyword keyword, String content) {
-            System.out.println("Parser.emitPart(" + keyword + "): ");
         List<Comment> comments = conf.commentParser().parseComments(offset, content);
         List<Map<String,String>> variables;
         if(keyword==Keyword.Example) {
             variables = conf.exampleVariablesParser().parseVariablesRows(content);
-            System.out.println("Parser.emitPart(" + keyword + "): " + variables);
         }
         else {
             variables = Collections.emptyList();
@@ -92,6 +93,10 @@ public class Parser {
 
         RawPart rawPart = new RawPart(offset, keyword, content, keywordAlias, comments, variables);
         listener.on(rawPart);
+    }
+
+    private static boolean isNewlineCharacter(int read) {
+        return read=='\r' || read=='\n';
     }
 
     private class Block {
@@ -133,7 +138,5 @@ public class Parser {
         }
     }
 
-    private static boolean isNewlineCharacter(int read) {
-        return read=='\r' || read=='\n';
-    }
+
 }

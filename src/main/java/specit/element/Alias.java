@@ -9,31 +9,41 @@ public class Alias {
     private final String keywordAlias;
 
     public Alias(Keyword keyword, String keywordAlias) {
-        if(keyword ==null)
+        if(keyword ==null) {
             throw new IllegalArgumentException("Keyword must be defined");
-        if(keywordAlias==null)
+        }
+        if(keywordAlias==null) {
             throw new IllegalArgumentException("Keyword alias must be defined");
+        }
         this.keyword = keyword;
         this.keywordAlias = keywordAlias;
     }
 
-    public Keyword getKeyword() {
+    public final Keyword getKeyword() {
         return keyword;
     }
 
-    public String getKeywordAlias() {
+    public final String getKeywordAlias() {
         return keywordAlias;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Alias alias = (Alias) o;
 
-        if (keyword != alias.keyword) return false;
-        if (!keywordAlias.equals(alias.keywordAlias)) return false;
+        if (keyword != alias.keyword) {
+            return false;
+        }
+        if (!keywordAlias.equals(alias.keywordAlias)) {
+            return false;
+        }
 
         return true;
     }

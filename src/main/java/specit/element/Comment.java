@@ -30,14 +30,24 @@ public class Comment {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Comment comment = (Comment) o;
 
-        if (offset != comment.offset) return false;
-        if (content != null ? !content.equals(comment.content) : comment.content != null) return false;
-        if (delimiter != null ? !delimiter.equals(comment.delimiter) : comment.delimiter != null) return false;
+        if (offset != comment.offset) {
+            return false;
+        }
+        if (content != null ? !content.equals(comment.content) : comment.content != null) {
+            return false;
+        }
+        if (delimiter != null ? !delimiter.equals(comment.delimiter) : comment.delimiter != null) {
+            return false;
+        }
 
         return true;
     }

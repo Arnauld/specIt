@@ -36,16 +36,19 @@ public class RawPart {
     }
 
     private static void integrityCheck(Keyword keyword, String rawContent, String keywordAlias) {
-        if(rawContent==null)
+        if(rawContent==null) {
             throw new IllegalArgumentException("Raw content must be defined");
+        }
         if(keywordAlias==null) {
-            if(keyword!=Keyword.Unknown)
+            if(keyword!=Keyword.Unknown) {
                 throw new IllegalArgumentException("Undefined alias requires the Unknown keyword");
+            }
             return;
         }
         int indexOf = rawContent.indexOf(keywordAlias);
-        if(indexOf<0)
+        if(indexOf<0) {
             throw new IllegalArgumentException("Keyword alias is not in raw content!");
+        }
     }
 
     public final int getOffset() {
@@ -81,12 +84,15 @@ public class RawPart {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         RawPart other = (RawPart) obj;
         return (offset == other.offset)
                 && Equals.areEquals(rawContent, other.rawContent)
@@ -104,14 +110,14 @@ public class RawPart {
     }
 
     public String contentAfterAlias() {
-        if(keywordAlias==null)
+        if(keywordAlias==null) {
             return rawContent;
+        }
         int startingIndex = rawContent.indexOf(keywordAlias)+keywordAlias.length();
         return rawContent.substring(startingIndex);
     }
 
     public List<Map<String, String>> getVariablesRows() {
-        System.out.println("RawPart.getVariablesRows(" + variablesRows + ")");
         return variablesRows;
     }
 

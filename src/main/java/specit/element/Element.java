@@ -1,9 +1,5 @@
 package specit.element;
 
-import specit.util.New;
-
-import java.util.List;
-
 /**
  *
  */

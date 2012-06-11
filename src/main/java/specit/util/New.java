@@ -8,7 +8,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  *
  */
-public class New {
+public final class New {
+
+    private New() {}
+
     public static <T> ArrayList<T> arrayList () {
         return new ArrayList<T>();
     }

@@ -44,7 +44,7 @@ public class Conf implements ParserConf, InterpreterConf {
 
     @Override
     public ExecutionContext createExecutionContext() {
-        return new ExecutionContext(this);
+        return new ExecutionContext();
     }
 
     @Override

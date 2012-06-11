@@ -20,12 +20,15 @@ public class Story extends Element {
     public void traverse(ElementVisitor visitor) {
         visitor.beginStory(this);
 
-        if(narrative!=null)
+        if(narrative!=null) {
             narrative.traverse(visitor);
-        for (ExecutablePart part : backgroundList)
+        }
+        for (ExecutablePart part : backgroundList) {
             part.traverse(visitor);
-        for (ExecutablePart part : scenarioList)
+        }
+        for (ExecutablePart part : scenarioList) {
             part.traverse(visitor);
+        }
 
         visitor.endStory(this);
     }
@@ -41,8 +44,9 @@ public class Story extends Element {
      * @see #isBackgroundAccepted()
      */
     public void addBackground(Background background) {
-        if(!isBackgroundAccepted())
+        if(!isBackgroundAccepted()) {
             throw new IllegalStateException("Background cannot be declared once scenario started");
+        }
         backgroundList.add(background);
         currentExecutablePart = background;
     }
@@ -53,10 +57,12 @@ public class Story extends Element {
      * @return
      */
     public boolean isBackgroundAccepted() {
-        if (currentExecutablePart == null)
+        if (currentExecutablePart == null) {
             return true;
-        if (currentExecutablePart instanceof Background)
+        }
+        if (currentExecutablePart instanceof Background) {
             return true;
+        }
         return false;
     }
 
@@ -67,12 +73,12 @@ public class Story extends Element {
      */
     public ExecutablePart executablePart(RawPart rawPart) {
         if (currentExecutablePart == null) {
-            currentExecutablePart = createDefaultExecutablePart(rawPart);
+            currentExecutablePart = createDefaultExecutablePart();
         }
         return currentExecutablePart;
     }
 
-    private ExecutablePart createDefaultExecutablePart(RawPart rawPart) {
+    private ExecutablePart createDefaultExecutablePart() {
         ExecutablePart defaultExecutablePart = new DefaultExecutablePart();
         scenarioList.add(defaultExecutablePart);
         return defaultExecutablePart;
@@ -84,8 +90,9 @@ public class Story extends Element {
      * @see #isNarrativeAccepted()
      */
     public void setNarrative(Narrative narrative) {
-        if (isNarrativeAccepted())
+        if (isNarrativeAccepted()) {
             throw new IllegalStateException("Narrative should be declared first!!");
+        }
         this.narrative = narrative;
     }
 

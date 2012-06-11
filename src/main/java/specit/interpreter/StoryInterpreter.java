@@ -49,7 +49,130 @@ public class StoryInterpreter {
         }
     }
 
-    private class Chain implements PreProcess, PostProcess {
+    private void interpretScenarioOrBackground(ExecutablePart scenario,
+                                               InterpreterListener listener,
+                                               Chain chain) {
+        HashMap<String, String> variables = New.hashMap();
+
+        List<Example> examples = scenario.getExamples();
+        if (examples.isEmpty()) {
+            interpretScenarioWithVariables(variables, scenario, listener, chain);
+        } else {
+            recursivelyTraverseExamplesThroughInterpret(0, examples, variables, scenario, listener, chain);
+        }
+    }
+
+    private void recursivelyTraverseExamplesThroughInterpret(int exampleIndex,
+                                                             List<Example> examples,
+                                                             Map<String, String> cumulatedVariables,
+                                                             ExecutablePart scenario,
+                                                             InterpreterListener listener,
+                                                             Chain chain) {
+        if (exampleIndex == examples.size()) {
+            interpretScenarioWithVariables(cumulatedVariables, scenario, listener, chain);
+            return;
+        }
+        Example example = examples.get(exampleIndex);
+        List<Map<String, String>> variablesRows = example.getVariablesRows();
+        if (variablesRows.isEmpty()) {
+            recursivelyTraverseExamplesThroughInterpret(exampleIndex + 1, examples, cumulatedVariables, scenario, listener, chain);
+            return;
+        }
+
+        for (Map<String, String> variablesRow : variablesRows) {
+            Map<String, String> nextVariables = New.hashMap(cumulatedVariables);
+            nextVariables.putAll(variablesRow);
+            recursivelyTraverseExamplesThroughInterpret(exampleIndex + 1, examples, nextVariables, scenario, listener, chain);
+        }
+    }
+
+    private void interpretScenarioWithVariables(final Map<String, String> variables,
+                                                final ExecutablePart scenario,
+                                                final InterpreterListener listener,
+                                                Chain chain) {
+        chain.invokeNextWithPreProcess(new PreProcess() {
+            @Override
+            public void preExecute(ExecutionContext context) {
+                context.defineVariables(variables);
+                scenario.traverseExecutablePart(new ExecutionVisitor(context, listener));
+            }
+        }, null);
+    }
+
+    /**
+     * Resolves any variables and invoke the <code>Step</code> directive.
+     */
+    private void invokeStep(ExecutionContext context, RawPart rawPart, InterpreterListener listener) {
+        String rawContent = rawPart.contentAfterAlias().trim();
+        Map<String, String> variables = context.getVariables();
+        String resolved = conf.templateEngine().resolve(rawContent, variables).toString();
+
+        listener.invokeStep(rawPart.getKeyword(), resolved, context);
+    }
+
+    /**
+     * Resolves any variables and invoke the <code>Require</code> directive.
+     */
+    private void invokeRequire(ExecutionContext context, RawPart rawPart, InterpreterListener listener) {
+        String rawContent = rawPart.contentAfterAlias().trim();
+        Map<String, String> variables = context.getVariables();
+        String resolved = conf.templateEngine().resolve(rawContent, variables).toString();
+
+        listener.invokeRequire(resolved, context);
+    }
+
+    private class ExecutionVisitor extends ElementVisitor {
+        private final ExecutionContext context;
+        private final InterpreterListener listener;
+
+        public ExecutionVisitor(ExecutionContext context, InterpreterListener listener) {
+            this.context = context;
+            this.listener = listener;
+        }
+
+        @Override
+        public void beginDefaultFallback(Element element) {
+            throw new IllegalStateException();
+        }
+
+        @Override
+        public void beginStep(Step step) {
+            if (!step.hasRawPart()) {
+                return;
+            }
+
+            invokeStep(context, step.getRawPart(), listener);
+        }
+
+        @Override
+        public void endStep(Step step) {
+        }
+
+        @Override
+        public void beginRequire(Require require) {
+            if (!require.hasRawPart()) {
+                return;
+            }
+
+            invokeRequire(context, require.getRawPart(), listener);
+        }
+
+        @Override
+        public void endRequire(Require require) {
+        }
+
+        @Override
+        public void beginExample(Example example) {
+            // examples are already handled in #recursivelyTraverseExamplesThroughInterpret
+        }
+
+        @Override
+        public void endExample(Example example) {
+            // examples are already handled in #recursivelyTraverseExamplesThroughInterpret
+        }
+    }
+
+    private final class Chain implements PreProcess, PostProcess {
         private final Story story;
         private final InterpreterListener listener;
         private final List<ExecutablePart> chainedParts;
@@ -78,37 +201,38 @@ public class StoryInterpreter {
             if(chainedParts.size()==chainIndex) {
                 ExecutionContext context = conf.createExecutionContext();
                 execute(context);
-                return;
             }
             else {
                 Chain next = new Chain(story, listener, chainedParts, chainIndex+1, this);
-                interpretScenarioOrBackground(chainedParts.get(chainIndex), story, listener, next);
+                interpretScenarioOrBackground(chainedParts.get(chainIndex), listener, next);
             }
         }
 
         @Override
         public void preExecute(ExecutionContext context) {
-            if(previous!=null)
+            if(previous!=null) {
                 previous.preExecute(context);
-            if(preProcess!=null)
+            }
+
+            if(preProcess!=null) {
                 preProcess.preExecute(context);
+            }
         }
 
         public void execute(ExecutionContext context) {
             preExecute(context);
-            selfExecute(context);
             postExecute(context);
         }
 
         @Override
         public void postExecute(ExecutionContext context) {
-            if(postProcess!=null)
+            if(postProcess!=null) {
                 postProcess.postExecute(context);
-            if(previous!=null)
-                previous.postExecute(context);
-        }
+            }
 
-        protected void selfExecute(ExecutionContext context) {
+            if(previous!=null) {
+                previous.postExecute(context);
+            }
         }
     }
 
@@ -118,135 +242,5 @@ public class StoryInterpreter {
 
     public interface PostProcess {
         void postExecute(ExecutionContext context);
-    }
-
-    private void interpretScenarioOrBackground(ExecutablePart scenario,
-                                               Story story,
-                                               InterpreterListener listener,
-                                               Chain chain) {
-        HashMap<String, String> variables = New.hashMap();
-
-        List<Example> examples = scenario.getExamples();
-        if (examples.isEmpty()) {
-            interpretScenarioWithVariables(variables, scenario, story, listener, chain);
-        } else {
-            recursivelyTraverseExamplesThroughInterpret(0, examples, variables, scenario, story, listener, chain);
-        }
-    }
-
-    private void recursivelyTraverseExamplesThroughInterpret(int exampleIndex,
-                                                             List<Example> examples,
-                                                             Map<String, String> cumulatedVariables,
-                                                             ExecutablePart scenario,
-                                                             Story story,
-                                                             InterpreterListener listener,
-                                                             Chain chain) {
-        if (exampleIndex == examples.size()) {
-            interpretScenarioWithVariables(cumulatedVariables, scenario, story, listener, chain);
-            return;
-        }
-        Example example = examples.get(exampleIndex);
-        List<Map<String, String>> variablesRows = example.getVariablesRows();
-        if (variablesRows.isEmpty()) {
-            recursivelyTraverseExamplesThroughInterpret(exampleIndex + 1, examples, cumulatedVariables, scenario, story, listener, chain);
-            return;
-        }
-
-        for (Map<String, String> variablesRow : variablesRows) {
-            Map<String, String> nextVariables = New.hashMap(cumulatedVariables);
-            nextVariables.putAll(variablesRow);
-            recursivelyTraverseExamplesThroughInterpret(exampleIndex + 1, examples, nextVariables, scenario, story, listener, chain);
-        }
-    }
-
-    private void interpretScenarioWithVariables(final Map<String, String> variables,
-                                                final ExecutablePart scenario,
-                                                final Story story,
-                                                final InterpreterListener listener,
-                                                Chain chain) {
-        chain.invokeNextWithPreProcess(new PreProcess() {
-            @Override
-            public void preExecute(ExecutionContext context) {
-                context.defineVariables(variables);
-                scenario.traverseExecutablePart(new ExecutionVisitor(context, listener));
-            }
-        }, null);
-    }
-
-    /**
-     * Resolves any variables and invoke the <code>Step</code> directive.
-     * @param context
-     * @param rawPart
-     * @param listener
-     */
-    private void invokeStep(ExecutionContext context, RawPart rawPart, InterpreterListener listener) {
-        String rawContent = rawPart.contentAfterAlias().trim();
-        Map<String, String> variables = context.getVariables();
-        String resolved = conf.templateEngine().resolve(rawContent, variables).toString();
-
-        listener.invokeStep(rawPart.getKeyword(), resolved, context);
-    }
-
-    /**
-     * Resolves any variables and invoke the <code>Require</code> directive.
-     * @param context
-     * @param rawPart
-     * @param listener
-     */
-    private void invokeRequire(ExecutionContext context, RawPart rawPart, InterpreterListener listener) {
-        String rawContent = rawPart.contentAfterAlias().trim();
-        Map<String, String> variables = context.getVariables();
-        String resolved = conf.templateEngine().resolve(rawContent, variables).toString();
-
-        listener.invokeRequire(resolved, context);
-    }
-
-    private class ExecutionVisitor extends ElementVisitor {
-        private final ExecutionContext context;
-        private final InterpreterListener listener;
-
-        public ExecutionVisitor(ExecutionContext context, InterpreterListener listener) {
-            this.context = context;
-            this.listener = listener;
-        }
-
-        @Override
-        public void beginDefaultFallback(Element element) {
-            throw new IllegalStateException();
-        }
-
-        @Override
-        public void beginStep(Step step) {
-            if (!step.hasRawPart())
-                return;
-
-            invokeStep(context, step.getRawPart(), listener);
-        }
-
-        @Override
-        public void endStep(Step step) {
-        }
-
-        @Override
-        public void beginRequire(Require require) {
-            if (!require.hasRawPart())
-                return;
-
-            invokeRequire(context, require.getRawPart(), listener);
-        }
-
-        @Override
-        public void endRequire(Require require) {
-        }
-
-        @Override
-        public void beginExample(Example example) {
-            // examples are already handled in #recursivelyTraverseExamplesThroughInterpret
-        }
-
-        @Override
-        public void endExample(Example example) {
-            // examples are already handled in #recursivelyTraverseExamplesThroughInterpret
-        }
     }
 }

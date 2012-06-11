@@ -11,11 +11,9 @@ import java.util.Map;
  */
 public class ExecutionContext {
 
-    private final InterpreterConf conf;
     private final Map<String,String> variables = New.hashMap();
 
-    public ExecutionContext(InterpreterConf conf) {
-        this.conf = conf;
+    public ExecutionContext() {
     }
 
     public void defineVariables(Map<String, String> variables) {

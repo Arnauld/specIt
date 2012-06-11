@@ -29,8 +29,9 @@ public class ExampleVariablesParser {
         String[] rows = splitInRows(content);
         for (int row=0;row<rows.length;row++) {
             String rowContent = rows[row].trim();
-            if(!rowContent.startsWith(conf.cellSeparator()))
+            if(!rowContent.startsWith(conf.cellSeparator())) {
                 continue;
+            }
 
             String[] cells = splitInCells(rowContent);
             if(firstRow) {
