@@ -61,7 +61,8 @@ public class StoryBuilderTest {
                         "| bob  |     12|\n" +
                         "| alice|   1257|\n"))
                 .getStory();
-        //
+
+        // TODO replace visual assert (dump) by programmatic assert!
         story.traverse(new DumpVisitor());
     }
 

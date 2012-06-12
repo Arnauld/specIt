@@ -16,8 +16,8 @@ public class ExecutionContext {
     public ExecutionContext() {
     }
 
-    public void defineVariables(Map<String, String> variables) {
-        this.variables.putAll(variables);
+    public void defineVariables(Map<String, String> newVariableValues) {
+        this.variables.putAll(newVariableValues);
     }
 
     public Map<String,String> getVariables() {

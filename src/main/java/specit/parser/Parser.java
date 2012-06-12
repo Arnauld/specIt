@@ -102,8 +102,8 @@ public class Parser {
     private class Block {
         private StringBuilder buffer = new StringBuilder();
         private int offset;
-        public void reset(int offset) {
-            this.offset = offset;
+        public void reset(int newOffset) {
+            this.offset = newOffset;
             this.buffer.setLength(0);
         }
         public void emitTo(Listener listener, String aliasUsed, Keyword keyword) {
@@ -121,8 +121,8 @@ public class Parser {
         public void append(char c) {
             buffer.append(c);
         }
-        public void reset(int offset) {
-            this.offset = offset;
+        public void reset(int newOffset) {
+            this.offset = newOffset;
             this.buffer.setLength(0);
         }
         public Alias startingAliasEntry() {
