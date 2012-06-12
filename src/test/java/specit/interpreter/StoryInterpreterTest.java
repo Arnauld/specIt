@@ -92,7 +92,7 @@ public class StoryInterpreterTest {
                 .append(rawPart(Keyword.Narrative, "Narrative:\nAs a tester\nI want to test my builder\n\n"))
                         // background
                 .append(rawPart(Keyword.Background, "Background:\n"))
-                .append(rawPart(Keyword.Require, "Require: /story/scenario-shared-<env>.story\n\n"))
+                .append(rawPart(Keyword.Require, "Require: /story/scenario-shared-<env>.story\n\n", "Require:"))
                 .append(rawPart(Keyword.Given, "Given steps for all scenario, owner: <owner>\n"))
                 .append(rawPart(Keyword.Given, "Given other steps for all scenario\n\n"))
                 .append(rawPart(Keyword.Example, "Example:\n" +
@@ -101,52 +101,88 @@ public class StoryInterpreterTest {
                         "| etan  | prod|\n"))
                         // scenario 1
                 .append(rawPart(Keyword.Scenario, "Scenario: First scenario\n"))
-                .append(rawPart(Keyword.Require, "Require: /story/scenario-env.story\n\n"))
+                .append(rawPart(Keyword.Require, "Require: /story/scenario-<env>.story\n\n", "Require:")) //use <env> define from Background
                 .append(rawPart(Keyword.Given, "Given a initial step for the first scenario\n"))
                 .append(rawPart(Keyword.When, "When a second step for the first scenario\n\n"))
                         // scenario 2
                 .append(rawPart(Keyword.Scenario, "Scenario: A second scenario\n"))
                 .append(rawPart(Keyword.Given, "Given a initial <name>:<value> step for the second scenario\n"))
-                .append(rawPart(Keyword.Given, "Given an other one <name> for the second scenario\n"))
+                .append(rawPart(Keyword.When, "When an other one <name> & <owner> for the second scenario\n")) // use <owner> define from Background
                 .append(rawPart(Keyword.Example, "Example:\n" +
                         "|<name>|<value>|\n" +
                         "| bob  |     12|\n" +
                         "| alice|   1257|\n"))
                 .getStory();
 
-        //
+        InterpreterListenerRecorder recorder = new InterpreterListenerRecorder();
         Conf conf = new Conf();
-        new StoryInterpreter(conf).interpretStory(story, new InterpreterListener() {
-            @Override
-            public void beginStory(Story story) {
-                System.out.println("beginStory()");
-            }
 
-            @Override
-            public void endStory(Story story) {
-                System.out.println("endStory()");
-            }
+        // When
+        new StoryInterpreter(conf).interpretStory(story, recorder);
 
-            @Override
-            public void beginScenario(ExecutablePart scenario, ExecutionContext context) {
-                System.out.println("beginScenario(" + context.getVariables() + ")");
-            }
+        // Then
+        //
+        Iterator<Event> events = recorder.getEvents().iterator();
+        assertThat(events.next(), instanceOf(BeginStory.class));
 
-            @Override
-            public void endScenario(ExecutablePart scenario, ExecutionContext context) {
-                System.out.println("endScenario()");
-            }
+        // --- Scenario 1 -w- john
+        assertThat(events.next(), instanceOf(BeginScenario.class));
+        assertInvokeRequire(events.next(), "/story/scenario-shared-dev.story");
+        assertInvokeStep(events.next(), Keyword.Given, "steps for all scenario, owner: john");
+        assertInvokeStep(events.next(), Keyword.Given, "other steps for all scenario");
+        assertInvokeRequire(events.next(), "/story/scenario-dev.story");
+        assertInvokeStep(events.next(), Keyword.Given, "a initial step for the first scenario");
+        assertInvokeStep(events.next(), Keyword.When, "a second step for the first scenario");
+        assertThat(events.next(), instanceOf(EndScenario.class));
 
-            @Override
-            public void invokeStep(Keyword keyword, String resolved, ExecutionContext context) {
-                System.out.println("invokeStep(" + keyword + ", \"" + resolved + "\"");
-            }
+        // --- Scenario 1 -w- etan
+        assertThat(events.next(), instanceOf(BeginScenario.class));
+        assertInvokeRequire(events.next(), "/story/scenario-shared-prod.story");
+        assertInvokeStep(events.next(), Keyword.Given, "steps for all scenario, owner: etan");
+        assertInvokeStep(events.next(), Keyword.Given, "other steps for all scenario");
+        assertInvokeRequire(events.next(), "/story/scenario-prod.story");
+        assertInvokeStep(events.next(), Keyword.Given, "a initial step for the first scenario");
+        assertInvokeStep(events.next(), Keyword.When, "a second step for the first scenario");
+        assertThat(events.next(), instanceOf(EndScenario.class));
 
-            @Override
-            public void invokeRequire(String resolved, ExecutionContext context) {
-                System.out.println("invokeRequire(" + resolved + ")");
-            }
-        });
+        // --- Scenario 2 -w- john & bob
+        assertThat(events.next(), instanceOf(BeginScenario.class));
+        assertInvokeRequire(events.next(), "/story/scenario-shared-dev.story");
+        assertInvokeStep(events.next(), Keyword.Given, "steps for all scenario, owner: john");
+        assertInvokeStep(events.next(), Keyword.Given, "other steps for all scenario");
+        assertInvokeStep(events.next(), Keyword.Given, "a initial bob:12 step for the second scenario");
+        assertInvokeStep(events.next(), Keyword.When, "an other one bob & john for the second scenario");
+        assertThat(events.next(), instanceOf(EndScenario.class));
+
+        // --- Scenario 2 -w- john & alice
+        assertThat(events.next(), instanceOf(BeginScenario.class));
+        assertInvokeRequire(events.next(), "/story/scenario-shared-dev.story");
+        assertInvokeStep(events.next(), Keyword.Given, "steps for all scenario, owner: john");
+        assertInvokeStep(events.next(), Keyword.Given, "other steps for all scenario");
+        assertInvokeStep(events.next(), Keyword.Given, "a initial alice:1257 step for the second scenario");
+        assertInvokeStep(events.next(), Keyword.When, "an other one alice & john for the second scenario");
+        assertThat(events.next(), instanceOf(EndScenario.class));
+
+        // --- Scenario 2 -w- etan & bob
+        assertThat(events.next(), instanceOf(BeginScenario.class));
+        assertInvokeRequire(events.next(), "/story/scenario-shared-prod.story");
+        assertInvokeStep(events.next(), Keyword.Given, "steps for all scenario, owner: etan");
+        assertInvokeStep(events.next(), Keyword.Given, "other steps for all scenario");
+        assertInvokeStep(events.next(), Keyword.Given, "a initial bob:12 step for the second scenario");
+        assertInvokeStep(events.next(), Keyword.When, "an other one bob & etan for the second scenario");
+        assertThat(events.next(), instanceOf(EndScenario.class));
+
+        // --- Scenario 2 -w- etan & alice
+        assertThat(events.next(), instanceOf(BeginScenario.class));
+        assertInvokeRequire(events.next(), "/story/scenario-shared-prod.story");
+        assertInvokeStep(events.next(), Keyword.Given, "steps for all scenario, owner: etan");
+        assertInvokeStep(events.next(), Keyword.Given, "other steps for all scenario");
+        assertInvokeStep(events.next(), Keyword.Given, "a initial alice:1257 step for the second scenario");
+        assertInvokeStep(events.next(), Keyword.When, "an other one alice & etan for the second scenario");
+        assertThat(events.next(), instanceOf(EndScenario.class));
+
+
+        assertThat(events.next(), instanceOf(EndStory.class));
     }
 
     private int offset = 0;
