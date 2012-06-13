@@ -2,8 +2,6 @@ package specit.parser;
 
 import specit.element.Alias;
 
-import java.util.List;
-
 /**
  *
  *
@@ -13,7 +11,7 @@ public interface ParserConf {
 
     String ignoredCharactersOnPartStart();
     CommentParser commentParser();
-    ExampleVariablesParser exampleVariablesParser();
+    TableParser tabularVariablesParser();
 
     String cellSeparator();
 }

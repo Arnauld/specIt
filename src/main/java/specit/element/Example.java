@@ -19,7 +19,7 @@ public class Example extends Element {
         visitor.endExample(this);
     }
 
-    public List<Map<String, String>> getVariablesRows() {
-        return getRawPart().getVariablesRows();
+    public Table getExampleTable() {
+        return getRawPart().getExampleTable();
     }
 }

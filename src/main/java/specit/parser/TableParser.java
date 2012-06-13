@@ -1,6 +1,6 @@
 package specit.parser;
 
-import specit.element.RawPart;
+import specit.element.Table;
 import specit.util.New;
 
 import java.util.List;
@@ -10,17 +10,17 @@ import java.util.regex.Pattern;
 /**
  *
  */
-public class ExampleVariablesParser {
+public class TableParser {
 
     private static final String ROW_SEPARATOR = "[\n\r]+";
 
     private final ParserConf conf;
 
-    public ExampleVariablesParser(ParserConf conf) {
+    public TableParser(ParserConf conf) {
         this.conf = conf;
     }
 
-    public List<Map<String, String>> parseVariablesRows(String content) {
+    public Table parse(String content) {
 
         List<Map<String, String>> variablesRows = New.arrayList();
 
@@ -55,7 +55,7 @@ public class ExampleVariablesParser {
             }
         }
 
-        return variablesRows;
+        return new Table(headers, variablesRows);
     }
 
     private String cleanUpValue(String value) {

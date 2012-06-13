@@ -1,17 +1,11 @@
 package specit.parser;
 
-import specit.element.Alias;
-import specit.Conf;
-import specit.element.Comment;
-import specit.element.Keyword;
-import specit.element.RawPart;
+import specit.element.*;
 import specit.util.CharIterator;
 import specit.util.CharIterators;
 import specit.util.CharSequences;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class Parser {
     
@@ -83,12 +77,12 @@ public class Parser {
 
     private void emitPart(Listener listener, int offset, String keywordAlias, Keyword keyword, String content) {
         List<Comment> comments = conf.commentParser().parseComments(offset, content);
-        List<Map<String,String>> variables;
+        Table variables;
         if(keyword==Keyword.Example) {
-            variables = conf.exampleVariablesParser().parseVariablesRows(content);
+            variables = conf.tabularVariablesParser().parse(content);
         }
         else {
-            variables = Collections.emptyList();
+            variables = Table.empty();
         }
 
         RawPart rawPart = new RawPart(offset, keyword, content, keywordAlias, comments, variables);

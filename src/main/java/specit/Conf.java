@@ -5,7 +5,7 @@ import specit.element.Keyword;
 import specit.interpreter.ExecutionContext;
 import specit.interpreter.InterpreterConf;
 import specit.parser.CommentParser;
-import specit.parser.ExampleVariablesParser;
+import specit.parser.TableParser;
 import specit.parser.ParserConf;
 import specit.util.TemplateEngine;
 
@@ -53,7 +53,7 @@ public class Conf implements ParserConf, InterpreterConf {
     }
 
     @Override
-    public ExampleVariablesParser exampleVariablesParser() {
-        return new ExampleVariablesParser(this);
+    public TableParser tabularVariablesParser() {
+        return new TableParser(this);
     }
 }

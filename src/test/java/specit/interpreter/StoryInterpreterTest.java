@@ -4,12 +4,10 @@ import org.junit.Test;
 import specit.Conf;
 import specit.element.*;
 import specit.interpreter.InterpreterListenerRecorder.*;
-import specit.parser.ExampleVariablesParser;
+import specit.parser.TableParser;
 import specit.util.New;
 
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -193,16 +191,18 @@ public class StoryInterpreterTest {
 
     private RawPart rawPart(Keyword kw, String text, String keywordAlias) {
         try {
-            List<Map<String,String>> variablesRows = New.arrayList();
+            Table exampleTable;
             if (kw == Keyword.Example)
-                variablesRows = new ExampleVariablesParser(new Conf()).parseVariablesRows(text);
+                exampleTable = new TableParser(new Conf()).parse(text);
+            else
+                exampleTable = Table.empty();
             return new RawPart(
                     offset,
                     kw,
                     text,
                     keywordAlias,
                     New.<Comment>arrayList(),
-                    variablesRows);
+                    exampleTable);
         } finally {
             offset += text.length();
         }

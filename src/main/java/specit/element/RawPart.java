@@ -4,7 +4,6 @@ import specit.util.Equals;
 import specit.util.New;
 
 import java.util.List;
-import java.util.Map;
 
 public class RawPart {
     
@@ -13,10 +12,10 @@ public class RawPart {
     private final String rawContent;
     private final String keywordAlias;
     private final List<Comment> nestedComments;
-    private final List<Map<String, String>> variablesRows;
+    private final Table exampleTable;
 
     public RawPart(int offset, Keyword keyword, String rawContent, String keywordAlias) {
-        this(offset, keyword, rawContent, keywordAlias, New.<Comment>arrayList(), New.<Map<String, String>>arrayList());
+        this(offset, keyword, rawContent, keywordAlias, New.<Comment>arrayList(), Table.empty());
     }
 
     public RawPart(int offset,
@@ -24,7 +23,7 @@ public class RawPart {
                    String rawContent,
                    String keywordAlias,
                    List<Comment> nestedComments,
-                   List<Map<String, String>> variablesRows) {
+                   Table exampleTable) {
         super();
         integrityCheck(keyword, rawContent, keywordAlias);
         this.offset = offset;
@@ -32,7 +31,7 @@ public class RawPart {
         this.rawContent = rawContent;
         this.keywordAlias = keywordAlias;
         this.nestedComments = nestedComments;
-        this.variablesRows = variablesRows;
+        this.exampleTable = exampleTable;
     }
 
     private static void integrityCheck(Keyword keyword, String rawContent, String keywordAlias) {
@@ -117,8 +116,8 @@ public class RawPart {
         return rawContent.substring(startingIndex);
     }
 
-    public List<Map<String, String>> getVariablesRows() {
-        return variablesRows;
+    public Table getExampleTable() {
+        return exampleTable;
     }
 
     public List<Comment> getNestedComments() {
