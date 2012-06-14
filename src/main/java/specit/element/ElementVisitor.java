@@ -75,4 +75,12 @@ public class ElementVisitor {
     public void endDefaultExecutablePart(DefaultExecutablePart defaultExecutablePart) {
         endDefaultFallback(defaultExecutablePart);
     }
+
+    public void beginForall(Forall forall) {
+        beginDefaultFallback(forall);
+    }
+
+    public void endForall(Forall forall) {
+        endDefaultFallback(forall);
+    }
 }

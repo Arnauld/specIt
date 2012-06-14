@@ -20,7 +20,10 @@ public class StoryBuilder {
             case Then:
                 story.executablePart(rawPart).addStep(new Step(rawPart));
                 break;
-            case Example:
+            case Forall:
+                story.executablePart(rawPart).addForall(new Forall(rawPart));
+                break;
+            case Example: // Foreach :)
                 story.executablePart(rawPart).addExemple(new Example(rawPart));
                 break;
             case Narrative:

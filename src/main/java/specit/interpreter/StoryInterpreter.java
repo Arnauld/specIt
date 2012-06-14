@@ -73,13 +73,13 @@ public class StoryInterpreter {
             return;
         }
         Example example = examples.get(exampleIndex);
-        Table variablesRows = example.getExampleTable();
-        if (variablesRows.isEmpty()) {
+        Table exampleTable = example.getExampleTable();
+        if (exampleTable.isEmpty()) {
             recursivelyTraverseExamplesThroughInterpret(exampleIndex + 1, examples, cumulatedVariables, scenario, listener, chain);
             return;
         }
 
-        for (Table.Row row : variablesRows) {
+        for (Table.Row row : exampleTable) {
             Map<String, String> nextVariables = New.hashMap(cumulatedVariables);
             nextVariables.putAll(row.asMap());
             recursivelyTraverseExamplesThroughInterpret(exampleIndex + 1, examples, nextVariables, scenario, listener, chain);

@@ -77,15 +77,16 @@ public class Parser {
 
     private void emitPart(Listener listener, int offset, String keywordAlias, Keyword keyword, String content) {
         List<Comment> comments = conf.commentParser().parseComments(offset, content);
-        Table variables;
+        Table exampleTable = Table.empty();
+        Table forallTable = Table.empty();
         if(keyword==Keyword.Example) {
-            variables = conf.tabularVariablesParser().parse(content);
+            exampleTable = conf.tabularVariablesParser().parse(content);
         }
-        else {
-            variables = Table.empty();
+        else if(keyword==Keyword.Forall) {
+            forallTable = conf.tabularVariablesParser().parse(content);
         }
 
-        RawPart rawPart = new RawPart(offset, keyword, content, keywordAlias, comments, variables);
+        RawPart rawPart = new RawPart(offset, keyword, content, keywordAlias, comments, exampleTable, forallTable);
         listener.on(rawPart);
     }
 

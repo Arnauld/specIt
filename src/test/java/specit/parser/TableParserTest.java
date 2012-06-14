@@ -1,7 +1,7 @@
 package specit.parser;
 
 import org.junit.Test;
-import specit.Conf;
+import specit.SpecIt;
 import specit.element.Table;
 
 import java.util.Map;
@@ -16,7 +16,7 @@ import static org.hamcrest.collection.IsMapContaining.hasEntry;
  */
 public class TableParserTest {
 
-    private Conf conf = new Conf();
+    private SpecIt specIt = new SpecIt();
 
     @Test
     public void getVariables() {
@@ -25,7 +25,7 @@ public class TableParserTest {
                         "| bob  |     12|\n" +
                         "| alice|   1257|\n";
         Table variablesRows =
-                new TableParser(conf).parse(content);
+                new TableParser(specIt).parse(content);
         assertThat(variablesRows.getRowCount(), equalTo(2));
 
         Map<String, String> row0 = variablesRows.getRow(0).asMap();

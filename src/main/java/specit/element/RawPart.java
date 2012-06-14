@@ -13,9 +13,10 @@ public class RawPart {
     private final String keywordAlias;
     private final List<Comment> nestedComments;
     private final Table exampleTable;
+    private final Table forallTable;
 
     public RawPart(int offset, Keyword keyword, String rawContent, String keywordAlias) {
-        this(offset, keyword, rawContent, keywordAlias, New.<Comment>arrayList(), Table.empty());
+        this(offset, keyword, rawContent, keywordAlias, New.<Comment>arrayList(), Table.empty(), Table.empty());
     }
 
     public RawPart(int offset,
@@ -23,15 +24,23 @@ public class RawPart {
                    String rawContent,
                    String keywordAlias,
                    List<Comment> nestedComments,
-                   Table exampleTable) {
+                   Table exampleTable,
+                   Table forallTable) {
         super();
         integrityCheck(keyword, rawContent, keywordAlias);
+        ensureAtMostOnlyOne(exampleTable, forallTable);
         this.offset = offset;
         this.keyword = keyword;
         this.rawContent = rawContent;
         this.keywordAlias = keywordAlias;
         this.nestedComments = nestedComments;
         this.exampleTable = exampleTable;
+        this.forallTable = forallTable;
+    }
+
+    private static void ensureAtMostOnlyOne(Table exampleTable, Table forallTable) {
+        if(!exampleTable.isEmpty() && !forallTable.isEmpty())
+            throw new IllegalArgumentException("Only one of Example table or Forall table can be defined at a time, not both");
     }
 
     private static void integrityCheck(Keyword keyword, String rawContent, String keywordAlias) {
@@ -122,5 +131,9 @@ public class RawPart {
 
     public List<Comment> getNestedComments() {
         return nestedComments;
+    }
+
+    public Table getForallTable() {
+        return forallTable;
     }
 }

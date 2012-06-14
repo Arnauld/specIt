@@ -13,6 +13,7 @@ public abstract class ExecutablePart extends Element {
     private List<ExecutablePart> executableParts = New.arrayList();
     private List<Example> examples = New.arrayList();
     private List<Require> requires = New.arrayList();
+    private List<Forall> foralls = New.arrayList();
 
     ExecutablePart() {
     }
@@ -28,6 +29,9 @@ public abstract class ExecutablePart extends Element {
         for(Example example: examples) {
             example.traverse(visitor);
         }
+        for(Forall forall: foralls) {
+            forall.traverse(visitor);
+        }
         for(ExecutablePart part: executableParts) {
             part.traverse(visitor);
         }
@@ -41,12 +45,16 @@ public abstract class ExecutablePart extends Element {
         examples.add(example);
     }
 
+    public void addForall(Forall forall) {
+        foralls.add(forall);
+    }
+
     public void addRequire(Require require) {
         requires.add(require);
     }
 
     public boolean hasContent() {
-        return hasExample() || hasExecutablePart() || hasRequire();
+        return hasExample() || hasForall() || hasExecutablePart() || hasRequire();
     }
 
     private boolean hasExecutablePart() {
@@ -55,6 +63,10 @@ public abstract class ExecutablePart extends Element {
 
     private boolean hasExample() {
         return !examples.isEmpty();
+    }
+
+    private boolean hasForall() {
+        return !foralls.isEmpty();
     }
 
     public boolean hasRequire() {
@@ -67,6 +79,10 @@ public abstract class ExecutablePart extends Element {
 
     public List<Example> getExamples() {
         return examples;
+    }
+
+    public List<Forall> getForalls() {
+        return foralls;
     }
 
     public List<Require> getRequires() {

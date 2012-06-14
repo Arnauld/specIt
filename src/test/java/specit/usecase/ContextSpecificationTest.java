@@ -2,7 +2,7 @@ package specit.usecase;
 
 import org.junit.Before;
 import org.junit.Test;
-import specit.Conf;
+import specit.SpecIt;
 import specit.element.Keyword;
 import specit.element.RawPart;
 import specit.parser.ListenerCollector;
@@ -18,15 +18,15 @@ public class ContextSpecificationTest {
     private static final String NL = "\n";
 
     private Parser parser;
-    private Conf conf;
+    private SpecIt specIt;
     //
     private ListenerCollector listener;
 
     @Before
     public void setUp() {
         listener = new ListenerCollector();
-        conf = new Conf();
-        parser = new Parser(conf);
+        specIt = new SpecIt();
+        parser = new Parser(specIt);
 
         // Given When Then
         // Arrange Act Assert
@@ -42,7 +42,7 @@ public class ContextSpecificationTest {
                 " - The item count should be incremented\n" +
                 " - The item should be added to the underlying list";
 
-        conf.withAlias(Keyword.When, "When").withAlias(Keyword.Then, "-");
+        specIt.withAlias(Keyword.When, "When").withAlias(Keyword.Then, "-");
         parser.scan(story, listener);
 
         List<RawPart> steps = listener.getSteps();

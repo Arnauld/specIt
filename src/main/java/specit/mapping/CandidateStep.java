@@ -44,4 +44,19 @@ public class CandidateStep {
     public ParameterMapping[] getParameterMappings() {
         return parameterMappings;
     }
+
+    public boolean matches(Keyword keyword, String pattern) {
+        if(getKeyword() != keyword)
+           return false;
+        return getPattern().matches(pattern);
+    }
+
+    @Override
+    public String toString() {
+        return "CandidateStep{" +
+                "pattern=" + pattern +
+                ", keyword=" + keyword +
+                ", owner=" + owningType + "#" + method.getName() +
+                '}';
+    }
 }

@@ -1,8 +1,6 @@
 package specit.element;
 
 import org.junit.Test;
-import specit.element.Keyword;
-import specit.element.RawPart;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;

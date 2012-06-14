@@ -2,7 +2,7 @@ package specit.parser;
 
 import org.junit.Before;
 import org.junit.Test;
-import specit.Conf;
+import specit.SpecIt;
 import specit.element.Keyword;
 import specit.element.RawPart;
 
@@ -16,20 +16,20 @@ public class ParserTest {
     private static final String NL = "\n";
 
     private Parser parser;
-    private Conf conf;
+    private SpecIt specIt;
     //
     private ListenerCollector listener;
 
     @Before
     public void setUp() {
         listener = new ListenerCollector();
-        conf = new Conf();
-        parser = new Parser(conf);
+        specIt = new SpecIt();
+        parser = new Parser(specIt);
     }
 
     @Test
     public void scan_singleStep () {
-        conf.withAlias(Keyword.Given, "With");
+        specIt.withAlias(Keyword.Given, "With");
         parser.scan("With a simple step", listener);
 
         List<RawPart> steps = listener.getSteps();
@@ -39,7 +39,7 @@ public class ParserTest {
 
     @Test
     public void scan_withTrailingNewlines () {
-        conf.withAlias(Keyword.Given, "With");
+        specIt.withAlias(Keyword.Given, "With");
         parser.scan("\n\nWith a simple step", listener);
 
         List<RawPart> steps = listener.getSteps();
@@ -50,7 +50,7 @@ public class ParserTest {
 
     @Test
     public void scan_withTrailingWhitechars_spaces () {
-        conf.withAlias(Keyword.Given, "With");
+        specIt.withAlias(Keyword.Given, "With");
         parser.scan("\n\n  With a simple step", listener);
 
         List<RawPart> steps = listener.getSteps();
@@ -65,8 +65,8 @@ public class ParserTest {
                 "Given a defined step" + NL +
                 "With an other simple step";
 
-        conf.withAlias(Keyword.Given, "With");
-        conf.withAlias(Keyword.Given, "Given");
+        specIt.withAlias(Keyword.Given, "With");
+        specIt.withAlias(Keyword.Given, "Given");
         parser.scan(story, listener);
 
         List<RawPart> steps = listener.getSteps();
@@ -82,9 +82,9 @@ public class ParserTest {
                 "With an other step" + NL +
                 "And yet an other one";
 
-        conf.withAlias(Keyword.Given, "Given");
-        conf.withAlias(Keyword.Given, "With");
-        conf.withAlias(Keyword.And, "And");
+        specIt.withAlias(Keyword.Given, "Given");
+        specIt.withAlias(Keyword.Given, "With");
+        specIt.withAlias(Keyword.And, "And");
         parser.scan(story, listener);
 
         List<RawPart> steps = listener.getSteps();

@@ -25,6 +25,16 @@ public class CandidateStepRegistry {
         this.candidateSteps = New.arrayList();
     }
 
+    public List<CandidateStep> find(Keyword keyword, String pattern) {
+        List<CandidateStep> found = New.arrayList();
+        for(CandidateStep candidateStep:candidateSteps) {
+            if(candidateStep.matches(keyword, pattern))
+                found.add(candidateStep);
+        }
+        return found;
+    }
+
+
     public void scan(Class<?> klazz) {
         while(klazz!=null && !klazz.equals(Object.class)) {
             scanMethods(klazz);
@@ -35,7 +45,7 @@ public class CandidateStepRegistry {
     /**
      *
      */
-    public void scanMethods(Class<?> klazz) {
+    protected void scanMethods(Class<?> klazz) {
         for(Method method : klazz.getMethods()) {
             for(Annotation annotation : method.getAnnotations()) {
                 Class<?> annotationType = annotation.annotationType();
@@ -69,5 +79,6 @@ public class CandidateStepRegistry {
 
         CandidateStep candidateStep = new CandidateStep(klazz, method, keyword, pString, parameterMappings);
         candidateSteps.add(candidateStep);
-}
+    }
+
 }

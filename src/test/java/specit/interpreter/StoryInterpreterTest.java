@@ -1,7 +1,7 @@
 package specit.interpreter;
 
 import org.junit.Test;
-import specit.Conf;
+import specit.SpecIt;
 import specit.element.*;
 import specit.interpreter.InterpreterListenerRecorder.*;
 import specit.parser.TableParser;
@@ -31,10 +31,10 @@ public class StoryInterpreterTest {
                 .getStory();
 
         InterpreterListenerRecorder recorder = new InterpreterListenerRecorder();
-        Conf conf = new Conf();
+        SpecIt specIt = new SpecIt();
 
         // When
-        new StoryInterpreter(conf).interpretStory(story, recorder);
+        new StoryInterpreter(specIt).interpretStory(story, recorder);
 
         // Then
         Iterator<Event> events = recorder.getEvents().iterator();
@@ -65,10 +65,47 @@ public class StoryInterpreterTest {
                 .getStory();
 
         InterpreterListenerRecorder recorder = new InterpreterListenerRecorder();
-        Conf conf = new Conf();
+        SpecIt specIt = new SpecIt();
 
         // When
-        new StoryInterpreter(conf).interpretStory(story, recorder);
+        new StoryInterpreter(specIt).interpretStory(story, recorder);
+
+        // Then
+        Iterator<Event> events = recorder.getEvents().iterator();
+        assertThat(events.next(), instanceOf(BeginStory.class));
+        assertThat(events.next(), instanceOf(BeginScenario.class));
+        assertInvokeRequire(events.next(), "/story/scenario-shared.story");
+        assertInvokeStep(events.next(), Keyword.Given, "steps for all scenario");
+        assertInvokeStep(events.next(), Keyword.Given, "other steps for all scenario");
+        assertInvokeRequire(events.next(), "/story/scenario-env.story");
+        assertInvokeStep(events.next(), Keyword.Given, "a initial step for the first scenario");
+        assertInvokeStep(events.next(), Keyword.When, "a second step for the first scenario");
+        assertThat(events.next(), instanceOf(EndScenario.class));
+        assertThat(events.next(), instanceOf(EndStory.class));
+    }
+
+    @Test
+    public void simpleCase_oneForall() {
+        // Given
+        Story story = new StoryBuilder()
+                .append(rawPart(Keyword.Narrative, "Narrative:\nAs a tester\nI want to test my builder\n\n"))
+                        // background
+                .append(rawPart(Keyword.Background, "Background:\n"))
+                .append(rawPart(Keyword.Require, "Require: /story/scenario-shared.story\n\n", "Require:"))
+                .append(rawPart(Keyword.Given, "Given steps for all scenario\n"))
+                .append(rawPart(Keyword.Given, "Given other steps for all scenario\n\n"))
+                        // scenario 1
+                .append(rawPart(Keyword.Scenario, "Scenario: First scenario\n"))
+                .append(rawPart(Keyword.Require, "Require: /story/scenario-env.story\n\n", "Require:"))
+                .append(rawPart(Keyword.Given, "Given a initial step for the first scenario\n"))
+                .append(rawPart(Keyword.When, "When a second step for the first scenario\n\n"))
+                .getStory();
+
+        InterpreterListenerRecorder recorder = new InterpreterListenerRecorder();
+        SpecIt specIt = new SpecIt();
+
+        // When
+        new StoryInterpreter(specIt).interpretStory(story, recorder);
 
         // Then
         Iterator<Event> events = recorder.getEvents().iterator();
@@ -113,10 +150,10 @@ public class StoryInterpreterTest {
                 .getStory();
 
         InterpreterListenerRecorder recorder = new InterpreterListenerRecorder();
-        Conf conf = new Conf();
+        SpecIt specIt = new SpecIt();
 
         // When
-        new StoryInterpreter(conf).interpretStory(story, recorder);
+        new StoryInterpreter(specIt).interpretStory(story, recorder);
 
         // Then
         //
@@ -191,18 +228,22 @@ public class StoryInterpreterTest {
 
     private RawPart rawPart(Keyword kw, String text, String keywordAlias) {
         try {
-            Table exampleTable;
+            Table exampleTable = Table.empty();
+            Table forallTable = Table.empty();
+
             if (kw == Keyword.Example)
-                exampleTable = new TableParser(new Conf()).parse(text);
-            else
-                exampleTable = Table.empty();
+                exampleTable = new TableParser(new SpecIt()).parse(text);
+            if (kw == Keyword.Forall)
+                forallTable = new TableParser(new SpecIt()).parse(text);
+
             return new RawPart(
                     offset,
                     kw,
                     text,
                     keywordAlias,
                     New.<Comment>arrayList(),
-                    exampleTable);
+                    exampleTable,
+                    forallTable);
         } finally {
             offset += text.length();
         }
