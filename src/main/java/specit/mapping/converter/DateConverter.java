@@ -31,8 +31,8 @@ public class DateConverter implements Converter {
 
     @Override
     public String[] suggest(String prefix) {
-        if(isValid(prefix))
-            return new String[] {prefix};
+        if (isValid(prefix))
+            return new String[]{prefix};
         return new String[0];
     }
 
@@ -40,7 +40,7 @@ public class DateConverter implements Converter {
         synchronized (dateFormat) {
             String trimmed = prefix.trim();
             try {
-                return dateFormat.parse(trimmed)!=null;
+                return dateFormat.parse(trimmed) != null;
             } catch (ParseException e) {
                 return false;
             }

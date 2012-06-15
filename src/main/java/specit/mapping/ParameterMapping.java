@@ -36,7 +36,7 @@ public class ParameterMapping {
         return converterClass;
     }
 
-    public boolean hasConverterClass () {
-        return converterClass!=null;
+    public boolean hasConverterClass() {
+        return converterClass != null;
     }
 }

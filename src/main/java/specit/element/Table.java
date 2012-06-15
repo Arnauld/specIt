@@ -1,6 +1,9 @@
 package specit.element;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -13,7 +16,7 @@ public class Table implements Iterable<Table.Row> {
     }
 
     private final String[] headers;
-    private final List<Map<String,String>> rows;
+    private final List<Map<String, String>> rows;
 
     public Table(String[] headers, List<Map<String, String>> rows) {
         this.headers = headers;
@@ -40,9 +43,10 @@ public class Table implements Iterable<Table.Row> {
     public Iterator<Row> iterator() {
         return new Iterator<Row>() {
             private int rowIndex = 0;
+
             @Override
             public boolean hasNext() {
-                return rowIndex<rows.size();
+                return rowIndex < rows.size();
             }
 
             @Override
@@ -72,7 +76,7 @@ public class Table implements Iterable<Table.Row> {
             return rows.get(index).get(columnName);
         }
 
-        public Map<String,String> asMap() {
+        public Map<String, String> asMap() {
             return rows.get(index);
         }
     }

@@ -14,6 +14,6 @@ public enum Keyword {
     Example;
 
     public boolean isStep() {
-        return this==Given || this==When || this==Then || this==And;
+        return this == Given || this == When || this == Then || this == And;
     }
 }

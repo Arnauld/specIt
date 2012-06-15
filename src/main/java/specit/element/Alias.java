@@ -9,10 +9,10 @@ public class Alias {
     private final String keywordAlias;
 
     public Alias(Keyword keyword, String keywordAlias) {
-        if(keyword ==null) {
+        if (keyword == null) {
             throw new IllegalArgumentException("Keyword must be defined");
         }
-        if(keywordAlias==null) {
+        if (keywordAlias == null) {
             throw new IllegalArgumentException("Keyword alias must be defined");
         }
         this.keyword = keyword;

@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 public class TemplateEngine {
     private Pattern variablePattern = Pattern.compile("<([^>]+)>");
 
-    public StringBuilder resolve(String text, Map<String,String> variables) {
+    public StringBuilder resolve(String text, Map<String, String> variables) {
         StringBuilder resolved = new StringBuilder();
 
         Matcher matcher = variablePattern.matcher(text);
@@ -21,11 +21,10 @@ public class TemplateEngine {
             if (start > prev) {
                 resolved.append(text, prev, start);
             }
-            String var = variables.get(text.substring(start+1, end-1));
-            if(var!=null) {
+            String var = variables.get(text.substring(start + 1, end - 1));
+            if (var != null) {
                 resolved.append(var);
-            }
-            else {
+            } else {
                 resolved.append(text, start, end);
             }
             prev = end;

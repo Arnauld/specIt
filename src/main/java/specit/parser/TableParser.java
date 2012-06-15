@@ -27,29 +27,28 @@ public class TableParser {
         boolean firstRow = true;
         String[] headers = null;
         String[] rows = splitInRows(content);
-        for (int row=0;row<rows.length;row++) {
+        for (int row = 0; row < rows.length; row++) {
             String rowContent = rows[row].trim();
-            if(!rowContent.startsWith(conf.cellSeparator())) {
+            if (!rowContent.startsWith(conf.cellSeparator())) {
                 continue;
             }
 
             String[] cells = splitInCells(rowContent);
-            if(firstRow) {
+            if (firstRow) {
                 firstRow = false;
-                headers = new String[cells.length-1];
+                headers = new String[cells.length - 1];
                 // index 0 is the trailing characters before the first |
                 // they don't belongs to the cell
                 for (int i = 1; i < cells.length; i++) {
-                    headers[i-1] = cleanUpHeader(cells[i]);
+                    headers[i - 1] = cleanUpHeader(cells[i]);
                 }
-            }
-            else {
-                Map<String,String> variablesRow = New.hashMap();
+            } else {
+                Map<String, String> variablesRow = New.hashMap();
                 // index 0 is the trailing characters before the first |
                 // they don't belongs to the cell
-                for(int k=1;k<cells.length;k++) {
+                for (int k = 1; k < cells.length; k++) {
                     String cell = cleanUpValue(cells[k]);
-                    variablesRow.put(headers[k-1], cell);
+                    variablesRow.put(headers[k - 1], cell);
                 }
                 variablesRows.add(variablesRow);
             }
@@ -66,10 +65,10 @@ public class TableParser {
         String cleaned = header.trim();
         int beg = 0;
         int end = cleaned.length();
-        if(cleaned.startsWith("<")) {
+        if (cleaned.startsWith("<")) {
             beg++;
         }
-        if(cleaned.endsWith(">")) {
+        if (cleaned.endsWith(">")) {
             end--;
         }
         return cleaned.substring(beg, end);

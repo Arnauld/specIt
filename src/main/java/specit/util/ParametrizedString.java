@@ -22,7 +22,7 @@ public class ParametrizedString {
     }
 
     public ParametrizedString(String content, String parameterPrefix) {
-        if(content==null) {
+        if (content == null) {
             throw new IllegalArgumentException("Content cannot be null");
         }
         this.content = content;
@@ -37,9 +37,9 @@ public class ParametrizedString {
 
     @Override
     public boolean equals(Object obj) {
-        if(!(obj instanceof ParametrizedString))
+        if (!(obj instanceof ParametrizedString))
             return false;
-        return isSameAs((ParametrizedString)obj);
+        return isSameAs((ParametrizedString) obj);
     }
 
     public boolean isSameAs(ParametrizedString other) {
@@ -78,28 +78,32 @@ public class ParametrizedString {
         public final int offset;
         public final int length;
         public final boolean isIdentifier;
+
         public Token(int offset, int length, boolean isIdentifier) {
             this.offset = offset;
             this.length = length;
             this.isIdentifier = isIdentifier;
         }
-        public String value () {
+
+        public String value() {
             return content.substring(offset, offset + length);
         }
+
         @Override
         public String toString() {
-            return "<<"+(isIdentifier?"$":"")+value()+">>";
+            return "<<" + (isIdentifier ? "$" : "") + value() + ">>";
         }
+
         public boolean regionMatches(int toffset, String other, int ooffset, int len) {
             return content.regionMatches(offset + toffset, other, ooffset, len);
         }
     }
 
     public static boolean isIdentifierChar(char c) {
-        return   ('a' <= c && c <= 'z')
-                ||('A' <= c && c <= 'Z')
-                ||('0' <= c && c <= '9')
-                ||(c=='-' || c=='_');
+        return ('a' <= c && c <= 'z')
+                || ('A' <= c && c <= 'Z')
+                || ('0' <= c && c <= '9')
+                || (c == '-' || c == '_');
     }
 
     public Token getToken(int index) {
@@ -112,8 +116,8 @@ public class ParametrizedString {
 
     public List<String> getParameters() {
         List<String> parameters = new ArrayList<String>();
-        for(Token token : tokens) {
-            if(token.isIdentifier)
+        for (Token token : tokens) {
+            if (token.isIdentifier)
                 parameters.add(token.value());
         }
         return parameters;
@@ -124,8 +128,9 @@ public class ParametrizedString {
     }
 
     private int parameterCount = -1;
+
     public int getParameterCount() {
-        if(parameterCount == -1) {
+        if (parameterCount == -1) {
             parameterCount = parameterCount();
         }
         return parameterCount;
@@ -135,7 +140,7 @@ public class ParametrizedString {
         return FJ.count(tokens, isIdentifier());
     }
 
-    public static FJ.F<Token,Boolean> isIdentifier() {
+    public static FJ.F<Token, Boolean> isIdentifier() {
         return new FJ.F<ParametrizedString.Token, Boolean>() {
             @Override
             public Boolean f(Token token) {
@@ -145,7 +150,7 @@ public class ParametrizedString {
     }
 
     public float weightOf(String input) {
-        return ((float)acceptsBeginning(input))/((float)getTokenCount());
+        return ((float) acceptsBeginning(input)) / ((float) getTokenCount());
     }
 
     public int acceptsBeginning(String input) {
@@ -160,15 +165,15 @@ public class ParametrizedString {
         return chain;
     }
 
-    public Map<String,String> extractParameterValues(String input) {
-        Map<String,String> namedParameters = New.hashMap();
+    public Map<String, String> extractParameterValues(String input) {
+        Map<String, String> namedParameters = New.hashMap();
 
         WeightChain chain = calculateWeightChain(input);
         List<String> inputTokens = chain.tokenize();
-        while(chain!=null) {
-            if(!chain.isZero()) {
+        while (chain != null) {
+            if (!chain.isZero()) {
                 Token token = tokens.get(chain.getTokenIndex());
-                if(token.isIdentifier) {
+                if (token.isIdentifier) {
                     String value = inputTokens.get(chain.getTokenIndex());
                     namedParameters.put(token.value(), value);
                 }
@@ -186,29 +191,28 @@ public class ParametrizedString {
         WeightChain current = pair;
 
         List<Token> tokens = this.tokens;
-        for(int tokenIndex=tokenIndexStart,n=tokens.size(); tokenIndex<n; tokenIndex++) {
-            boolean isLastToken = (tokenIndex==n-1);
+        for (int tokenIndex = tokenIndexStart, n = tokens.size(); tokenIndex < n; tokenIndex++) {
+            boolean isLastToken = (tokenIndex == n - 1);
             Token token = tokens.get(tokenIndex);
-            if(!token.isIdentifier) {
-                int remaining = input.length()-inputIndex;
-                if(remaining>token.length && isLastToken) {
+            if (!token.isIdentifier) {
+                int remaining = input.length() - inputIndex;
+                if (remaining > token.length && isLastToken) {
                     // more data than the token itself
                     return WeightChain.zero();
                 }
 
                 int overlaping = Math.min(token.length, remaining);
-                if(overlaping>0) {
-                    if(token.regionMatches(0, input, inputIndex, overlaping)) {
+                if (overlaping > 0) {
+                    if (token.regionMatches(0, input, inputIndex, overlaping)) {
                         current.tokenIndex = tokenIndex;
                         current.weight++;
-                        if(overlaping == token.length) // full token match
+                        if (overlaping == token.length) // full token match
                         {
                             current.weight++;
-                            if((inputIndex + overlaping)==input.length())
+                            if ((inputIndex + overlaping) == input.length())
                                 // no more data, break the loop now
                                 return pair;
-                        }
-                        else // break looop
+                        } else // break looop
                             return pair;
 
                         inputIndex += overlaping;
@@ -216,26 +220,23 @@ public class ParametrizedString {
                         next.inputIndex = inputIndex;
                         current.next = next;
                         current = next;
-                    }
-                    else {
+                    } else {
                         // no match
                         return WeightChain.zero();
                     }
-                }
-                else {
+                } else {
                     // not enough data, returns what has been collected
                     return pair;
                 }
-            }
-            else {
+            } else {
                 current.tokenIndex = tokenIndex;
                 current.weight++;
 
                 // not the most efficient part, but no other solution right now
                 WeightChain next = WeightChain.zero();
-                for(int j=inputIndex+1; j<input.length(); j++) {
-                    WeightChain sub = acceptsBeginning(j, input, tokenIndex+1);
-                    if(sub.isWeighterThan(next)) {
+                for (int j = inputIndex + 1; j < input.length(); j++) {
+                    WeightChain sub = acceptsBeginning(j, input, tokenIndex + 1);
+                    if (sub.isWeighterThan(next)) {
                         next = sub;
                     }
                 }
@@ -250,6 +251,7 @@ public class ParametrizedString {
         public static final WeightChain zero() {
             return new WeightChain();
         }
+
         private String input;
         private int inputIndex;
         private int weight;
@@ -259,30 +261,36 @@ public class ParametrizedString {
         public WeightChain last() {
             WeightChain last = this;
             WeightChain iter = this;
-            while(iter!=null) {
-                if(!iter.isZero())
+            while (iter != null) {
+                if (!iter.isZero())
                     last = iter;
                 iter = iter.next;
             }
             return last;
         }
+
         public boolean isZero() {
-            return weight==0 && tokenIndex==-1;
+            return weight == 0 && tokenIndex == -1;
         }
+
         public int getInputIndex() {
             return inputIndex;
         }
+
         public WeightChain getNext() {
             return next;
         }
+
         public int getWeight() {
             return weight;
         }
+
         public int getTokenIndex() {
             return tokenIndex;
         }
+
         public boolean isWeighterThan(WeightChain pair) {
-            if(weight>pair.weight)
+            if (weight > pair.weight)
                 return true;
             return false;
         }
@@ -291,11 +299,12 @@ public class ParametrizedString {
         public String toString() {
             return "WeightChain [inputIndex=" + inputIndex + ", weight=" + weight + ", tokenIndex=" + tokenIndex + "]";
         }
+
         public void collectWeights() {
             int w = weight;
             WeightChain n = next;
-            while(n!=null) {
-                if(!n.isZero()) {
+            while (n != null) {
+                if (!n.isZero()) {
                     w += n.weight;
                 }
                 n = n.next;
@@ -306,13 +315,13 @@ public class ParametrizedString {
 
         public List<String> tokenize() {
             List<String> parts = new ArrayList<String>();
-            if(isZero())
+            if (isZero())
                 return parts;
 
             int indexBeg = inputIndex;
             WeightChain n = next;
-            while(n!=null) {
-                if(!n.isZero()) {
+            while (n != null) {
+                if (!n.isZero()) {
                     parts.add(input.substring(indexBeg, n.inputIndex));
                     indexBeg = n.inputIndex;
                 }
@@ -325,13 +334,13 @@ public class ParametrizedString {
     }
 
     public boolean matches(String input) {
-        return acceptsBeginning(input) == (2*getTokenCount()-getParameterCount());
+        return acceptsBeginning(input) == (2 * getTokenCount() - getParameterCount());
     }
 
     public String complete(String input) {
         WeightChain chain = calculateWeightChain(input);
-        WeightChain last  = chain.last();
-        if(last.isZero())
+        WeightChain last = chain.last();
+        if (last.isZero())
             return "";
         int inputIndex = last.inputIndex;
         int tokenIndex = last.tokenIndex;
@@ -339,14 +348,14 @@ public class ParametrizedString {
         StringBuilder builder = new StringBuilder();
 
         Token token = getToken(tokenIndex);
-        if(!token.isIdentifier) {
+        if (!token.isIdentifier) {
             int consumed = input.length() - inputIndex;
             builder.append(getToken(tokenIndex).value().substring(consumed));
         }
         tokenIndex++;
-        for(int i = tokenIndex; i< getTokenCount(); i++) {
+        for (int i = tokenIndex; i < getTokenCount(); i++) {
             token = getToken(i);
-            if(token.isIdentifier)
+            if (token.isIdentifier)
                 builder.append(parameterPrefix);
             builder.append(token.value());
         }

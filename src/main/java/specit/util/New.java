@@ -10,34 +10,35 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public final class New {
 
-    private New() {}
+    private New() {
+    }
 
-    public static <T> ArrayList<T> arrayList () {
+    public static <T> ArrayList<T> arrayList() {
         return new ArrayList<T>();
     }
 
-    public static <T> ArrayList<T> arrayList (Collection<? extends T> elements) {
+    public static <T> ArrayList<T> arrayList(Collection<? extends T> elements) {
         return new ArrayList<T>(elements);
     }
 
-    public static <K,V> HashMap<K, V> hashMap() {
+    public static <K, V> HashMap<K, V> hashMap() {
         return new HashMap<K, V>();
     }
 
-    public static <K,V> HashMap<K, V> hashMap(K k1, V v1) {
+    public static <K, V> HashMap<K, V> hashMap(K k1, V v1) {
         HashMap<K, V> map = new HashMap<K, V>();
         map.put(k1, v1);
         return map;
     }
 
-    public static <K,V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2) {
+    public static <K, V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2) {
         HashMap<K, V> map = new HashMap<K, V>();
         map.put(k1, v1);
         map.put(k2, v2);
         return map;
     }
 
-    public static <K,V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3) {
+    public static <K, V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3) {
         HashMap<K, V> map = new HashMap<K, V>();
         map.put(k1, v1);
         map.put(k2, v2);
@@ -45,7 +46,7 @@ public final class New {
         return map;
     }
 
-    public static <K,V> HashMap<K, V> hashMap(Map<? extends K, ? extends V> values) {
+    public static <K, V> HashMap<K, V> hashMap(Map<? extends K, ? extends V> values) {
         return new HashMap<K, V>(values);
     }
 
@@ -57,8 +58,8 @@ public final class New {
         return new ConcurrentLinkedQueue<T>();
     }
 
-    public static <K,V> ConcurrentHashMap<K,V> concurrentHashMap() {
-        return new ConcurrentHashMap<K,V>();
+    public static <K, V> ConcurrentHashMap<K, V> concurrentHashMap() {
+        return new ConcurrentHashMap<K, V>();
     }
 
     public static <T> CopyOnWriteArrayList<T> copyOnWriteArrayList() {
@@ -67,7 +68,7 @@ public final class New {
 
     public static <T> HashSet<T> hashSet(Iterable<? extends T> values) {
         HashSet<T> set = new HashSet<T>();
-        for(T value : values)
+        for (T value : values)
             set.add(value);
         return set;
     }

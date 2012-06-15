@@ -46,12 +46,12 @@ public class ParameterMappingsBuilder {
 
         List<String> variableNames = pattern.getParameters();
         Set<String> uniqueVariableNames = New.hashSet(variableNames);
-        if(uniqueVariableNames.size() != variableNames.size()) {
+        if (uniqueVariableNames.size() != variableNames.size()) {
             throw new IllegalArgumentException("Duplicate variable name (" + variableNames + ") in pattern on " + method);
         }
 
         initializeParameterMappings(nbParameters);
-        Map<String,Integer> variableNameToParamIndex =
+        Map<String, Integer> variableNameToParamIndex =
                 generateVariableNameToParameterIndex(method.getParameterAnnotations(), nbParameters);
 
         if (!variableNameToParamIndex.isEmpty()) {
@@ -59,7 +59,7 @@ public class ParameterMappingsBuilder {
                 throw new IllegalArgumentException("All parameters or none must define @" + Variable.class.getName() + " on " + method);
             for (String variableName : variableNameToParamIndex.keySet()) {
                 int parameterIndex = variableNameToParamIndex.get(variableName);
-                if(!uniqueVariableNames.contains(variableName)) {
+                if (!uniqueVariableNames.contains(variableName)) {
                     throw new IllegalArgumentException("Variable name mismatch between @" + Variable.class.getName() + " (" + variableNameToParamIndex.keySet() + ") and step pattern (" + uniqueVariableNames + ")");
                 }
                 defineParameterMapping(parameterIndex, variableName);
@@ -109,7 +109,7 @@ public class ParameterMappingsBuilder {
 
     private static Class<? extends Converter> lookupConverter(Annotation[] annotations) {
         specit.annotation.Converter converter = lookupAnnotation(specit.annotation.Converter.class, annotations);
-        if(converter==null)
+        if (converter == null)
             return null;
         else
             return converter.value();

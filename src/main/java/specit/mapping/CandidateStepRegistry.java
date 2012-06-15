@@ -27,8 +27,8 @@ public class CandidateStepRegistry {
 
     public List<CandidateStep> find(Keyword keyword, String pattern) {
         List<CandidateStep> found = New.arrayList();
-        for(CandidateStep candidateStep:candidateSteps) {
-            if(candidateStep.matches(keyword, pattern))
+        for (CandidateStep candidateStep : candidateSteps) {
+            if (candidateStep.matches(keyword, pattern))
                 found.add(candidateStep);
         }
         return found;
@@ -36,7 +36,7 @@ public class CandidateStepRegistry {
 
 
     public void scan(Class<?> klazz) {
-        while(klazz!=null && !klazz.equals(Object.class)) {
+        while (klazz != null && !klazz.equals(Object.class)) {
             scanMethods(klazz);
             klazz = klazz.getSuperclass();
         }
@@ -46,19 +46,19 @@ public class CandidateStepRegistry {
      *
      */
     protected void scanMethods(Class<?> klazz) {
-        for(Method method : klazz.getMethods()) {
-            for(Annotation annotation : method.getAnnotations()) {
+        for (Method method : klazz.getMethods()) {
+            for (Annotation annotation : method.getAnnotations()) {
                 Class<?> annotationType = annotation.annotationType();
-                if(annotationType.equals(Given.class)) {
-                    Given given = (Given)annotation;
+                if (annotationType.equals(Given.class)) {
+                    Given given = (Given) annotation;
                     register(klazz, method, Keyword.Given, given.value());
                 }
-                if(annotationType.equals(When.class)) {
-                    When when = (When)annotation;
+                if (annotationType.equals(When.class)) {
+                    When when = (When) annotation;
                     register(klazz, method, Keyword.When, when.value());
                 }
-                if(annotationType.equals(Then.class)) {
-                    Then then = (Then)annotation;
+                if (annotationType.equals(Then.class)) {
+                    Then then = (Then) annotation;
                     register(klazz, method, Keyword.Then, then.value());
                 }
             }
@@ -66,7 +66,7 @@ public class CandidateStepRegistry {
     }
 
     protected void register(Class<?> klazz, Method method, Keyword keyword, String[] patterns) {
-        for(String pattern : patterns) {
+        for (String pattern : patterns) {
             register(klazz, method, keyword, pattern);
         }
     }

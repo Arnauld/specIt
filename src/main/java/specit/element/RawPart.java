@@ -6,7 +6,7 @@ import specit.util.New;
 import java.util.List;
 
 public class RawPart {
-    
+
     private final int offset;
     private final Keyword keyword;
     private final String rawContent;
@@ -39,22 +39,22 @@ public class RawPart {
     }
 
     private static void ensureAtMostOnlyOne(Table exampleTable, Table forallTable) {
-        if(!exampleTable.isEmpty() && !forallTable.isEmpty())
+        if (!exampleTable.isEmpty() && !forallTable.isEmpty())
             throw new IllegalArgumentException("Only one of Example table or Forall table can be defined at a time, not both");
     }
 
     private static void integrityCheck(Keyword keyword, String rawContent, String keywordAlias) {
-        if(rawContent==null) {
+        if (rawContent == null) {
             throw new IllegalArgumentException("Raw content must be defined");
         }
-        if(keywordAlias==null) {
-            if(keyword!=Keyword.Unknown) {
+        if (keywordAlias == null) {
+            if (keyword != Keyword.Unknown) {
                 throw new IllegalArgumentException("Undefined alias requires the Unknown keyword");
             }
             return;
         }
         int indexOf = rawContent.indexOf(keywordAlias);
-        if(indexOf<0) {
+        if (indexOf < 0) {
             throw new IllegalArgumentException("Keyword alias is not in raw content!");
         }
     }
@@ -118,10 +118,10 @@ public class RawPart {
     }
 
     public String contentAfterAlias() {
-        if(keywordAlias==null) {
+        if (keywordAlias == null) {
             return rawContent;
         }
-        int startingIndex = rawContent.indexOf(keywordAlias)+keywordAlias.length();
+        int startingIndex = rawContent.indexOf(keywordAlias) + keywordAlias.length();
         return rawContent.substring(startingIndex);
     }
 

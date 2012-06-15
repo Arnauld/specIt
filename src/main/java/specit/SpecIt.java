@@ -1,5 +1,9 @@
 package specit;
 
+import specit.annotation.lifecycle.AfterScenario;
+import specit.annotation.lifecycle.AfterStory;
+import specit.annotation.lifecycle.BeforeScenario;
+import specit.annotation.lifecycle.BeforeStory;
 import specit.element.*;
 import specit.interpreter.ExecutionContext;
 import specit.interpreter.InterpreterConf;
@@ -21,6 +25,7 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
     private final TemplateEngine templateEngine = new TemplateEngine();
     private CandidateStepRegistry candidateStepRegistry;
     private ConverterRegistry converterRegistry;
+    private LifecycleRegistry lifecycleRegistry;
 
     @Override
     public String ignoredCharactersOnPartStart() {
@@ -67,26 +72,34 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
         return "$";
     }
 
-    public Parser newParser () {
+    public Parser newParser() {
         return new Parser(this);
     }
 
-    public void executeStory (String storyContent) {
+    public void executeStory(String storyContent) {
         StoryBuilder builder = new StoryBuilder();
         newParser().scan(storyContent, toParserListener(builder));
 
         Story story = builder.getStory();
 
-        CandidateStepRegistry candidateStepRegistry = getCandidateStepRegistry();
-
         StepInstanceProvider stepInstanceProvider = new StepInstanceProviderBasic();
         Invoker invoker = new Invoker(getConverterRegistry(), stepInstanceProvider);
 
-        new StoryInterpreter(this).interpretStory(story, interpreterListener(candidateStepRegistry, invoker));
+        new StoryInterpreter(this).interpretStory(story, interpreterListener(
+                getCandidateStepRegistry(),
+                getLifecycleRegistry(),
+                invoker));
+    }
+
+    public LifecycleRegistry getLifecycleRegistry() {
+        if (lifecycleRegistry == null) {
+            lifecycleRegistry = new LifecycleRegistry();
+        }
+        return lifecycleRegistry;
     }
 
     public ConverterRegistry getConverterRegistry() {
-        if(converterRegistry==null) {
+        if (converterRegistry == null) {
             converterRegistry = new ConverterRegistry();
             registerDefaultConverters(converterRegistry);
         }
@@ -99,25 +112,58 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
         registry.registerConverter(int.class, new IntegerConverter());
     }
 
-    public void registerStepDefinitions(Class<?> stepDefinitions) {
-        getCandidateStepRegistry().scan(stepDefinitions);
+    public void scanAnnotations(Class<?> stepOrLifecycleDefinitions) {
+        getCandidateStepRegistry().scan(stepOrLifecycleDefinitions);
+        getLifecycleRegistry().scan(stepOrLifecycleDefinitions);
     }
 
     protected CandidateStepRegistry getCandidateStepRegistry() {
-        if(candidateStepRegistry==null)
+        if (candidateStepRegistry == null)
             candidateStepRegistry = new CandidateStepRegistry(this);
         return candidateStepRegistry;
     }
 
-    private InterpreterListener interpreterListener(final CandidateStepRegistry candidateStepRegistry, final Invoker invoker) {
+    private InterpreterListener interpreterListener(
+            final CandidateStepRegistry candidateStepRegistry,
+            final LifecycleRegistry lifecycleRegistry,
+            final Invoker invoker) {
         return new InterpreterListener() {
+
+            @Override
+            public void beginStory(Story story) {
+                for (Lifecycle lifecycle : lifecycleRegistry.getLifecycles(BeforeStory.class)) {
+                    invoker.invoke(lifecycle);
+                }
+            }
+
+            @Override
+            public void endStory(Story story) {
+                for (Lifecycle lifecycle : lifecycleRegistry.getLifecycles(AfterStory.class)) {
+                    invoker.invoke(lifecycle);
+                }
+            }
+
+            @Override
+            public void beginScenario(ExecutablePart scenario, ExecutionContext context) {
+                for (Lifecycle lifecycle : lifecycleRegistry.getLifecycles(BeforeScenario.class)) {
+                    invoker.invoke(lifecycle);
+                }
+            }
+
+            @Override
+            public void endScenario(ExecutablePart scenario, ExecutionContext context) {
+                for (Lifecycle lifecycle : lifecycleRegistry.getLifecycles(AfterScenario.class)) {
+                    invoker.invoke(lifecycle);
+                }
+            }
+
             @Override
             public void invokeStep(Keyword keyword, String resolved, ExecutionContext context) {
                 List<CandidateStep> candidateSteps = candidateStepRegistry.find(keyword, resolved);
-                if(candidateSteps.isEmpty())
-                    throw new IllegalStateException("No step matching <" + resolved +"> with keyword <" + keyword + ">");
-                else if(candidateSteps.size()>1)
-                    throw new IllegalStateException("More than one step matching <" + resolved +"> with keyword <" + keyword + "> got: " + candidateSteps);
+                if (candidateSteps.isEmpty())
+                    throw new IllegalStateException("No step matching <" + resolved + "> with keyword <" + keyword + ">");
+                else if (candidateSteps.size() > 1)
+                    throw new IllegalStateException("More than one step matching <" + resolved + "> with keyword <" + keyword + "> got: " + candidateSteps);
 
                 CandidateStep candidateStep = candidateSteps.get(0);
                 invoker.invoke(resolved, candidateStep);

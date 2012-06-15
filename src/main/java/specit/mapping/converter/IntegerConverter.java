@@ -10,15 +10,15 @@ public class IntegerConverter implements Converter {
 
     @Override
     public Object fromString(String value) {
-        if(isValid(value))
+        if (isValid(value))
             return Integer.parseInt(value);
         throw new IllegalArgumentException("Value <" + value + "> is not a valid integer value");
     }
 
     @Override
     public String[] suggest(String prefix) {
-        if(isValid(prefix))
-            return new String[] {prefix};
+        if (isValid(prefix))
+            return new String[]{prefix};
         return new String[0];
     }
 

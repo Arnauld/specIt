@@ -1,6 +1,5 @@
 package specit.interpreter;
 
-import specit.element.*;
 import specit.util.New;
 
 import java.util.Map;
@@ -11,7 +10,7 @@ import java.util.Map;
  */
 public class ExecutionContext {
 
-    private final Map<String,String> variables = New.hashMap();
+    private final Map<String, String> variables = New.hashMap();
 
     public ExecutionContext() {
     }
@@ -20,7 +19,7 @@ public class ExecutionContext {
         this.variables.putAll(newVariableValues);
     }
 
-    public Map<String,String> getVariables() {
+    public Map<String, String> getVariables() {
         return variables;
     }
 }

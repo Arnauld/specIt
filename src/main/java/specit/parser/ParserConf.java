@@ -10,7 +10,9 @@ public interface ParserConf {
     Iterable<Alias> aliases();
 
     String ignoredCharactersOnPartStart();
+
     CommentParser commentParser();
+
     TableParser tabularVariablesParser();
 
     String cellSeparator();

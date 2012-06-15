@@ -18,8 +18,8 @@ public abstract class Element {
         return rawPart;
     }
 
-    public boolean hasRawPart () {
-        return rawPart!=null;
+    public boolean hasRawPart() {
+        return rawPart != null;
     }
 
     public abstract void traverse(ElementVisitor visitor);

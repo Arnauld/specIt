@@ -29,7 +29,7 @@ public class CalculatorTest {
 
     @Test
     public void scenario1() {
-        specIt.registerStepDefinitions(CalculatorSteps.class);
+        specIt.scanAnnotations(CalculatorSteps.class);
         specIt.executeStory(SCENARIO_1);
     }
 

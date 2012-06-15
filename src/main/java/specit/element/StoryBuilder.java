@@ -7,7 +7,7 @@ public class StoryBuilder {
     private Story story = new Story();
 
     public StoryBuilder append(RawPart rawPart) {
-        switch(rawPart.getKeyword()) {
+        switch (rawPart.getKeyword()) {
             case Scenario:
                 story.addScenario(new Scenario(rawPart));
                 break;

@@ -2,16 +2,17 @@ package specit.util;
 
 public final class CharSequences {
 
-    private CharSequences() {}
+    private CharSequences() {
+    }
 
     public static boolean startsWith(CharSequence sequence, String prefix) {
         return startsWith(sequence, 0, prefix);
     }
 
     public static boolean startsWith(CharSequence sequence, int offset, String prefix) {
-        if(sequence.length()-offset>=prefix.length()) {
-            for(int i=0,n=prefix.length();i<n;i++) {
-                if(sequence.charAt(offset+i)!=prefix.charAt(i)) {
+        if (sequence.length() - offset >= prefix.length()) {
+            for (int i = 0, n = prefix.length(); i < n; i++) {
+                if (sequence.charAt(offset + i) != prefix.charAt(i)) {
                     return false;
                 }
             }
@@ -23,10 +24,11 @@ public final class CharSequences {
 
     public static boolean startsWithIgnoringChars(CharSequence sequence, String prefix, String ignoredChars) {
         int offset = 0;
-        offsetLoop: for(;offset<sequence.length();offset++) {
+        offsetLoop:
+        for (; offset < sequence.length(); offset++) {
             char c = sequence.charAt(offset);
-            for(int k=0;k<ignoredChars.length();k++) {
-                if(ignoredChars.charAt(k)==c) {
+            for (int k = 0; k < ignoredChars.length(); k++) {
+                if (ignoredChars.charAt(k) == c) {
                     continue offsetLoop;
                 }
             }

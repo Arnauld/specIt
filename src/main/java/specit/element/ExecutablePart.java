@@ -23,16 +23,16 @@ public abstract class ExecutablePart extends Element {
     }
 
     public void traverseExecutablePart(ElementVisitor visitor) {
-        for(Require require: requires) {
+        for (Require require : requires) {
             require.traverse(visitor);
         }
-        for(Example example: examples) {
+        for (Example example : examples) {
             example.traverse(visitor);
         }
-        for(Forall forall: foralls) {
+        for (Forall forall : foralls) {
             forall.traverse(visitor);
         }
-        for(ExecutablePart part: executableParts) {
+        for (ExecutablePart part : executableParts) {
             part.traverse(visitor);
         }
     }

@@ -4,7 +4,6 @@ import specit.element.Keyword;
 import specit.util.ParametrizedString;
 
 import java.lang.reflect.Method;
-import java.util.Map;
 
 /**
  *
@@ -46,8 +45,8 @@ public class CandidateStep {
     }
 
     public boolean matches(Keyword keyword, String pattern) {
-        if(getKeyword() != keyword)
-           return false;
+        if (getKeyword() != keyword)
+            return false;
         return getPattern().matches(pattern);
     }
 

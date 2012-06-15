@@ -20,7 +20,7 @@ public class Story extends Element {
     public void traverse(ElementVisitor visitor) {
         visitor.beginStory(this);
 
-        if(narrative!=null) {
+        if (narrative != null) {
             narrative.traverse(visitor);
         }
         for (ExecutablePart part : backgroundList) {
@@ -39,12 +39,11 @@ public class Story extends Element {
     }
 
     /**
-     *
      * @param background
      * @see #isBackgroundAccepted()
      */
     public void addBackground(Background background) {
-        if(!isBackgroundAccepted()) {
+        if (!isBackgroundAccepted()) {
             throw new IllegalStateException("Background cannot be declared once scenario started");
         }
         backgroundList.add(background);
@@ -85,7 +84,6 @@ public class Story extends Element {
     }
 
     /**
-     *
      * @param narrative
      * @see #isNarrativeAccepted()
      */

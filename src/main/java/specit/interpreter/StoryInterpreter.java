@@ -198,23 +198,22 @@ public class StoryInterpreter {
             this.preProcess = preProcess;
             this.postProcess = postProcess;
 
-            if(chainedParts.size()==chainIndex) {
+            if (chainedParts.size() == chainIndex) {
                 ExecutionContext context = conf.createExecutionContext();
                 execute(context);
-            }
-            else {
-                Chain next = new Chain(story, listener, chainedParts, chainIndex+1, this);
+            } else {
+                Chain next = new Chain(story, listener, chainedParts, chainIndex + 1, this);
                 interpretScenarioOrBackground(chainedParts.get(chainIndex), listener, next);
             }
         }
 
         @Override
         public void preExecute(ExecutionContext context) {
-            if(previous!=null) {
+            if (previous != null) {
                 previous.preExecute(context);
             }
 
-            if(preProcess!=null) {
+            if (preProcess != null) {
                 preProcess.preExecute(context);
             }
         }
@@ -226,11 +225,11 @@ public class StoryInterpreter {
 
         @Override
         public void postExecute(ExecutionContext context) {
-            if(postProcess!=null) {
+            if (postProcess != null) {
                 postProcess.postExecute(context);
             }
 
-            if(previous!=null) {
+            if (previous != null) {
                 previous.postExecute(context);
             }
         }

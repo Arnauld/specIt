@@ -1,6 +1,5 @@
 package specit.interpreter;
 
-import specit.parser.ParserConf;
 import specit.util.TemplateEngine;
 
 /**

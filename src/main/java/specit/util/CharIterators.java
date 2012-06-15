@@ -11,7 +11,7 @@ public final class CharIterators {
 
             @Override
             public int read() {
-                if(pos<text.length()) {
+                if (pos < text.length()) {
                     return text.charAt(pos++);
                 }
                 return -1;

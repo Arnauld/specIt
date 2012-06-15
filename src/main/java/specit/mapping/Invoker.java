@@ -20,6 +20,18 @@ public class Invoker {
         this.stepInstanceProvider = stepInstanceProvider;
     }
 
+    public void invoke(Lifecycle lifecycle) {
+        Object instance = stepInstanceProvider.getInstance(lifecycle.getOwningType());
+        Method method = lifecycle.getMethod();
+        try {
+            method.invoke(instance);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Failed to invoke lifecycle", e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException("Failed to invoke lifecycle", e);
+        }
+    }
+
     public void invoke(String input, CandidateStep candidateStep) {
         Object[] arguments = prepareMethodArguments(input, candidateStep);
         Object instance = stepInstanceProvider.getInstance(candidateStep.getOwningType());
@@ -37,10 +49,10 @@ public class Invoker {
         ParametrizedString pattern = candidateStep.getPattern();
         ParameterMapping[] parameterMappings = candidateStep.getParameterMappings();
 
-        Map<String,String> variableValues = pattern.extractParameterValues(input);
+        Map<String, String> variableValues = pattern.extractParameterValues(input);
 
         Object[] arguments = new Object[parameterMappings.length];
-        for(ParameterMapping mapping : parameterMappings) {
+        for (ParameterMapping mapping : parameterMappings) {
             Converter converter = getConverter(mapping);
             int parameterIndex = mapping.getParameterIndex();
             String variableValue = variableValues.get(mapping.getVariableName());
@@ -50,10 +62,9 @@ public class Invoker {
     }
 
     private Converter getConverter(ParameterMapping mapping) {
-        if(mapping.hasConverterClass()) {
+        if (mapping.hasConverterClass()) {
             return converterRegistry.getConverter(mapping.getConverterClass());
-        }
-        else {
+        } else {
             return converterRegistry.getConverterForType(mapping.getParameterType());
         }
     }
