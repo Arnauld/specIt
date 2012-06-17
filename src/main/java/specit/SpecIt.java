@@ -33,12 +33,18 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
     }
 
     @Override
-    public String cellSeparator() {
+    public String tableCellSeparator() {
         return "|";
     }
 
     public SpecIt withAlias(Keyword kw, String value) {
         aliases.put(value, new Alias(kw, value));
+        return this;
+    }
+
+    public SpecIt withAliases(Keyword kw, String... values) {
+        for(String value : values)
+            withAlias(kw, value);
         return this;
     }
 
@@ -63,8 +69,13 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
     }
 
     @Override
-    public TableParser tabularVariablesParser() {
+    public TableParser tableParser() {
         return new TableParser(this);
+    }
+
+    @Override
+    public RepeatParametersParser repeatParametersParser() {
+        return new RepeatParametersParser(this);
     }
 
     @Override
@@ -77,18 +88,22 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
     }
 
     public void executeStory(String storyContent) {
-        StoryBuilder builder = new StoryBuilder();
-        newParser().scan(storyContent, toParserListener(builder));
-
-        Story story = builder.getStory();
-
-        StepInstanceProvider stepInstanceProvider = new StepInstanceProviderBasic();
-        Invoker invoker = new Invoker(getConverterRegistry(), stepInstanceProvider);
-
+        Story story = parseAndBuildStory(storyContent);
         new StoryInterpreter(this).interpretStory(story, interpreterListener(
                 getCandidateStepRegistry(),
                 getLifecycleRegistry(),
-                invoker));
+                newInvoker()));
+    }
+
+    public Story parseAndBuildStory(String storyContent) {
+        StoryBuilder builder = new StoryBuilder();
+        newParser().scan(storyContent, toParserListener(builder));
+        return builder.getStory();
+    }
+
+    protected Invoker newInvoker() {
+        StepInstanceProvider stepInstanceProvider = new StepInstanceProviderBasic();
+        return new Invoker(getConverterRegistry(), stepInstanceProvider);
     }
 
     public LifecycleRegistry getLifecycleRegistry() {
@@ -184,4 +199,5 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
             }
         };
     }
+
 }

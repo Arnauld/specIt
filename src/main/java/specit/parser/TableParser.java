@@ -29,7 +29,7 @@ public class TableParser {
         String[] rows = splitInRows(content);
         for (int row = 0; row < rows.length; row++) {
             String rowContent = rows[row].trim();
-            if (!rowContent.startsWith(conf.cellSeparator())) {
+            if (!rowContent.startsWith(conf.tableCellSeparator())) {
                 continue;
             }
 
@@ -75,7 +75,7 @@ public class TableParser {
     }
 
     private String[] splitInCells(String row) {
-        return row.split(Pattern.quote(conf.cellSeparator()));
+        return row.split(Pattern.quote(conf.tableCellSeparator()));
     }
 
     private String[] splitInRows(String content) {

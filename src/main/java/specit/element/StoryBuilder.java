@@ -4,7 +4,7 @@ package specit.element;
  *
  */
 public class StoryBuilder {
-    private Story story = new Story();
+    private final Story story = new Story();
 
     public StoryBuilder append(RawPart rawPart) {
         switch (rawPart.getKeyword()) {
@@ -18,21 +18,22 @@ public class StoryBuilder {
             case Given:
             case When:
             case Then:
-                story.executablePart(rawPart).addStep(new Step(rawPart));
+                story.addStep(new Step(rawPart));
                 break;
-            case Forall:
-                story.executablePart(rawPart).addForall(new Forall(rawPart));
+            case Repeat:
+                story.addStep(new Repeat(rawPart));
                 break;
             case Example: // Foreach :)
-                story.executablePart(rawPart).addExemple(new Example(rawPart));
+                story.addExemple(new Example(rawPart));
                 break;
             case Narrative:
                 story.setNarrative(new Narrative(rawPart));
                 break;
             case Require:
-                Require require = new Require(rawPart);
-                ExecutablePart executablePart = story.executablePart(rawPart);
-                executablePart.addRequire(require);
+                story.addRequire(new Require(rawPart));
+                break;
+            case Fragment:
+                story.addFragment(new Fragment(rawPart));
                 break;
             case Unknown:
                 // nothing to do :)

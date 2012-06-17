@@ -16,6 +16,7 @@
     <hamcrest.version>1.2</hamcrest.version>
     <spring.version>3.1.1.RELEASE</spring.version>
     <slf4j.version>1.6.4</slf4j.version>
+    <fest-assert.version>2.0M5</fest-assert.version>
   </properties>
 
   <!-- ************************************************ -->
@@ -29,6 +30,13 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.3</version>
+      <scope>test</scope>
     </dependency>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -70,6 +78,7 @@
       <artifactId>junit-dep</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-library</artifactId>
@@ -80,9 +89,18 @@
       <artifactId>hamcrest-core</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- https://github.com/alexruiz/fest-assert-2.x/wiki -->
+    <dependency>
+      <groupId>org.easytesting</groupId>
+      <artifactId>fest-assert-core</artifactId>
+      <version>${fest-assert.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -110,6 +128,7 @@
         <version>4.10</version>
         <scope>test</scope>
       </dependency>
+
       <dependency>
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest-library</artifactId>

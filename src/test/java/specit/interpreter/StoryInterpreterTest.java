@@ -1,9 +1,11 @@
 package specit.interpreter;
 
+import org.junit.Before;
 import org.junit.Test;
 import specit.SpecIt;
 import specit.element.*;
 import specit.interpreter.InterpreterListenerRecorder.*;
+import specit.parser.RepeatParametersParser;
 import specit.parser.TableParser;
 import specit.util.New;
 
@@ -18,6 +20,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *
  */
 public class StoryInterpreterTest {
+
+    private SpecIt specIt;
+
+    @Before
+    public void setUp () {
+        specIt = new SpecIt();
+    }
+
     @Test
     public void simpleCase() {
         // Given
@@ -31,7 +41,6 @@ public class StoryInterpreterTest {
                 .getStory();
 
         InterpreterListenerRecorder recorder = new InterpreterListenerRecorder();
-        SpecIt specIt = new SpecIt();
 
         // When
         new StoryInterpreter(specIt).interpretStory(story, recorder);
@@ -65,7 +74,6 @@ public class StoryInterpreterTest {
                 .getStory();
 
         InterpreterListenerRecorder recorder = new InterpreterListenerRecorder();
-        SpecIt specIt = new SpecIt();
 
         // When
         new StoryInterpreter(specIt).interpretStory(story, recorder);
@@ -102,7 +110,6 @@ public class StoryInterpreterTest {
                 .getStory();
 
         InterpreterListenerRecorder recorder = new InterpreterListenerRecorder();
-        SpecIt specIt = new SpecIt();
 
         // When
         new StoryInterpreter(specIt).interpretStory(story, recorder);
@@ -229,12 +236,12 @@ public class StoryInterpreterTest {
     private RawPart rawPart(Keyword kw, String text, String keywordAlias) {
         try {
             Table exampleTable = Table.empty();
-            Table forallTable = Table.empty();
-
             if (kw == Keyword.Example)
-                exampleTable = new TableParser(new SpecIt()).parse(text);
-            if (kw == Keyword.Forall)
-                forallTable = new TableParser(new SpecIt()).parse(text);
+                exampleTable = new TableParser(specIt).parse(text);
+
+            RepeatParameters repeatParameters = null;
+            if(kw == Keyword.Repeat)
+                repeatParameters = new RepeatParametersParser(specIt).parse(text);
 
             return new RawPart(
                     offset,
@@ -243,7 +250,7 @@ public class StoryInterpreterTest {
                     keywordAlias,
                     New.<Comment>arrayList(),
                     exampleTable,
-                    forallTable);
+                    repeatParameters);
         } finally {
             offset += text.length();
         }

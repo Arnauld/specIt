@@ -76,11 +76,17 @@ public class ElementVisitor {
         endDefaultFallback(defaultExecutablePart);
     }
 
-    public void beginForall(Forall forall) {
-        beginDefaultFallback(forall);
+    public void beginFragment(Fragment fragment) {
+        beginDefaultFallback(fragment);
+    }
+    public void endFragment(Fragment fragment) {
+        endDefaultFallback(fragment);
     }
 
-    public void endForall(Forall forall) {
-        endDefaultFallback(forall);
+    public void beginRepeat(Repeat repeat) {
+        beginDefaultFallback(repeat);
+    }
+    public void endRepeat(Repeat repeat) {
+        endDefaultFallback(repeat);
     }
 }

@@ -76,17 +76,41 @@ public class Parser {
     }
 
     private void emitPart(Listener listener, int offset, String keywordAlias, Keyword keyword, String content) {
-        List<Comment> comments = conf.commentParser().parseComments(offset, content);
-        Table exampleTable = Table.empty();
-        Table forallTable = Table.empty();
-        if (keyword == Keyword.Example) {
-            exampleTable = conf.tabularVariablesParser().parse(content);
-        } else if (keyword == Keyword.Forall) {
-            forallTable = conf.tabularVariablesParser().parse(content);
-        }
+        List<Comment> comments = parseComments(offset, content);
+        Table exampleTable = parseExampleTableOrEmpty(keyword, content);
+        RepeatParameters repeatParameters = parseRepeatParameters(keyword, content);
 
-        RawPart rawPart = new RawPart(offset, keyword, content, keywordAlias, comments, exampleTable, forallTable);
+        RawPart rawPart = new RawPart(
+                offset,
+                keyword,
+                content,
+                keywordAlias,
+                comments,
+                exampleTable,
+                repeatParameters);
         listener.on(rawPart);
+    }
+
+    private RepeatParameters parseRepeatParameters(Keyword keyword, String content) {
+        if (keyword == Keyword.Repeat) {
+            return conf.repeatParametersParser().parse(content);
+        }
+        else {
+            return null;
+        }
+    }
+
+    private List<Comment> parseComments(int offset, String content) {
+        return conf.commentParser().parseComments(offset, content);
+    }
+
+    private Table parseExampleTableOrEmpty(Keyword keyword, String content) {
+        if (keyword == Keyword.Example) {
+            return conf.tableParser().parse(content);
+        }
+        else {
+            return Table.empty();
+        }
     }
 
     private static boolean isNewlineCharacter(int read) {

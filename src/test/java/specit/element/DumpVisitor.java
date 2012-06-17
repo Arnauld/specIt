@@ -124,4 +124,28 @@ public class DumpVisitor extends ElementVisitor {
     public void endStory(Story story) {
         indent--;
     }
+
+    @Override
+    public void beginFragment(Fragment fragment) {
+        indent++;
+        out.println(indent() + "Fragment");
+        printPart(fragment);
+    }
+
+    @Override
+    public void endFragment(Fragment fragment) {
+        indent--;
+    }
+
+    @Override
+    public void beginRepeat(Repeat repeat) {
+        indent++;
+        out.println(indent() + "Repeat");
+        printPart(repeat);
+    }
+
+    @Override
+    public void endRepeat(Repeat repeat) {
+        indent--;
+    }
 }

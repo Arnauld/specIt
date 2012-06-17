@@ -24,4 +24,12 @@ public class CharSequencesTest {
         assertThat(CharSequences.startsWithIgnoringChars(" _ youpla boom", "youp", " \t"), is(false));
     }
 
+    @Test
+    public void endsWithBlankLine() {
+        assertThat(CharSequences.endsWithBlankLine("    youpla boom"), is(false));
+        assertThat(CharSequences.endsWithBlankLine("    youpla boom\n"), is(false));
+        assertThat(CharSequences.endsWithBlankLine("    youpla boom\n\n"), is(true));
+        assertThat(CharSequences.endsWithBlankLine("    youpla boom\n   \n"), is(true));
+        assertThat(CharSequences.endsWithBlankLine("    youpla boom\n  \t \n"), is(true));
+    }
 }

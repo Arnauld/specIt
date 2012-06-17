@@ -2,19 +2,22 @@ package specit.element;
 
 import specit.util.New;
 
+import java.util.AbstractList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  *
  *
  */
-public class Story extends Element {
+public class Story extends Element implements FragmentHolder {
 
-    private ExecutablePart currentExecutablePart;
+    private Stack<ExecutablePart> currentExecutablePart = New.stack();
     //
     private Narrative narrative;
     private List<ExecutablePart> scenarioList = New.arrayList();
     private List<ExecutablePart> backgroundList = New.arrayList();
+    private List<Fragment> fragments = New.arrayList();
 
     @Override
     public void traverse(ElementVisitor visitor) {
@@ -35,7 +38,8 @@ public class Story extends Element {
 
     public void addScenario(Scenario scenario) {
         scenarioList.add(scenario);
-        currentExecutablePart = scenario;
+        scenario.setParent(this);
+        currentExecutablePart.push(scenario);
     }
 
     /**
@@ -47,7 +51,8 @@ public class Story extends Element {
             throw new IllegalStateException("Background cannot be declared once scenario started");
         }
         backgroundList.add(background);
-        currentExecutablePart = background;
+        background.setParent(this);
+        currentExecutablePart.push(background);
     }
 
     /**
@@ -56,30 +61,26 @@ public class Story extends Element {
      * @return
      */
     public boolean isBackgroundAccepted() {
-        if (currentExecutablePart == null) {
+        if (currentExecutablePart.empty()) {
             return true;
         }
-        if (currentExecutablePart instanceof Background) {
+        if (currentExecutablePart.peek() instanceof Background) {
             return true;
         }
         return false;
     }
 
-    /**
-     * @param rawPart If no executable part is defined yet,
-     *                the <code>rawPart</code> is used to create a dummy one
-     * @return
-     */
-    public ExecutablePart executablePart(RawPart rawPart) {
-        if (currentExecutablePart == null) {
-            currentExecutablePart = createDefaultExecutablePart();
+    protected ExecutablePart executablePart() {
+        if (currentExecutablePart.empty()) {
+            currentExecutablePart.push(createDefaultExecutablePart());
         }
-        return currentExecutablePart;
+        return currentExecutablePart.peek();
     }
 
     private ExecutablePart createDefaultExecutablePart() {
         ExecutablePart defaultExecutablePart = new DefaultExecutablePart();
         scenarioList.add(defaultExecutablePart);
+        defaultExecutablePart.setParent(this);
         return defaultExecutablePart;
     }
 
@@ -109,5 +110,33 @@ public class Story extends Element {
 
     public List<ExecutablePart> getBackgroundList() {
         return backgroundList;
+    }
+
+    public void addStep(Step step) {
+        executablePart().addStep(step);
+    }
+
+    public void addExemple(Example example) {
+        executablePart().addExemple(example);
+    }
+
+    public void addRequire(Require require) {
+        executablePart().addRequire(require);
+    }
+
+    public void addFragment(Fragment fragment) {
+        if(currentExecutablePart.empty()) {
+            fragments.add(fragment);
+            fragment.setParent(this);
+            currentExecutablePart.push(fragment);
+        }
+        else {
+            currentExecutablePart.peek().addFragment(fragment);
+        }
+    }
+
+    @Override
+    public void fragmentEnds() {
+        currentExecutablePart.pop();
     }
 }

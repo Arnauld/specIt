@@ -72,4 +72,8 @@ public final class New {
             set.add(value);
         return set;
     }
+
+    public static <T> Stack<T> stack() {
+        return new Stack<T>();
+    }
 }

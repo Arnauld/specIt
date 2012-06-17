@@ -1,8 +1,16 @@
 package specit.util;
 
+import java.util.regex.Pattern;
+
 public final class CharSequences {
 
     private CharSequences() {
+    }
+
+    private static final Pattern pattern = Pattern.compile(".*(?:\n|\r|\r\n)+\\s*(?:\n|\r|\r\n)");
+
+    public static boolean endsWithBlankLine(CharSequence sequence) {
+        return pattern.matcher(sequence).matches();
     }
 
     public static boolean startsWith(CharSequence sequence, String prefix) {

@@ -13,7 +13,9 @@ public interface ParserConf {
 
     CommentParser commentParser();
 
-    TableParser tabularVariablesParser();
+    TableParser tableParser();
 
-    String cellSeparator();
+    RepeatParametersParser repeatParametersParser();
+
+    String tableCellSeparator();
 }

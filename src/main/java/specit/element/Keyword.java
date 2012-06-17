@@ -5,13 +5,14 @@ public enum Keyword {
     Narrative,
     Scenario,
     Background,
-    Forall,
     Require,
     Given,
     When,
     Then,
     And,
-    Example;
+    Example,
+    Fragment,
+    Repeat;
 
     public boolean isStep() {
         return this == Given || this == When || this == Then || this == And;
