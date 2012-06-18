@@ -1,4 +1,4 @@
-package specit.mapping;
+package specit.invocation;
 
 import specit.element.Keyword;
 import specit.util.ParametrizedString;

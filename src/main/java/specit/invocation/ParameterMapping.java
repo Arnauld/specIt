@@ -1,4 +1,8 @@
-package specit.mapping;
+package specit.invocation;
+
+import specit.element.InvocationContext;
+
+import java.util.Map;
 
 /**
  *
@@ -9,8 +13,8 @@ public class ParameterMapping {
     private final String variableName;
     private final Class<? extends Converter> converterClass;
 
-    public ParameterMapping(Class<?> parameterType, int parameterIndex, String variableName) {
-        this(parameterType, parameterIndex, variableName, null);
+    public ParameterMapping(Class<?> parameterType, int parameterIndex) {
+        this(parameterType, parameterIndex, null, null);
     }
 
     public ParameterMapping(Class<?> parameterType, int parameterIndex, String variableName, Class<? extends Converter> converterClass) {
@@ -38,5 +42,22 @@ public class ParameterMapping {
 
     public boolean hasConverterClass() {
         return converterClass != null;
+    }
+
+    public Object extractValue(ConverterRegistry converterRegistry, InvocationContext context, Map<String, String> variableValues) {
+        if(parameterType.equals(InvocationContext.class)) {
+            return context;
+        }
+        Converter converter = getConverter(converterRegistry);
+        String variableValue = variableValues.get(getVariableName());
+        return converter.fromString(variableValue);
+    }
+
+    private Converter getConverter(ConverterRegistry converterRegistry) {
+        if (hasConverterClass()) {
+            return converterRegistry.getConverter(getConverterClass());
+        } else {
+            return converterRegistry.getConverterForType(getParameterType());
+        }
     }
 }

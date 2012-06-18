@@ -9,9 +9,9 @@ import specit.interpreter.ExecutionContext;
 import specit.interpreter.InterpreterConf;
 import specit.interpreter.InterpreterListener;
 import specit.interpreter.StoryInterpreter;
-import specit.mapping.*;
-import specit.mapping.converter.IntegerConverter;
-import specit.mapping.converter.StringConverter;
+import specit.invocation.*;
+import specit.invocation.converter.IntegerConverter;
+import specit.invocation.converter.StringConverter;
 import specit.parser.*;
 import specit.util.TemplateEngine;
 
@@ -93,7 +93,9 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
     }
 
     public void interpretStory(Story story) {
+        InvocationContext invocationContext = newInvocationContext();
         new StoryInterpreter(this).interpretStory(story, interpreterListener(
+                invocationContext,
                 getCandidateStepRegistry(),
                 getLifecycleRegistry(),
                 newInvoker()));
@@ -103,6 +105,10 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
         StoryBuilder builder = new StoryBuilder();
         newParser().scan(storyContent, toParserListener(builder));
         return builder.getStory();
+    }
+
+    protected InvocationContext newInvocationContext() {
+        return new InvocationContext();
     }
 
     protected Invoker newInvoker() {
@@ -143,6 +149,7 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
     }
 
     private InterpreterListener interpreterListener(
+            final InvocationContext invocationContext,
             final CandidateStepRegistry candidateStepRegistry,
             final LifecycleRegistry lifecycleRegistry,
             final Invoker invoker) {
@@ -151,28 +158,28 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
             @Override
             public void beginStory(Story story) {
                 for (Lifecycle lifecycle : lifecycleRegistry.getLifecycles(BeforeStory.class)) {
-                    invoker.invoke(lifecycle);
+                    invoker.invoke(invocationContext, lifecycle);
                 }
             }
 
             @Override
             public void endStory(Story story) {
                 for (Lifecycle lifecycle : lifecycleRegistry.getLifecycles(AfterStory.class)) {
-                    invoker.invoke(lifecycle);
+                    invoker.invoke(invocationContext, lifecycle);
                 }
             }
 
             @Override
             public void beginScenario(ExecutablePart scenario, ExecutionContext context) {
                 for (Lifecycle lifecycle : lifecycleRegistry.getLifecycles(BeforeScenario.class)) {
-                    invoker.invoke(lifecycle);
+                    invoker.invoke(invocationContext, lifecycle);
                 }
             }
 
             @Override
             public void endScenario(ExecutablePart scenario, ExecutionContext context) {
                 for (Lifecycle lifecycle : lifecycleRegistry.getLifecycles(AfterScenario.class)) {
-                    invoker.invoke(lifecycle);
+                    invoker.invoke(invocationContext, lifecycle);
                 }
             }
 
@@ -185,7 +192,7 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
                     throw new IllegalStateException("More than one step matching <" + resolved + "> with keyword <" + keyword + "> got: " + candidateSteps);
 
                 CandidateStep candidateStep = candidateSteps.get(0);
-                invoker.invoke(resolved, candidateStep);
+                invoker.invoke(invocationContext, resolved, candidateStep);
             }
 
             @Override
@@ -203,5 +210,4 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
             }
         };
     }
-
 }

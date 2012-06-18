@@ -1,4 +1,4 @@
-package specit.mapping;
+package specit.invocation;
 
 import specit.annotation.Given;
 import specit.annotation.Then;

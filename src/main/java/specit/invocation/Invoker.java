@@ -1,5 +1,6 @@
-package specit.mapping;
+package specit.invocation;
 
+import specit.element.InvocationContext;
 import specit.util.ParametrizedString;
 
 import java.lang.reflect.InvocationTargetException;
@@ -20,7 +21,7 @@ public class Invoker {
         this.stepInstanceProvider = stepInstanceProvider;
     }
 
-    public void invoke(Lifecycle lifecycle) {
+    public void invoke(InvocationContext context, Lifecycle lifecycle) {
         Object instance = stepInstanceProvider.getInstance(lifecycle.getOwningType());
         Method method = lifecycle.getMethod();
         try {
@@ -32,8 +33,8 @@ public class Invoker {
         }
     }
 
-    public void invoke(String input, CandidateStep candidateStep) {
-        Object[] arguments = prepareMethodArguments(input, candidateStep);
+    public void invoke(InvocationContext context, String input, CandidateStep candidateStep) {
+        Object[] arguments = prepareMethodArguments(context, input, candidateStep);
         Object instance = stepInstanceProvider.getInstance(candidateStep.getOwningType());
         Method method = candidateStep.getMethod();
         try {
@@ -45,7 +46,7 @@ public class Invoker {
         }
     }
 
-    private Object[] prepareMethodArguments(String input, CandidateStep candidateStep) {
+    private Object[] prepareMethodArguments(InvocationContext context, String input, CandidateStep candidateStep) {
         ParametrizedString pattern = candidateStep.getPattern();
         ParameterMapping[] parameterMappings = candidateStep.getParameterMappings();
 
@@ -53,19 +54,9 @@ public class Invoker {
 
         Object[] arguments = new Object[parameterMappings.length];
         for (ParameterMapping mapping : parameterMappings) {
-            Converter converter = getConverter(mapping);
             int parameterIndex = mapping.getParameterIndex();
-            String variableValue = variableValues.get(mapping.getVariableName());
-            arguments[parameterIndex] = converter.fromString(variableValue);
+            arguments[parameterIndex] = mapping.extractValue(converterRegistry, context, variableValues);
         }
         return arguments;
-    }
-
-    private Converter getConverter(ParameterMapping mapping) {
-        if (mapping.hasConverterClass()) {
-            return converterRegistry.getConverter(mapping.getConverterClass());
-        } else {
-            return converterRegistry.getConverterForType(mapping.getParameterType());
-        }
     }
 }

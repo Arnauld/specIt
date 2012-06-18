@@ -1,5 +1,6 @@
 package specit.element;
 
+import specit.parser.ParserConf;
 import specit.util.CharSequences;
 import specit.util.Equals;
 import specit.util.New;
@@ -12,30 +13,31 @@ public class RawPart {
     private final Keyword keyword;
     private final String rawContent;
     private final String keywordAlias;
-    private final List<Comment> nestedComments;
-    private final Table exampleTable;
-    private final RepeatParameters repeatParameters;
+    private final ParserConf parserConf;
+    //
+    private List<Comment> nestedComments;
+    private Table exampleTable;
+    private RepeatParameters repeatParameters;
 
-    public RawPart(int offset, Keyword keyword, String rawContent, String keywordAlias) {
-        this(offset, keyword, rawContent, keywordAlias, New.<Comment>arrayList(), Table.empty(), null);
+    public RawPart(int offset,
+                   Keyword keyword,
+                   String rawContent,
+                   String keywordAlias) {
+        this(offset, keyword, rawContent, keywordAlias, null);
     }
 
     public RawPart(int offset,
                    Keyword keyword,
                    String rawContent,
                    String keywordAlias,
-                   List<Comment> nestedComments,
-                   Table exampleTable,
-                   RepeatParameters repeatParameters) {
+                   ParserConf parserConf) {
         super();
         integrityCheck(keyword, rawContent, keywordAlias);
         this.offset = offset;
         this.keyword = keyword;
         this.rawContent = rawContent;
         this.keywordAlias = keywordAlias;
-        this.nestedComments = nestedComments;
-        this.exampleTable = exampleTable;
-        this.repeatParameters = repeatParameters;
+        this.parserConf = parserConf;
     }
 
     private static void integrityCheck(Keyword keyword, String rawContent, String keywordAlias) {
@@ -121,18 +123,36 @@ public class RawPart {
     }
 
     public Table getExampleTable() {
+        if(keyword!=Keyword.Example)
+            throw new IllegalStateException("Cannot retrieve an ExampleTable from a " + keyword + " part!");
+        ensureParserConfIsDefined();
+        if(exampleTable==null) {
+            exampleTable = parserConf.tableParser().parse(rawContent);
+        }
         return exampleTable;
     }
 
     public RepeatParameters getRepeatParameters() {
+        if(keyword!=Keyword.Repeat)
+            throw new IllegalStateException("Cannot retrieve RepeatParameters from a " + keyword + " part!");
+        if(repeatParameters==null)
+            repeatParameters = parserConf.repeatParametersParser().parse(rawContent);
         return repeatParameters;
     }
 
     public List<Comment> getNestedComments() {
+        if(nestedComments==null)
+            nestedComments = parserConf.commentParser().parseComments(offset, rawContent);
         return nestedComments;
     }
 
     public boolean endsWithBlankLine() {
         return CharSequences.endsWithBlankLine(rawContent);
     }
+
+    private void ensureParserConfIsDefined() {
+        if(parserConf==null)
+            throw new IllegalStateException("ParserConf is not set!");
+    }
+
 }

@@ -1,4 +1,4 @@
-package specit.mapping;
+package specit.invocation;
 
 /**
  *

@@ -13,14 +13,30 @@ import java.util.regex.Pattern;
  */
 public class CommentParser {
 
-    public String commentsPattern() {
+    private Pattern pattern;
+
+    public String commentsRegex() {
         return "(?:" + "(#)(.*)$" + ")|(?:" + "(//)(.*)$" + ")";
+    }
+
+    protected void invalidatePattern() {
+        pattern = null;
+    }
+
+    private Pattern commentsPattern() {
+        if(pattern==null)
+            pattern = Pattern.compile(commentsRegex(), Pattern.MULTILINE);
+        return pattern;
+    }
+
+    public String contentWithoutComment(String rawContent) {
+        return commentsPattern().matcher(rawContent).replaceAll("");
     }
 
     public List<Comment> parseComments(int baseOffset, String rawContent) {
         List<Comment> comments = New.arrayList();
 
-        Pattern pattern = Pattern.compile(commentsPattern(), Pattern.MULTILINE);
+        Pattern pattern = commentsPattern();
         Matcher matcher = pattern.matcher(rawContent);
         while (matcher.find()) {
             int groupCount = matcher.groupCount();
@@ -37,4 +53,5 @@ public class CommentParser {
 
         return comments;
     }
+
 }

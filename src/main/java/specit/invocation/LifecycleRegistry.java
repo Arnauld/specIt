@@ -1,4 +1,4 @@
-package specit.mapping;
+package specit.invocation;
 
 import specit.annotation.lifecycle.AfterScenario;
 import specit.annotation.lifecycle.AfterStory;

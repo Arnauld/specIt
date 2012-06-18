@@ -1,6 +1,6 @@
-package specit.mapping.converter;
+package specit.invocation.converter;
 
-import specit.mapping.Converter;
+import specit.invocation.Converter;
 import specit.parser.TableParser;
 
 /**

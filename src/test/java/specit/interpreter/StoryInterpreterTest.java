@@ -3,11 +3,11 @@ package specit.interpreter;
 import org.junit.Before;
 import org.junit.Test;
 import specit.SpecIt;
-import specit.element.*;
+import specit.element.Keyword;
+import specit.element.RawPart;
+import specit.element.Story;
+import specit.element.StoryBuilder;
 import specit.interpreter.InterpreterListenerRecorder.*;
-import specit.parser.RepeatParametersParser;
-import specit.parser.TableParser;
-import specit.util.New;
 
 import java.util.Iterator;
 
@@ -235,22 +235,12 @@ public class StoryInterpreterTest {
 
     private RawPart rawPart(Keyword kw, String text, String keywordAlias) {
         try {
-            Table exampleTable = Table.empty();
-            if (kw == Keyword.Example)
-                exampleTable = new TableParser(specIt).parse(text);
-
-            RepeatParameters repeatParameters = null;
-            if(kw == Keyword.Repeat)
-                repeatParameters = new RepeatParametersParser(specIt).parse(text);
-
             return new RawPart(
                     offset,
                     kw,
                     text,
                     keywordAlias,
-                    New.<Comment>arrayList(),
-                    exampleTable,
-                    repeatParameters);
+                    specIt);
         } finally {
             offset += text.length();
         }

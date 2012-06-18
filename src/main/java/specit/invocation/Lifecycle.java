@@ -1,4 +1,4 @@
-package specit.mapping;
+package specit.invocation;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

@@ -7,5 +7,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 public @interface Converter {
-    Class<? extends specit.mapping.Converter> value();
+    Class<? extends specit.invocation.Converter> value();
 }

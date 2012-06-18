@@ -1,11 +1,11 @@
 package specit.parser;
 
-import specit.element.*;
+import specit.element.Alias;
+import specit.element.Keyword;
+import specit.element.RawPart;
 import specit.util.CharIterator;
 import specit.util.CharIterators;
 import specit.util.CharSequences;
-
-import java.util.List;
 
 public class Parser {
 
@@ -76,41 +76,13 @@ public class Parser {
     }
 
     private void emitPart(Listener listener, int offset, String keywordAlias, Keyword keyword, String content) {
-        List<Comment> comments = parseComments(offset, content);
-        Table exampleTable = parseExampleTableOrEmpty(keyword, content);
-        RepeatParameters repeatParameters = parseRepeatParameters(keyword, content);
-
         RawPart rawPart = new RawPart(
                 offset,
                 keyword,
                 content,
                 keywordAlias,
-                comments,
-                exampleTable,
-                repeatParameters);
+                conf);
         listener.on(rawPart);
-    }
-
-    private RepeatParameters parseRepeatParameters(Keyword keyword, String content) {
-        if (keyword == Keyword.Repeat) {
-            return conf.repeatParametersParser().parse(content);
-        }
-        else {
-            return null;
-        }
-    }
-
-    private List<Comment> parseComments(int offset, String content) {
-        return conf.commentParser().parseComments(offset, content);
-    }
-
-    private Table parseExampleTableOrEmpty(Keyword keyword, String content) {
-        if (keyword == Keyword.Example) {
-            return conf.tableParser().parse(content);
-        }
-        else {
-            return Table.empty();
-        }
     }
 
     private static boolean isNewlineCharacter(int read) {

@@ -1,13 +1,15 @@
-package specit.mapping;
+package specit.invocation;
 
 import org.junit.Test;
 import specit.annotation.Variable;
+import specit.element.InvocationContext;
 import specit.util.ParametrizedString;
 
 import java.lang.reflect.Method;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
@@ -59,7 +61,7 @@ public class ParameterMappingsBuilderTest {
     }
 
     @Test
-    public void mappings_twoParameters_twoVariable_noVariableAnnotations() {
+    public void mappings_twoParameters_twoVariables_noVariableAnnotations() {
         ParameterMapping[] parameterMappings = mappings(
                 "twoParametersNoVariableAnnotations", "content with $variable1 and $variable2");
         assertThat(parameterMappings, notNullValue());
@@ -109,6 +111,59 @@ public class ParameterMappingsBuilderTest {
         assertThat(parameterMappings[1].getVariableName(), equalTo("name"));
     }
 
+    @Test
+    public void mappings_twoParameters_oneVariable_oneSpecial_noVariableAnnotations() {
+        ParameterMapping[] parameterMappings = mappings(
+                "twoParametersNoVariableAnnotationsWithSpecial", "content with one $variable");
+        assertThat(parameterMappings, notNullValue());
+        assertThat(parameterMappings.length, equalTo(2));
+        assertThat(parameterMappings[0].getParameterIndex(), equalTo(0));
+        assertThat(parameterMappings[0].getParameterType(), equalTo((Class)InvocationContext.class));
+        assertThat(parameterMappings[0].getVariableName(), nullValue());
+
+        assertThat(parameterMappings[1].getParameterIndex(), equalTo(1));
+        assertThat(parameterMappings[1].getParameterType(), equalTo((Class)int.class));
+        assertThat(parameterMappings[1].getVariableName(), equalTo("variable"));
+    }
+
+    @Test
+    public void mappings_threeParameters_twoVariables_oneSpecial_noVariableAnnotations() {
+        ParameterMapping[] parameterMappings = mappings(
+                "threeParametersNoVariableAnnotationsWithSpecial", "content with $name and $amount");
+        assertThat(parameterMappings, notNullValue());
+        assertThat(parameterMappings.length, equalTo(3));
+        assertThat(parameterMappings[0].getParameterIndex(), equalTo(0));
+        assertThat(parameterMappings[0].getParameterType(), equalTo((Class)String.class));
+        assertThat(parameterMappings[0].getVariableName(), equalTo("name"));
+
+        assertThat(parameterMappings[1].getParameterIndex(), equalTo(1));
+        assertThat(parameterMappings[1].getParameterType(), equalTo((Class)InvocationContext.class));
+        assertThat(parameterMappings[1].getVariableName(), nullValue());
+
+        assertThat(parameterMappings[2].getParameterIndex(), equalTo(2));
+        assertThat(parameterMappings[2].getParameterType(), equalTo((Class)int.class));
+        assertThat(parameterMappings[2].getVariableName(), equalTo("amount"));
+    }
+
+    @Test
+    public void mappings_threeParameters_twoVariables_oneSpecial_withVariableAnnotations() {
+        ParameterMapping[] parameterMappings = mappings(
+                "threeParametersWithVariableAnnotationsWithSpecial", "content with $name and $amount");
+        assertThat(parameterMappings, notNullValue());
+        assertThat(parameterMappings.length, equalTo(3));
+        assertThat(parameterMappings[0].getParameterIndex(), equalTo(0));
+        assertThat(parameterMappings[0].getParameterType(), equalTo((Class)int.class));
+        assertThat(parameterMappings[0].getVariableName(), equalTo("amount"));
+
+        assertThat(parameterMappings[1].getParameterIndex(), equalTo(1));
+        assertThat(parameterMappings[1].getParameterType(), equalTo((Class)InvocationContext.class));
+        assertThat(parameterMappings[1].getVariableName(), nullValue());
+
+        assertThat(parameterMappings[2].getParameterIndex(), equalTo(2));
+        assertThat(parameterMappings[2].getParameterType(), equalTo((Class)String.class));
+        assertThat(parameterMappings[2].getVariableName(), equalTo("name"));
+    }
+
 
 
     // ---
@@ -136,6 +191,15 @@ public class ParameterMappingsBuilderTest {
         }
 
         public void oneParameterNoVariableAnnotations(int intValue) {
+        }
+
+        public void twoParametersNoVariableAnnotationsWithSpecial(InvocationContext context, int intValue) {
+        }
+
+        public void threeParametersNoVariableAnnotationsWithSpecial(String param, InvocationContext context, int intValue) {
+        }
+
+        public void threeParametersWithVariableAnnotationsWithSpecial(@Variable("amount") int intValue, InvocationContext context, @Variable("name") String param) {
         }
 
         public void twoParametersNoVariableAnnotations(int intValue, String param) {
