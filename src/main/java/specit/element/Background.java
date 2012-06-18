@@ -11,8 +11,8 @@ public class Background extends ExecutablePart {
 
     @Override
     public void traverse(ElementVisitor visitor) {
-        visitor.beginBackground(this);
-        traverseExecutablePart(visitor);
+        if(visitor.beginBackground(this))
+            traverseExecutablePart(visitor);
         visitor.endBackground(this);
     }
 

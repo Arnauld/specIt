@@ -89,6 +89,10 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
 
     public void executeStory(String storyContent) {
         Story story = parseAndBuildStory(storyContent);
+        interpretStory(story);
+    }
+
+    public void interpretStory(Story story) {
         new StoryInterpreter(this).interpretStory(story, interpreterListener(
                 getCandidateStepRegistry(),
                 getLifecycleRegistry(),

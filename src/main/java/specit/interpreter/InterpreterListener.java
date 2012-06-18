@@ -2,6 +2,7 @@ package specit.interpreter;
 
 import specit.element.ExecutablePart;
 import specit.element.Keyword;
+import specit.element.Repeat;
 import specit.element.Story;
 
 /**
@@ -25,5 +26,8 @@ public class InterpreterListener {
     }
 
     public void invokeRequire(String resolved, ExecutionContext context) {
+    }
+
+    public void invokeRepeat(Repeat repeat, ExecutionContext context) {
     }
 }

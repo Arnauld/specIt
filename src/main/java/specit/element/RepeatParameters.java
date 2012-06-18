@@ -39,4 +39,13 @@ public class RepeatParameters {
     public Table getWithTable() {
         return withTable;
     }
+
+    @Override
+    public String toString() {
+        return "RepeatParameters{" +
+                "reference='" + reference + '\'' +
+                ", withTable='" + withTable + '\'' +
+                ", loopCount='" + loopCount + '\'' +
+                '}';
+    }
 }

@@ -17,4 +17,10 @@ public class Repeat extends Step {
     public RepeatParameters getRepeatParameters () {
         return getRawPart().getRepeatParameters();
     }
+
+    public String toString() {
+        return "Repeat{" +
+                "parameters='" + getRepeatParameters() + '\'' +
+                "}";
+    }
 }

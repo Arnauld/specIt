@@ -11,8 +11,8 @@ public class Fragment extends ExecutablePart {
 
     @Override
     public void traverse(ElementVisitor visitor) {
-        visitor.beginFragment(this);
-        super.traverseExecutablePart(visitor);
+        if(visitor.beginFragment(this))
+            traverseExecutablePart(visitor);
         visitor.endFragment(this);
     }
 

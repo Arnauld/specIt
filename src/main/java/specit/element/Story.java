@@ -21,18 +21,17 @@ public class Story extends Element implements FragmentHolder {
 
     @Override
     public void traverse(ElementVisitor visitor) {
-        visitor.beginStory(this);
-
-        if (narrative != null) {
-            narrative.traverse(visitor);
+        if(visitor.beginStory(this)) {
+            if (narrative != null) {
+                narrative.traverse(visitor);
+            }
+            for (ExecutablePart part : backgroundList) {
+                part.traverse(visitor);
+            }
+            for (ExecutablePart part : scenarioList) {
+                part.traverse(visitor);
+            }
         }
-        for (ExecutablePart part : backgroundList) {
-            part.traverse(visitor);
-        }
-        for (ExecutablePart part : scenarioList) {
-            part.traverse(visitor);
-        }
-
         visitor.endStory(this);
     }
 

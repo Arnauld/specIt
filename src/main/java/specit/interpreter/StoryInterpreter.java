@@ -121,6 +121,13 @@ public class StoryInterpreter {
         listener.invokeRequire(resolved, context);
     }
 
+    /**
+     *
+     */
+    private void invokeRepeat(ExecutionContext context, Repeat repeat, InterpreterListener listener) {
+        listener.invokeRepeat(repeat, context);
+    }
+
     private class ExecutionVisitor extends ElementVisitor {
         private final ExecutionContext context;
         private final InterpreterListener listener;
@@ -131,17 +138,32 @@ public class StoryInterpreter {
         }
 
         @Override
-        public void beginDefaultFallback(Element element) {
+        public boolean beginDefaultFallback(Element element) {
             throw new IllegalStateException();
         }
 
         @Override
-        public void beginStep(Step step) {
+        public boolean beginRepeat(Repeat repeat) {
+            if (!repeat.hasRawPart()) {
+                return false;
+            }
+
+            invokeRepeat(context, repeat, listener);
+            return true;
+        }
+
+        @Override
+        public void endRepeat(Repeat repeat) {
+        }
+
+        @Override
+        public boolean beginStep(Step step) {
             if (!step.hasRawPart()) {
-                return;
+                return false;
             }
 
             invokeStep(context, step.getRawPart(), listener);
+            return true;
         }
 
         @Override
@@ -149,12 +171,13 @@ public class StoryInterpreter {
         }
 
         @Override
-        public void beginRequire(Require require) {
+        public boolean beginRequire(Require require) {
             if (!require.hasRawPart()) {
-                return;
+                return false;
             }
 
             invokeRequire(context, require.getRawPart(), listener);
+            return true;
         }
 
         @Override
@@ -162,13 +185,23 @@ public class StoryInterpreter {
         }
 
         @Override
-        public void beginExample(Example example) {
+        public boolean beginExample(Example example) {
             // examples are already handled in #recursivelyTraverseExamplesThroughInterpret
+            return false;
         }
 
         @Override
         public void endExample(Example example) {
             // examples are already handled in #recursivelyTraverseExamplesThroughInterpret
+        }
+
+        @Override
+        public boolean beginFragment(Fragment fragment) {
+            return false;
+        }
+
+        @Override
+        public void endFragment(Fragment fragment) {
         }
     }
 
