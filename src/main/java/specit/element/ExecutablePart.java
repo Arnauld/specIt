@@ -28,6 +28,23 @@ public abstract class ExecutablePart extends Element implements FragmentHolder {
         currentExecutablePart.push(this);
     }
 
+    @Override
+    public Fragment findFragment(String fragmentRef, boolean searchInChildren) {
+        for(Fragment fragment : fragments) {
+            if(fragmentRef.equalsIgnoreCase(fragment.getFragmentReference()))
+                return fragment;
+        }
+
+        if(searchInChildren) {
+            for (ExecutablePart part : executableParts) {
+                Fragment fragment = part.findFragment(fragmentRef, searchInChildren);
+                if(fragment!=null)
+                    return fragment;
+            }
+        }
+        return null;
+    }
+
     public void traverseExecutablePart(ElementVisitor visitor) {
         for(Fragment fragment : fragments) {
             fragment.traverse(visitor);

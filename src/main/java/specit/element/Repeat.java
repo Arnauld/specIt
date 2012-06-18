@@ -23,4 +23,17 @@ public class Repeat extends Step {
                 "parameters='" + getRepeatParameters() + '\'' +
                 "}";
     }
+
+    public Fragment findParentInStoryTree() {
+        String fragmentRef = getRepeatParameters().getReference();
+
+        Element parent = getParent();
+        while(parent!=null) {
+            Fragment fragment = parent.findFragment(fragmentRef, false);
+            if(fragment!=null)
+                return fragment;
+            parent = parent.getParent();
+        }
+        return null;
+    }
 }

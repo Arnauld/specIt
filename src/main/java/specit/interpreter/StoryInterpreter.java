@@ -121,13 +121,6 @@ public class StoryInterpreter {
         listener.invokeRequire(resolved, context);
     }
 
-    /**
-     *
-     */
-    private void invokeRepeat(ExecutionContext context, Repeat repeat, InterpreterListener listener) {
-        listener.invokeRepeat(repeat, context);
-    }
-
     private class ExecutionVisitor extends ElementVisitor {
         private final ExecutionContext context;
         private final InterpreterListener listener;
@@ -148,7 +141,27 @@ public class StoryInterpreter {
                 return false;
             }
 
-            invokeRepeat(context, repeat, listener);
+            RepeatParameters parameters = repeat.getRepeatParameters();
+            if(!parameters.hasReference())
+                return false;
+
+            Fragment fragment = repeat.findParentInStoryTree();
+            if(fragment==null) {
+                throw new IllegalStateException("No fragment found for Repeat directive [" + parameters.getReference() + "]");
+            }
+
+            if(parameters.hasWithTable()) {
+                Table table = parameters.getWithTable();
+                for(Table.Row row : table) {
+                    ExecutionContext subContext = context.nestedContext(row.asMap());
+                    fragment.traverseExecutablePart(new ExecutionVisitor(subContext, listener));
+                }
+            }
+            else {
+                for(int i=0; i<parameters.getLoopCount(); i++) {
+                    fragment.traverseExecutablePart(this);
+                }
+            }
             return true;
         }
 

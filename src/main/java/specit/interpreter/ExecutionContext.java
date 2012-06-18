@@ -15,11 +15,16 @@ public class ExecutionContext {
     public ExecutionContext() {
     }
 
-    public void defineVariables(Map<String, String> newVariableValues) {
+    public ExecutionContext defineVariables(Map<String, String> newVariableValues) {
         this.variables.putAll(newVariableValues);
+        return this;
     }
 
     public Map<String, String> getVariables() {
         return variables;
+    }
+
+    public ExecutionContext nestedContext(Map<String, String> values) {
+        return new ExecutionContext().defineVariables(variables).defineVariables(values);
     }
 }

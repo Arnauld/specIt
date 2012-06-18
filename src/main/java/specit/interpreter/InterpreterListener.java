@@ -28,6 +28,4 @@ public class InterpreterListener {
     public void invokeRequire(String resolved, ExecutionContext context) {
     }
 
-    public void invokeRepeat(Repeat repeat, ExecutionContext context) {
-    }
 }

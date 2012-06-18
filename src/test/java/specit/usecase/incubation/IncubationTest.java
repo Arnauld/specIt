@@ -69,10 +69,6 @@ public class IncubationTest {
                 System.out.println("IncubationTest.invokeRequire(" + resolved + ")");
             }
 
-            @Override
-            public void invokeRepeat(Repeat repeat, ExecutionContext context) {
-                System.out.println("IncubationTest.invokeRepeat(" + repeat +")");
-            }
         });
     }
 

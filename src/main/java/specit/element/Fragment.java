@@ -49,4 +49,9 @@ public class Fragment extends ExecutablePart {
     public void fragmentEnds() {
         throw new IllegalArgumentException("Cannot add Fragment to Fragment");
     }
+
+    public String getFragmentReference() {
+        String remaining = getRawPart().contentAfterAlias();
+        return remaining.trim();
+    }
 }

@@ -36,4 +36,8 @@ public abstract class Element {
     public boolean endsWithBlankLine() {
         return rawPart.endsWithBlankLine();
     }
+
+    public Fragment findFragment(String fragmentRef, boolean searchInChildren) {
+        return null;
+    }
 }

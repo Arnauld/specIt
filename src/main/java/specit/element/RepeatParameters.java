@@ -48,4 +48,8 @@ public class RepeatParameters {
                 ", loopCount='" + loopCount + '\'' +
                 '}';
     }
+
+    public boolean hasReference() {
+        return reference!=null;
+    }
 }
