@@ -35,7 +35,7 @@ public class CandidateStepRegistry {
     }
 
 
-    public void scan(Class<?> klazz) {
+    public void scan(Class<?> klazz) throws ParameterMappingException {
         while (klazz != null && !klazz.equals(Object.class)) {
             scanMethods(klazz);
             klazz = klazz.getSuperclass();
@@ -45,7 +45,7 @@ public class CandidateStepRegistry {
     /**
      *
      */
-    protected void scanMethods(Class<?> klazz) {
+    protected void scanMethods(Class<?> klazz) throws ParameterMappingException {
         for (Method method : klazz.getMethods()) {
             for (Annotation annotation : method.getAnnotations()) {
                 Class<?> annotationType = annotation.annotationType();
@@ -65,13 +65,13 @@ public class CandidateStepRegistry {
         }
     }
 
-    protected void register(Class<?> klazz, Method method, Keyword keyword, String[] patterns) {
+    protected void register(Class<?> klazz, Method method, Keyword keyword, String[] patterns) throws ParameterMappingException {
         for (String pattern : patterns) {
             register(klazz, method, keyword, pattern);
         }
     }
 
-    protected void register(Class<?> klazz, Method method, Keyword keyword, String pattern) {
+    protected void register(Class<?> klazz, Method method, Keyword keyword, String pattern) throws ParameterMappingException {
         ParametrizedString pString = new ParametrizedString(pattern, conf.variablePrefix());
 
         ParameterMappingsBuilder builder = new ParameterMappingsBuilder(method, pString);

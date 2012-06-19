@@ -44,7 +44,7 @@ public class ParameterMapping {
         return converterClass != null;
     }
 
-    public Object extractValue(ConverterRegistry converterRegistry, InvocationContext context, Map<String, String> variableValues) {
+    public Object extractValue(ConverterRegistry converterRegistry, InvocationContext context, Map<String, String> variableValues) throws ConverterException {
         if(parameterType.equals(InvocationContext.class)) {
             return context;
         }
@@ -53,7 +53,7 @@ public class ParameterMapping {
         return converter.fromString(variableValue);
     }
 
-    private Converter getConverter(ConverterRegistry converterRegistry) {
+    private Converter getConverter(ConverterRegistry converterRegistry) throws ConverterException {
         if (hasConverterClass()) {
             return converterRegistry.getConverter(getConverterClass());
         } else {

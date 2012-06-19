@@ -141,6 +141,6 @@ public abstract class ExecutablePart extends Element implements FragmentHolder {
     @Override
     public void fragmentEnds() {
         if(!(currentExecutablePart.pop() instanceof Fragment))
-            throw new IllegalStateException("Current ExecutablePart was not a Fragment!");
+            throw new InvalidCallException("Current ExecutablePart was not a Fragment!");
     }
 }

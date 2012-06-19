@@ -29,12 +29,12 @@ public class ParameterMappingsBuilder {
         this.pattern = pattern;
     }
 
-    public ParameterMapping[] getParameterMappings() {
+    public ParameterMapping[] getParameterMappings() throws ParameterMappingException {
         generateParameterMappings();
         return parameterMappings;
     }
 
-    private void generateParameterMappings() {
+    private void generateParameterMappings() throws ParameterMappingException {
         Class<?>[] parameterTypes = method.getParameterTypes();
 
         final int nbParameters = parameterTypes.length;
@@ -43,15 +43,14 @@ public class ParameterMappingsBuilder {
         // if one parameterType is an instance of InvocationContext then it won't
         // be matched to any variable
         int nbVariablesRequired = countNonSpecialParameters(parameterTypes);
-
         if (nbVariables != nbVariablesRequired) {
-            throw new IllegalArgumentException("Incompatible number of variables and method parameters on " + method);
+            throw new ParameterMappingException("Incompatible number of variables and method parameters on " + method);
         }
 
         List<String> variableNames = pattern.getParameters();
         Set<String> uniqueVariableNames = New.hashSet(variableNames);
         if (uniqueVariableNames.size() != variableNames.size()) {
-            throw new IllegalArgumentException("Duplicate variable name (" + variableNames + ") in pattern on " + method);
+            throw new ParameterMappingException("Duplicate variable name (" + variableNames + ") in pattern on " + method);
         }
 
         parameterMappings = new ParameterMapping[nbParameters];
@@ -60,28 +59,40 @@ public class ParameterMappingsBuilder {
                 generateVariableNameToParameterIndex(method.getParameterAnnotations());
 
         if (!variableNameToParamIndex.isEmpty()) {
-            if (variableNameToParamIndex.size() != nbVariablesRequired)
-                throw new IllegalArgumentException("All parameters or none must define @" + Variable.class.getName() + " on " + method);
-            for (String variableName : variableNameToParamIndex.keySet()) {
-                int parameterIndex = variableNameToParamIndex.get(variableName);
-                if (!uniqueVariableNames.contains(variableName)) {
-                    throw new IllegalArgumentException("Variable name mismatch between @" + Variable.class.getName() + " (" + variableNameToParamIndex.keySet() + ") and step pattern (" + uniqueVariableNames + ")");
-                }
-                defineParameterMapping(parameterIndex, variableName);
-            }
-            // complete with specials
-            for (int parameterIndex = 0; parameterIndex < nbParameters; parameterIndex++) {
-                if (isSpecialArgument(parameterTypes[parameterIndex]))
-                    defineSpecialParameterMapping(parameterIndex);
-            }
+            createMappingsUsingVariableNames(uniqueVariableNames, variableNameToParamIndex);
         } else {
-            int nonSpecialIndex = 0;
-            for (int parameterIndex = 0; parameterIndex < nbParameters; parameterIndex++) {
-                if (isSpecialArgument(parameterTypes[parameterIndex]))
-                    defineSpecialParameterMapping(parameterIndex);
-                else
-                    defineParameterMapping(parameterIndex, variableNames.get(nonSpecialIndex++));
+            createMappingsUsingParameterOrders(variableNames);
+        }
+    }
+
+    private void createMappingsUsingParameterOrders(List<String> variableNames) {
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        int nbParameters = parameterTypes.length;
+        int nonSpecialIndex = 0;
+        for (int parameterIndex = 0; parameterIndex < nbParameters; parameterIndex++) {
+            if (isSpecialArgument(parameterTypes[parameterIndex]))
+                defineSpecialParameterMapping(parameterIndex);
+            else
+                defineParameterMapping(parameterIndex, variableNames.get(nonSpecialIndex++));
+        }
+    }
+
+    private void createMappingsUsingVariableNames(Set<String> uniqueVariableNames, Map<String, Integer> variableNameToParamIndex) throws ParameterMappingException {
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        if (variableNameToParamIndex.size() != uniqueVariableNames.size())
+            throw new ParameterMappingException("All parameters or none must define @" + Variable.class.getName() + " on " + method);
+        for (String variableName : variableNameToParamIndex.keySet()) {
+            int parameterIndex = variableNameToParamIndex.get(variableName);
+            if (!uniqueVariableNames.contains(variableName)) {
+                throw new ParameterMappingException("Variable name mismatch between @" + Variable.class.getName() + " (" + variableNameToParamIndex.keySet() + ") and step pattern (" + uniqueVariableNames + ")");
             }
+            defineParameterMapping(parameterIndex, variableName);
+        }
+        int nbParameters = parameterTypes.length;
+        // complete with specials
+        for (int parameterIndex = 0; parameterIndex < nbParameters; parameterIndex++) {
+            if (isSpecialArgument(parameterTypes[parameterIndex]))
+                defineSpecialParameterMapping(parameterIndex);
         }
     }
 
@@ -119,7 +130,7 @@ public class ParameterMappingsBuilder {
         return InvocationContext.class.isAssignableFrom(parameterType);
     }
 
-    private Map<String, Integer> generateVariableNameToParameterIndex(Annotation[][] parameterAnnotations) {
+    private Map<String, Integer> generateVariableNameToParameterIndex(Annotation[][] parameterAnnotations) throws ParameterMappingException {
         Map<String, Integer> variableNameToParamIndex = New.hashMap();
         for (int index = 0; index < parameterAnnotations.length; index++) {
             // index as parameterIndex
@@ -127,7 +138,7 @@ public class ParameterMappingsBuilder {
             if (variable != null) {
                 Integer prevIndex = variableNameToParamIndex.put(variable.value(), index);
                 if (prevIndex != null) {
-                    throw new IllegalArgumentException("Duplicate variable name (" + variable.value() + ") on " + method);
+                    throw new ParameterMappingException("Duplicate variable name (" + variable.value() + ") on " + method);
                 }
             }
         }

@@ -93,7 +93,7 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
     }
 
     public void interpretStory(Story story) {
-        InvocationContext invocationContext = newInvocationContext();
+        InvocationContext invocationContext = newInvocationContext(null, story);
         new StoryInterpreter(this).interpretStory(story, interpreterListener(
                 invocationContext,
                 getCandidateStepRegistry(),
@@ -107,13 +107,13 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
         return builder.getStory();
     }
 
-    protected InvocationContext newInvocationContext() {
-        return new InvocationContext();
+    protected InvocationContext newInvocationContext(InvocationContext parent, Story currentStory) {
+        return new InvocationContext(parent, currentStory);
     }
 
     protected Invoker newInvoker() {
-        StepInstanceProvider stepInstanceProvider = new StepInstanceProviderBasic();
-        return new Invoker(getConverterRegistry(), stepInstanceProvider);
+        InstanceProvider instanceProvider = new InstanceProviderBasic();
+        return new Invoker(getConverterRegistry(), instanceProvider);
     }
 
     public LifecycleRegistry getLifecycleRegistry() {
@@ -137,7 +137,7 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
         registry.registerConverter(int.class, new IntegerConverter());
     }
 
-    public void scanAnnotations(Class<?> stepOrLifecycleDefinitions) {
+    public void scanAnnotations(Class<?> stepOrLifecycleDefinitions) throws ParameterMappingException {
         getCandidateStepRegistry().scan(stepOrLifecycleDefinitions);
         getLifecycleRegistry().scan(stepOrLifecycleDefinitions);
     }

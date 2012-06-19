@@ -33,22 +33,30 @@ public class LifecycleRegistry {
 
     private void scanMethods(Class<?> klazz) {
         for (Method method : klazz.getMethods()) {
-            for (Annotation annotation : method.getAnnotations()) {
-                Class<?> annotationType = annotation.annotationType();
-                if (annotationType.equals(BeforeScenario.class)) {
-                    BeforeScenario beforeScenario = (BeforeScenario) annotation;
-                    register(new Lifecycle(klazz, method, beforeScenario));
-                } else if (annotationType.equals(AfterScenario.class)) {
-                    AfterScenario afterScenario = (AfterScenario) annotation;
-                    register(new Lifecycle(klazz, method, afterScenario));
-                } else if (annotationType.equals(BeforeStory.class)) {
-                    BeforeStory beforeStory = (BeforeStory) annotation;
-                    register(new Lifecycle(klazz, method, beforeStory));
-                } else if (annotationType.equals(AfterStory.class)) {
-                    AfterStory afterStory = (AfterStory) annotation;
-                    register(new Lifecycle(klazz, method, afterStory));
-                }
-            }
+            scanMethod(klazz, method);
+        }
+    }
+
+    private void scanMethod(Class<?> klazz, Method method) {
+        for (Annotation annotation : method.getAnnotations()) {
+            scanAnnotation(klazz, method, annotation);
+        }
+    }
+
+    private void scanAnnotation(Class<?> klazz, Method method, Annotation annotation) {
+        Class<?> annotationType = annotation.annotationType();
+        if (annotationType.equals(BeforeScenario.class)) {
+            BeforeScenario beforeScenario = (BeforeScenario) annotation;
+            register(new Lifecycle(klazz, method, beforeScenario));
+        } else if (annotationType.equals(AfterScenario.class)) {
+            AfterScenario afterScenario = (AfterScenario) annotation;
+            register(new Lifecycle(klazz, method, afterScenario));
+        } else if (annotationType.equals(BeforeStory.class)) {
+            BeforeStory beforeStory = (BeforeStory) annotation;
+            register(new Lifecycle(klazz, method, beforeStory));
+        } else if (annotationType.equals(AfterStory.class)) {
+            AfterStory afterStory = (AfterStory) annotation;
+            register(new Lifecycle(klazz, method, afterStory));
         }
     }
 

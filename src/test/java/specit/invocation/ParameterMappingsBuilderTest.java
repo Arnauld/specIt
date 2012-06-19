@@ -19,19 +19,19 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class ParameterMappingsBuilderTest {
 
     @Test
-    public void mappings_noParameter_noVariable() {
+    public void mappings_noParameter_noVariable() throws ParameterMappingException {
         ParameterMapping[] parameterMappings = mappings("noParameter", "content without variable");
         assertThat(parameterMappings, notNullValue());
         assertThat(parameterMappings.length, equalTo(0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void mappings_oneParameter_noVariable_noVariableAnnotations() {
+    @Test(expected = ParameterMappingException.class)
+    public void mappings_oneParameter_noVariable_noVariableAnnotations() throws ParameterMappingException {
         mappings("oneParameterNoVariableAnnotations", "content without variable");
     }
 
     @Test
-    public void mappings_oneParameter_oneVariable_noVariableAnnotations() {
+    public void mappings_oneParameter_oneVariable_noVariableAnnotations() throws ParameterMappingException {
         ParameterMapping[] parameterMappings = mappings("oneParameterNoVariableAnnotations", "content with $variable");
         assertThat(parameterMappings, notNullValue());
         assertThat(parameterMappings.length, equalTo(1));
@@ -40,28 +40,28 @@ public class ParameterMappingsBuilderTest {
         assertThat(parameterMappings[0].getVariableName(), equalTo("variable"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void mappings_oneParameter_twoVariables_noVariableAnnotations() {
+    @Test(expected = ParameterMappingException.class)
+    public void mappings_oneParameter_twoVariables_noVariableAnnotations() throws ParameterMappingException {
         mappings("oneParameterNoVariableAnnotations", "content with $variable1 and $variable2");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void mappings_twoParameters_oneVariable_noVariableAnnotations() {
+    @Test(expected = ParameterMappingException.class)
+    public void mappings_twoParameters_oneVariable_noVariableAnnotations() throws ParameterMappingException {
         mappings("twoParametersNoVariableAnnotations", "content with one $variable");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void mappings_twoParameters_twoVariables_oneVariableAnnotations() {
+    @Test(expected = ParameterMappingException.class)
+    public void mappings_twoParameters_twoVariables_oneVariableAnnotations() throws ParameterMappingException {
         mappings("notEnoughVariableAnnotation", "content with $variable1 and $variable2");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void mappings_twoParameters_twoVariables_duplicateVariableAnnotation() {
+    @Test(expected = ParameterMappingException.class)
+    public void mappings_twoParameters_twoVariables_duplicateVariableAnnotation() throws ParameterMappingException {
         mappings("duplicateNameVariableAnnotations", "content with $variable1 and $variable2");
     }
 
     @Test
-    public void mappings_twoParameters_twoVariables_noVariableAnnotations() {
+    public void mappings_twoParameters_twoVariables_noVariableAnnotations() throws ParameterMappingException {
         ParameterMapping[] parameterMappings = mappings(
                 "twoParametersNoVariableAnnotations", "content with $variable1 and $variable2");
         assertThat(parameterMappings, notNullValue());
@@ -75,14 +75,14 @@ public class ParameterMappingsBuilderTest {
         assertThat(parameterMappings[1].getVariableName(), equalTo("variable2"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void mappings_twoParameters_twoVariables_withVariableAnnotations_variableNamesMismatched() {
+    @Test(expected = ParameterMappingException.class)
+    public void mappings_twoParameters_twoVariables_withVariableAnnotations_variableNamesMismatched() throws ParameterMappingException {
         mappings(
                 "twoParametersWithVariableAnnotations", "content with $quantity and $firstname");
     }
 
     @Test
-    public void mappings_twoParameters_twoVariables_withVariableAnnotations_inOrder() {
+    public void mappings_twoParameters_twoVariables_withVariableAnnotations_inOrder() throws ParameterMappingException {
         ParameterMapping[] parameterMappings = mappings(
                 "twoParametersWithVariableAnnotations", "content with $amount and $name");
         assertThat(parameterMappings, notNullValue());
@@ -97,7 +97,7 @@ public class ParameterMappingsBuilderTest {
     }
 
     @Test
-    public void mappings_twoParameters_twoVariables_withVariableAnnotations_reversedOrder() {
+    public void mappings_twoParameters_twoVariables_withVariableAnnotations_reversedOrder() throws ParameterMappingException {
         ParameterMapping[] parameterMappings = mappings(
                 "twoParametersWithVariableAnnotations", "content with $name and $amount");
         assertThat(parameterMappings, notNullValue());
@@ -112,7 +112,7 @@ public class ParameterMappingsBuilderTest {
     }
 
     @Test
-    public void mappings_twoParameters_oneVariable_oneSpecial_noVariableAnnotations() {
+    public void mappings_twoParameters_oneVariable_oneSpecial_noVariableAnnotations() throws ParameterMappingException {
         ParameterMapping[] parameterMappings = mappings(
                 "twoParametersNoVariableAnnotationsWithSpecial", "content with one $variable");
         assertThat(parameterMappings, notNullValue());
@@ -127,7 +127,7 @@ public class ParameterMappingsBuilderTest {
     }
 
     @Test
-    public void mappings_threeParameters_twoVariables_oneSpecial_noVariableAnnotations() {
+    public void mappings_threeParameters_twoVariables_oneSpecial_noVariableAnnotations() throws ParameterMappingException {
         ParameterMapping[] parameterMappings = mappings(
                 "threeParametersNoVariableAnnotationsWithSpecial", "content with $name and $amount");
         assertThat(parameterMappings, notNullValue());
@@ -146,7 +146,7 @@ public class ParameterMappingsBuilderTest {
     }
 
     @Test
-    public void mappings_threeParameters_twoVariables_oneSpecial_withVariableAnnotations() {
+    public void mappings_threeParameters_twoVariables_oneSpecial_withVariableAnnotations() throws ParameterMappingException {
         ParameterMapping[] parameterMappings = mappings(
                 "threeParametersWithVariableAnnotationsWithSpecial", "content with $name and $amount");
         assertThat(parameterMappings, notNullValue());
@@ -168,7 +168,7 @@ public class ParameterMappingsBuilderTest {
 
     // ---
 
-    private static ParameterMapping[] mappings(String methodName, String pStringContent) {
+    private static ParameterMapping[] mappings(String methodName, String pStringContent) throws ParameterMappingException {
         return new ParameterMappingsBuilder(sampleMethodByName(methodName), pString(pStringContent)).getParameterMappings();
     }
 

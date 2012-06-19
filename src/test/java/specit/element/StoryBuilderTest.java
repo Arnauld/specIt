@@ -23,7 +23,7 @@ public class StoryBuilderTest {
         assertThat(story.getScenarioList().get(0), instanceOf(DefaultExecutablePart.class));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = InvalidElementDefinitionException.class)
     public void completeCase_backgroundIsNotAllowed_onceScenarioStarts() {
         new StoryBuilder()
                 .append(rawPart(Keyword.Narrative, "Narrative:\nAs a tester\nI want to test my builder\n\n"))
@@ -32,7 +32,7 @@ public class StoryBuilderTest {
         ;
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = InvalidElementDefinitionException.class)
     public void completeCase_backgroundIsNotAllowed_onceStepStarts() {
         new StoryBuilder()
                 .append(rawPart(Keyword.Narrative, "Narrative:\nAs a tester\nI want to test my builder\n\n"))

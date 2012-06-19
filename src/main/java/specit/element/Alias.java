@@ -10,10 +10,10 @@ public class Alias {
 
     public Alias(Keyword keyword, String keywordAlias) {
         if (keyword == null) {
-            throw new IllegalArgumentException("Keyword must be defined");
+            throw new InvalidElementDefinitionException("Keyword must be defined");
         }
         if (keywordAlias == null) {
-            throw new IllegalArgumentException("Keyword alias must be defined");
+            throw new InvalidElementDefinitionException("Keyword alias must be defined");
         }
         this.keyword = keyword;
         this.keywordAlias = keywordAlias;

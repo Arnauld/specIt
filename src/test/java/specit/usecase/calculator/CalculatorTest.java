@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import specit.SpecIt;
 import specit.element.Keyword;
+import specit.invocation.ParameterMappingException;
 
 /**
  *
@@ -28,7 +29,7 @@ public class CalculatorTest {
     }
 
     @Test
-    public void scenario1() {
+    public void scenario1() throws ParameterMappingException {
         specIt.scanAnnotations(CalculatorSteps.class);
         specIt.executeStory(SCENARIO_1);
     }

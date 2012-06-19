@@ -47,7 +47,7 @@ public class Story extends Element implements FragmentHolder {
      */
     public void addBackground(Background background) {
         if (!isBackgroundAccepted()) {
-            throw new IllegalStateException("Background cannot be declared once scenario started");
+            throw new InvalidElementDefinitionException("Background cannot be declared once scenario started");
         }
         backgroundList.add(background);
         background.setParent(this);
@@ -89,7 +89,7 @@ public class Story extends Element implements FragmentHolder {
      */
     public void setNarrative(Narrative narrative) {
         if (isNarrativeAccepted()) {
-            throw new IllegalStateException("Narrative should be declared first!!");
+            throw new InvalidElementDefinitionException("Narrative should be declared first!!");
         }
         this.narrative = narrative;
     }
