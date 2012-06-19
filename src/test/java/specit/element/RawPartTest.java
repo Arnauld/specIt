@@ -1,6 +1,7 @@
 package specit.element;
 
 import org.junit.Test;
+import specit.parser.RawPartDefault;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -10,12 +11,12 @@ public class RawPartTest {
 
     @Test
     public void integrity_step_mustContains_keywordAlias_ok() {
-        new RawPart(17, Keyword.Given, "  \t When a user clicks \n", "When");
+        new RawPartDefault(17, Keyword.Given, "  \t When a user clicks \n", "When");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void integrity_step_mustContains_keywordAlias_ko() {
-        new RawPart(17, Keyword.Given, "  \t When a user clicks \n", "Whoot");
+        new RawPartDefault(17, Keyword.Given, "  \t When a user clicks \n", "Whoot");
     }
 
     @Test
@@ -28,7 +29,7 @@ public class RawPartTest {
 
     private void assertExceptionIsThrownWithNullAlias(String message, Keyword kw) {
         try {
-            new RawPart(17, kw, "  \t When a user clicks \n", null);
+            new RawPartDefault(17, kw, "  \t When a user clicks \n", null);
             fail(message);
         } catch (IllegalArgumentException e) {
             // ok :)
@@ -37,18 +38,18 @@ public class RawPartTest {
 
     @Test
     public void integrity_noKeywordAlias_unknownKeyword_isOk() {
-        new RawPart(17, Keyword.Unknown, "  \t When a user clicks \n", null);
+        new RawPartDefault(17, Keyword.Unknown, "  \t When a user clicks \n", null);
     }
 
     @Test
     public void contentAfterAlias_() {
-        RawPart rawPart = new RawPart(17, Keyword.Given, "When a user clicks \n", "When");
+        RawPart rawPart = new RawPartDefault(17, Keyword.Given, "When a user clicks \n", "When");
         assertThat(rawPart.contentAfterAlias(), equalTo(" a user clicks \n"));
     }
 
     @Test
     public void contentAfterAlias_withTrailingCharacters() {
-        RawPart rawPart = new RawPart(17, Keyword.Given, "  \t When a user clicks \n", "When");
+        RawPart rawPart = new RawPartDefault(17, Keyword.Given, "  \t When a user clicks \n", "When");
         assertThat(rawPart.contentAfterAlias(), equalTo(" a user clicks \n"));
     }
 }

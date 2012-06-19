@@ -5,6 +5,7 @@ import org.junit.Test;
 import specit.SpecIt;
 import specit.element.Keyword;
 import specit.element.RawPart;
+import specit.parser.RawPartDefault;
 import specit.parser.ListenerCollector;
 import specit.parser.Parser;
 
@@ -47,10 +48,14 @@ public class ContextSpecificationTest {
 
         List<RawPart> steps = listener.getSteps();
         assertThat(steps, hasSize(5));
-        assertThat(steps.get(0), equalTo(new RawPart(0, Keyword.When, "When a product is added that is not already in the cart\n", "When")));
-        assertThat(steps.get(1), equalTo(new RawPart(56, Keyword.Then, " - The cart item factory should be used to create a cart item for the product being added.\n", "-")));
-        assertThat(steps.get(2), equalTo(new RawPart(147, Keyword.When, "When an item is added\n", "When")));
-        assertThat(steps.get(3), equalTo(new RawPart(169, Keyword.Then, " - The item count should be incremented\n", "-")));
-        assertThat(steps.get(4), equalTo(new RawPart(209, Keyword.Then, " - The item should be added to the underlying list", "-")));
+        assertThat(steps.get(0), equalTo(rawPart(0, Keyword.When, "When a product is added that is not already in the cart\n", "When")));
+        assertThat(steps.get(1), equalTo(rawPart(56, Keyword.Then, " - The cart item factory should be used to create a cart item for the product being added.\n", "-")));
+        assertThat(steps.get(2), equalTo(rawPart(147, Keyword.When, "When an item is added\n", "When")));
+        assertThat(steps.get(3), equalTo(rawPart(169, Keyword.Then, " - The item count should be incremented\n", "-")));
+        assertThat(steps.get(4), equalTo(rawPart(209, Keyword.Then, " - The item should be added to the underlying list", "-")));
+    }
+
+    private static RawPart rawPart(int offset, Keyword kw, String rawContent, String alias) {
+        return new RawPartDefault(offset, kw, rawContent, alias);
     }
 }

@@ -40,16 +40,10 @@ public class ParameterMappingsBuilder {
         final int nbParameters = parameterTypes.length;
         final int nbVariables = pattern.getParameterCount();
 
-        int nbVariablesRequired = nbParameters;
         // if one parameterType is an instance of InvocationContext then it won't
         // be matched to any variable
-        for (Class<?> parameterType : parameterTypes) {
-            if (isSpecialArgument(parameterType)) {
-                nbVariablesRequired--;
-            }
-        }
+        int nbVariablesRequired = countNonSpecialParameters(parameterTypes);
 
-        // TODO nbVariables can be >= nbParameters ?
         if (nbVariables != nbVariablesRequired) {
             throw new IllegalArgumentException("Incompatible number of variables and method parameters on " + method);
         }
@@ -63,7 +57,7 @@ public class ParameterMappingsBuilder {
         parameterMappings = new ParameterMapping[nbParameters];
 
         Map<String, Integer> variableNameToParamIndex =
-                generateVariableNameToParameterIndex(method.getParameterAnnotations(), nbParameters);
+                generateVariableNameToParameterIndex(method.getParameterAnnotations());
 
         if (!variableNameToParamIndex.isEmpty()) {
             if (variableNameToParamIndex.size() != nbVariablesRequired)
@@ -91,6 +85,16 @@ public class ParameterMappingsBuilder {
         }
     }
 
+    private int countNonSpecialParameters(Class<?>[] parameterTypes) {
+        int nonSpecials = 0;
+        for (Class<?> parameterType : parameterTypes) {
+            if (!isSpecialArgument(parameterType)) {
+                nonSpecials++;
+            }
+        }
+        return nonSpecials;
+    }
+
     private void defineSpecialParameterMapping(int parameterIndex) {
         Class<?>[] parameterTypes = method.getParameterTypes();
         parameterMappings[parameterIndex] =
@@ -115,9 +119,9 @@ public class ParameterMappingsBuilder {
         return InvocationContext.class.isAssignableFrom(parameterType);
     }
 
-    private Map<String, Integer> generateVariableNameToParameterIndex(Annotation[][] parameterAnnotations, int nbParameters) {
+    private Map<String, Integer> generateVariableNameToParameterIndex(Annotation[][] parameterAnnotations) {
         Map<String, Integer> variableNameToParamIndex = New.hashMap();
-        for (int index = 0; index < nbParameters; index++) {
+        for (int index = 0; index < parameterAnnotations.length; index++) {
             // index as parameterIndex
             Variable variable = lookupVariable(parameterAnnotations[index]);
             if (variable != null) {

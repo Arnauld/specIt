@@ -5,7 +5,7 @@ import specit.annotation.lifecycle.AfterStory;
 import specit.annotation.lifecycle.BeforeScenario;
 import specit.annotation.lifecycle.BeforeStory;
 import specit.element.*;
-import specit.interpreter.ExecutionContext;
+import specit.interpreter.InterpreterContext;
 import specit.interpreter.InterpreterConf;
 import specit.interpreter.InterpreterListener;
 import specit.interpreter.StoryInterpreter;
@@ -59,8 +59,8 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
     }
 
     @Override
-    public ExecutionContext createExecutionContext() {
-        return new ExecutionContext();
+    public InterpreterContext createInterpreterContext() {
+        return new InterpreterContext();
     }
 
     @Override
@@ -170,21 +170,21 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
             }
 
             @Override
-            public void beginScenario(ExecutablePart scenario, ExecutionContext context) {
+            public void beginScenario(ExecutablePart scenario, InterpreterContext context) {
                 for (Lifecycle lifecycle : lifecycleRegistry.getLifecycles(BeforeScenario.class)) {
                     invoker.invoke(invocationContext, lifecycle);
                 }
             }
 
             @Override
-            public void endScenario(ExecutablePart scenario, ExecutionContext context) {
+            public void endScenario(ExecutablePart scenario, InterpreterContext context) {
                 for (Lifecycle lifecycle : lifecycleRegistry.getLifecycles(AfterScenario.class)) {
                     invoker.invoke(invocationContext, lifecycle);
                 }
             }
 
             @Override
-            public void invokeStep(Keyword keyword, String resolved, ExecutionContext context) {
+            public void invokeStep(Keyword keyword, String resolved, InterpreterContext context) {
                 List<CandidateStep> candidateSteps = candidateStepRegistry.find(keyword, resolved);
                 if (candidateSteps.isEmpty())
                     throw new IllegalStateException("No step matching <" + resolved + "> with keyword <" + keyword + ">");
@@ -196,7 +196,7 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
             }
 
             @Override
-            public void invokeRequire(String resolved, ExecutionContext context) {
+            public void invokeRequire(String resolved, InterpreterContext context) {
                 throw new UnsupportedOperationException();
             }
         };

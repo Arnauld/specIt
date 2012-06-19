@@ -34,7 +34,7 @@ public class ParserTest {
 
         List<RawPart> steps = listener.getSteps();
         assertThat(steps, hasSize(1));
-        assertThat(steps.get(0), equalTo(new RawPart(0, Keyword.Given, "With a simple step", "With")));
+        assertThat(steps.get(0), equalTo(rawPart(0, Keyword.Given, "With a simple step", "With")));
     }
 
     @Test
@@ -44,8 +44,8 @@ public class ParserTest {
 
         List<RawPart> steps = listener.getSteps();
         assertThat(steps, hasSize(2));
-        assertThat(steps.get(0), equalTo(new RawPart(0, Keyword.Unknown, "\n\n", null)));
-        assertThat(steps.get(1), equalTo(new RawPart(2, Keyword.Given, "With a simple step", "With")));
+        assertThat(steps.get(0), equalTo(rawPart(0, Keyword.Unknown, "\n\n", null)));
+        assertThat(steps.get(1), equalTo(rawPart(2, Keyword.Given, "With a simple step", "With")));
     }
 
     @Test
@@ -55,8 +55,8 @@ public class ParserTest {
 
         List<RawPart> steps = listener.getSteps();
         assertThat(steps, hasSize(2));
-        assertThat(steps.get(0), equalTo(new RawPart(0, Keyword.Unknown, "\n\n", null)));
-        assertThat(steps.get(1), equalTo(new RawPart(2, Keyword.Given, "  With a simple step", "With")));
+        assertThat(steps.get(0), equalTo(rawPart(0, Keyword.Unknown, "\n\n", null)));
+        assertThat(steps.get(1), equalTo(rawPart(2, Keyword.Given, "  With a simple step", "With")));
     }
 
     @Test
@@ -71,8 +71,8 @@ public class ParserTest {
 
         List<RawPart> steps = listener.getSteps();
         assertThat(steps, hasSize(2));
-        assertThat(steps.get(0), equalTo(new RawPart(0, Keyword.Given, "Given a defined step\n", "Given")));
-        assertThat(steps.get(1), equalTo(new RawPart(21, Keyword.Given, "With an other simple step", "With")));
+        assertThat(steps.get(0), equalTo(rawPart(0, Keyword.Given, "Given a defined step\n", "Given")));
+        assertThat(steps.get(1), equalTo(rawPart(21, Keyword.Given, "With an other simple step", "With")));
     }
 
     @Test
@@ -89,9 +89,12 @@ public class ParserTest {
 
         List<RawPart> steps = listener.getSteps();
         assertThat(steps, hasSize(3));
-        assertThat(steps.get(0), equalTo(new RawPart(0, Keyword.Given, "Given a defined step\n", "Given")));
-        assertThat(steps.get(1), equalTo(new RawPart(21, Keyword.Given, "With an other step\n", "With")));
-        assertThat(steps.get(2), equalTo(new RawPart(40, Keyword.And, "And yet an other one", "And")));
+        assertThat(steps.get(0), equalTo(rawPart(0, Keyword.Given, "Given a defined step\n", "Given")));
+        assertThat(steps.get(1), equalTo(rawPart(21, Keyword.Given, "With an other step\n", "With")));
+        assertThat(steps.get(2), equalTo(rawPart(40, Keyword.And, "And yet an other one", "And")));
     }
 
+    private static RawPart rawPart(int offset, Keyword kw, String rawContent, String alias) {
+        return new RawPartDefault(offset, kw, rawContent, alias);
+    }
 }

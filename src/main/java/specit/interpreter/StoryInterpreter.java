@@ -33,12 +33,12 @@ public class StoryInterpreter {
                 Chain chain = new Chain(story, listener, chainedParts);
                 chain.invokeNextWithPreProcess(new PreProcess() {
                                                    @Override
-                                                   public void preExecute(ExecutionContext context) {
+                                                   public void preExecute(InterpreterContext context) {
                                                        listener.beginScenario(scenarioRef, context);
                                                    }
                                                }, new PostProcess() {
                                                    @Override
-                                                   public void postExecute(ExecutionContext context) {
+                                                   public void postExecute(InterpreterContext context) {
                                                        listener.endScenario(scenarioRef, context);
                                                    }
                                                }
@@ -92,7 +92,7 @@ public class StoryInterpreter {
                                                 Chain chain) {
         chain.invokeNextWithPreProcess(new PreProcess() {
             @Override
-            public void preExecute(ExecutionContext context) {
+            public void preExecute(InterpreterContext context) {
                 context.defineVariables(variables);
                 scenario.traverseExecutablePart(new ExecutionVisitor(context, listener));
             }
@@ -102,7 +102,7 @@ public class StoryInterpreter {
     /**
      * Resolves any variables and invoke the <code>Step</code> directive.
      */
-    private void invokeStep(ExecutionContext context, RawPart rawPart, InterpreterListener listener) {
+    private void invokeStep(InterpreterContext context, RawPart rawPart, InterpreterListener listener) {
         String rawContent = rawPart.contentAfterAlias().trim();
         Map<String, String> variables = context.getVariables();
         String resolved = conf.templateEngine().resolve(rawContent, variables).toString();
@@ -113,7 +113,7 @@ public class StoryInterpreter {
     /**
      * Resolves any variables and invoke the <code>Require</code> directive.
      */
-    private void invokeRequire(ExecutionContext context, RawPart rawPart, InterpreterListener listener) {
+    private void invokeRequire(InterpreterContext context, RawPart rawPart, InterpreterListener listener) {
         String rawContent = rawPart.contentAfterAlias().trim();
         Map<String, String> variables = context.getVariables();
         String resolved = conf.templateEngine().resolve(rawContent, variables).toString();
@@ -122,10 +122,10 @@ public class StoryInterpreter {
     }
 
     private class ExecutionVisitor extends ElementVisitor {
-        private final ExecutionContext context;
+        private final InterpreterContext context;
         private final InterpreterListener listener;
 
-        public ExecutionVisitor(ExecutionContext context, InterpreterListener listener) {
+        public ExecutionVisitor(InterpreterContext context, InterpreterListener listener) {
             this.context = context;
             this.listener = listener;
         }
@@ -153,7 +153,7 @@ public class StoryInterpreter {
             if(parameters.hasWithTable()) {
                 Table table = parameters.getWithTable();
                 for(Table.Row row : table) {
-                    ExecutionContext subContext = context.nestedContext(row.asMap());
+                    InterpreterContext subContext = context.nestedContext(row.asMap());
                     fragment.traverseExecutablePart(new ExecutionVisitor(subContext, listener));
                 }
             }
@@ -245,7 +245,7 @@ public class StoryInterpreter {
             this.postProcess = postProcess;
 
             if (chainedParts.size() == chainIndex) {
-                ExecutionContext context = conf.createExecutionContext();
+                InterpreterContext context = conf.createInterpreterContext();
                 execute(context);
             } else {
                 Chain next = new Chain(story, listener, chainedParts, chainIndex + 1, this);
@@ -254,7 +254,7 @@ public class StoryInterpreter {
         }
 
         @Override
-        public void preExecute(ExecutionContext context) {
+        public void preExecute(InterpreterContext context) {
             if (previous != null) {
                 previous.preExecute(context);
             }
@@ -264,13 +264,13 @@ public class StoryInterpreter {
             }
         }
 
-        public void execute(ExecutionContext context) {
+        public void execute(InterpreterContext context) {
             preExecute(context);
             postExecute(context);
         }
 
         @Override
-        public void postExecute(ExecutionContext context) {
+        public void postExecute(InterpreterContext context) {
             if (postProcess != null) {
                 postProcess.postExecute(context);
             }
@@ -282,10 +282,10 @@ public class StoryInterpreter {
     }
 
     public interface PreProcess {
-        void preExecute(ExecutionContext context);
+        void preExecute(InterpreterContext context);
     }
 
     public interface PostProcess {
-        void postExecute(ExecutionContext context);
+        void postExecute(InterpreterContext context);
     }
 }

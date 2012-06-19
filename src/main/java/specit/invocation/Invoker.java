@@ -25,7 +25,21 @@ public class Invoker {
         Object instance = stepInstanceProvider.getInstance(lifecycle.getOwningType());
         Method method = lifecycle.getMethod();
         try {
-            method.invoke(instance);
+            Class<?>[] parameterTypes = method.getParameterTypes();
+            if(parameterTypes.length==1) {
+                if(InvocationContext.class.isAssignableFrom(parameterTypes[0])) {
+                    method.invoke(instance, context);
+                }
+                else {
+                    throw new IllegalArgumentException("Invalid parameter type on lifecycle <" + method + ">");
+                }
+            }
+            else if(parameterTypes.length>1) {
+                throw new IllegalArgumentException("Invalid number of parameter on lifecycle <" + method + ">");
+            }
+            else {
+                method.invoke(instance);
+            }
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Failed to invoke lifecycle", e);
         } catch (InvocationTargetException e) {

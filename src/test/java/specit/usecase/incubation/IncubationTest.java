@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import specit.SpecIt;
 import specit.element.*;
-import specit.interpreter.ExecutionContext;
+import specit.interpreter.InterpreterContext;
 import specit.interpreter.InterpreterListener;
 import specit.interpreter.StoryInterpreter;
 
@@ -50,22 +50,22 @@ public class IncubationTest {
             }
 
             @Override
-            public void beginScenario(ExecutablePart scenario, ExecutionContext context) {
+            public void beginScenario(ExecutablePart scenario, InterpreterContext context) {
                 System.out.println("IncubationTest.beginScenario(" + scenario.getRawPart() +")");
             }
 
             @Override
-            public void endScenario(ExecutablePart scenario, ExecutionContext context) {
+            public void endScenario(ExecutablePart scenario, InterpreterContext context) {
                 System.out.println("IncubationTest.endScenario");
             }
 
             @Override
-            public void invokeStep(Keyword keyword, String resolved, ExecutionContext context) {
+            public void invokeStep(Keyword keyword, String resolved, InterpreterContext context) {
                 System.out.println("IncubationTest.invokeStep(" + keyword + ":" +resolved +")" );
             }
 
             @Override
-            public void invokeRequire(String resolved, ExecutionContext context) {
+            public void invokeRequire(String resolved, InterpreterContext context) {
                 System.out.println("IncubationTest.invokeRequire(" + resolved + ")");
             }
 

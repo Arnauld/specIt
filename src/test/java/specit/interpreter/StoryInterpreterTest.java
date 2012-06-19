@@ -3,11 +3,9 @@ package specit.interpreter;
 import org.junit.Before;
 import org.junit.Test;
 import specit.SpecIt;
-import specit.element.Keyword;
-import specit.element.RawPart;
-import specit.element.Story;
-import specit.element.StoryBuilder;
+import specit.element.*;
 import specit.interpreter.InterpreterListenerRecorder.*;
+import specit.parser.RawPartDefault;
 
 import java.util.Iterator;
 
@@ -235,7 +233,7 @@ public class StoryInterpreterTest {
 
     private RawPart rawPart(Keyword kw, String text, String keywordAlias) {
         try {
-            return new RawPart(
+            return new RawPartDefault(
                     offset,
                     kw,
                     text,

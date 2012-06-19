@@ -76,7 +76,7 @@ public class Parser {
     }
 
     private void emitPart(Listener listener, int offset, String keywordAlias, Keyword keyword, String content) {
-        RawPart rawPart = new RawPart(
+        RawPart rawPart = new RawPartDefault(
                 offset,
                 keyword,
                 content,

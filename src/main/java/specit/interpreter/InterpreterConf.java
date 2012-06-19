@@ -10,5 +10,5 @@ public interface InterpreterConf {
 
     TemplateEngine templateEngine();
 
-    ExecutionContext createExecutionContext();
+    InterpreterContext createInterpreterContext();
 }

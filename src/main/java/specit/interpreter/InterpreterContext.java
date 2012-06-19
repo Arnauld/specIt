@@ -8,14 +8,14 @@ import java.util.Map;
  *
  *
  */
-public class ExecutionContext {
+public class InterpreterContext {
 
     private final Map<String, String> variables = New.hashMap();
 
-    public ExecutionContext() {
+    public InterpreterContext() {
     }
 
-    public ExecutionContext defineVariables(Map<String, String> newVariableValues) {
+    public InterpreterContext defineVariables(Map<String, String> newVariableValues) {
         this.variables.putAll(newVariableValues);
         return this;
     }
@@ -24,7 +24,7 @@ public class ExecutionContext {
         return variables;
     }
 
-    public ExecutionContext nestedContext(Map<String, String> values) {
-        return new ExecutionContext().defineVariables(variables).defineVariables(values);
+    public InterpreterContext nestedContext(Map<String, String> values) {
+        return new InterpreterContext().defineVariables(variables).defineVariables(values);
     }
 }

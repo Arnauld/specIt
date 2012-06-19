@@ -26,22 +26,22 @@ public class InterpreterListenerRecorder extends InterpreterListener {
     }
 
     @Override
-    public void beginScenario(ExecutablePart scenario, ExecutionContext context) {
+    public void beginScenario(ExecutablePart scenario, InterpreterContext context) {
         events.add(new BeginScenario(scenario, context));
     }
 
     @Override
-    public void endScenario(ExecutablePart scenario, ExecutionContext context) {
+    public void endScenario(ExecutablePart scenario, InterpreterContext context) {
         events.add(new EndScenario(scenario, context));
     }
 
     @Override
-    public void invokeStep(Keyword keyword, String resolved, ExecutionContext context) {
+    public void invokeStep(Keyword keyword, String resolved, InterpreterContext context) {
         events.add(new InvokeStep(keyword, resolved, context));
     }
 
     @Override
-    public void invokeRequire(String resolved, ExecutionContext context) {
+    public void invokeRequire(String resolved, InterpreterContext context) {
         events.add(new InvokeRequire(resolved, context));
     }
 
@@ -77,9 +77,9 @@ public class InterpreterListenerRecorder extends InterpreterListener {
 
     public class BeginScenario implements InterpreterListenerRecorder.Event {
         private final ExecutablePart scenario;
-        private final ExecutionContext context;
+        private final InterpreterContext context;
 
-        public BeginScenario(ExecutablePart scenario, ExecutionContext context) {
+        public BeginScenario(ExecutablePart scenario, InterpreterContext context) {
             this.scenario = scenario;
             this.context = context;
         }
@@ -88,15 +88,15 @@ public class InterpreterListenerRecorder extends InterpreterListener {
             return scenario;
         }
 
-        public ExecutionContext getContext() {
+        public InterpreterContext getContext() {
             return context;
         }
     }
     public class EndScenario implements InterpreterListenerRecorder.Event {
         private final ExecutablePart scenario;
-        private final ExecutionContext context;
+        private final InterpreterContext context;
 
-        public EndScenario(ExecutablePart scenario, ExecutionContext context) {
+        public EndScenario(ExecutablePart scenario, InterpreterContext context) {
             this.scenario = scenario;
             this.context = context;
         }
@@ -105,7 +105,7 @@ public class InterpreterListenerRecorder extends InterpreterListener {
             return scenario;
         }
 
-        public ExecutionContext getContext() {
+        public InterpreterContext getContext() {
             return context;
         }
     }
@@ -114,9 +114,9 @@ public class InterpreterListenerRecorder extends InterpreterListener {
 
         private final Keyword keyword;
         private final String resolved;
-        private final ExecutionContext context;
+        private final InterpreterContext context;
 
-        public InvokeStep(Keyword keyword, String resolved, ExecutionContext context) {
+        public InvokeStep(Keyword keyword, String resolved, InterpreterContext context) {
             this.keyword = keyword;
             this.resolved = resolved;
             this.context = context;
@@ -130,7 +130,7 @@ public class InterpreterListenerRecorder extends InterpreterListener {
             return resolved;
         }
 
-        public ExecutionContext getContext() {
+        public InterpreterContext getContext() {
             return context;
         }
     }
@@ -138,9 +138,9 @@ public class InterpreterListenerRecorder extends InterpreterListener {
     public class InvokeRequire implements InterpreterListenerRecorder.Event {
 
         private final String resolved;
-        private final ExecutionContext context;
+        private final InterpreterContext context;
 
-        public InvokeRequire(String resolved, ExecutionContext context) {
+        public InvokeRequire(String resolved, InterpreterContext context) {
             this.resolved = resolved;
             this.context = context;
         }
@@ -149,7 +149,7 @@ public class InterpreterListenerRecorder extends InterpreterListener {
             return resolved;
         }
 
-        public ExecutionContext getContext() {
+        public InterpreterContext getContext() {
             return context;
         }
     }
