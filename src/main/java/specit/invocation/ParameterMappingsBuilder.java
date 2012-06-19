@@ -81,8 +81,9 @@ public class ParameterMappingsBuilder {
         Class<?>[] parameterTypes = method.getParameterTypes();
         if (variableNameToParamIndex.size() != uniqueVariableNames.size())
             throw new ParameterMappingException("All parameters or none must define @" + Variable.class.getName() + " on " + method);
-        for (String variableName : variableNameToParamIndex.keySet()) {
-            int parameterIndex = variableNameToParamIndex.get(variableName);
+        for (Map.Entry<String,Integer> entry : variableNameToParamIndex.entrySet()) {
+            String variableName= entry.getKey();
+            int parameterIndex = entry.getValue();
             if (!uniqueVariableNames.contains(variableName)) {
                 throw new ParameterMappingException("Variable name mismatch between @" + Variable.class.getName() + " (" + variableNameToParamIndex.keySet() + ") and step pattern (" + uniqueVariableNames + ")");
             }

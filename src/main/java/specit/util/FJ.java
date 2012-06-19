@@ -6,6 +6,9 @@ package specit.util;
  */
 public class FJ {
 
+    private FJ() {
+    }
+
     public interface F<P, R> {
         R f(P param);
     }

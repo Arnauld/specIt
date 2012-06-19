@@ -25,14 +25,9 @@ public class Fragment extends ExecutablePart {
     private void checkForFragmentTermination(Step step) {
         if(step.endsWithBlankLine()) {
             Element parent = getParent();
-            if(parent!=null && parent instanceof FragmentHolder)
+            if(parent instanceof FragmentHolder)
                 ((FragmentHolder)parent).fragmentEnds();
         }
-    }
-
-    @Override
-    public void addRequire(Require require) {
-        super.addRequire(require);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
     @Override

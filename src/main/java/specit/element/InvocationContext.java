@@ -5,6 +5,7 @@ import specit.invocation.InvocationException;
 import specit.invocation.Lifecycle;
 import specit.util.New;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -67,6 +68,10 @@ public class InvocationContext {
     }
 
     public void stepInvocationFailed(String input, CandidateStep candidateStep, String message, Exception cause) {
+        stepInError = true;
+    }
+
+    public void stepInvocationFailed(String resolved, List<CandidateStep> candidateSteps, String message) {
         stepInError = true;
     }
 

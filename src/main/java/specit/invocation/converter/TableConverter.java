@@ -17,7 +17,7 @@ public class TableConverter implements Converter {
 
     @Override
     public Object fromString(String value) {
-        return null;
+        return tableParser.parse(value);
     }
 
     @Override

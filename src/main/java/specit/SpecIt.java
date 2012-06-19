@@ -15,6 +15,7 @@ import specit.invocation.converter.StringConverter;
 import specit.parser.*;
 import specit.util.TemplateEngine;
 
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -157,42 +158,33 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
 
             @Override
             public void beginStory(Story story) {
-                for (Lifecycle lifecycle : lifecycleRegistry.getLifecycles(BeforeStory.class)) {
+                invokeLifecycle(BeforeStory.class);
+            }
+
+            private void invokeLifecycle(Class<? extends Annotation> annotationType) {
+                for (Lifecycle lifecycle : lifecycleRegistry.getLifecycles(annotationType)) {
                     invoker.invoke(invocationContext, lifecycle);
                 }
             }
 
             @Override
             public void endStory(Story story) {
-                for (Lifecycle lifecycle : lifecycleRegistry.getLifecycles(AfterStory.class)) {
-                    invoker.invoke(invocationContext, lifecycle);
-                }
+                invokeLifecycle(AfterStory.class);
             }
 
             @Override
             public void beginScenario(ExecutablePart scenario, InterpreterContext context) {
-                for (Lifecycle lifecycle : lifecycleRegistry.getLifecycles(BeforeScenario.class)) {
-                    invoker.invoke(invocationContext, lifecycle);
-                }
+                invokeLifecycle(BeforeScenario.class);
             }
 
             @Override
             public void endScenario(ExecutablePart scenario, InterpreterContext context) {
-                for (Lifecycle lifecycle : lifecycleRegistry.getLifecycles(AfterScenario.class)) {
-                    invoker.invoke(invocationContext, lifecycle);
-                }
+                invokeLifecycle(AfterScenario.class);
             }
 
             @Override
             public void invokeStep(Keyword keyword, String resolved, InterpreterContext context) {
-                List<CandidateStep> candidateSteps = candidateStepRegistry.find(keyword, resolved);
-                if (candidateSteps.isEmpty())
-                    throw new IllegalStateException("No step matching <" + resolved + "> with keyword <" + keyword + ">");
-                else if (candidateSteps.size() > 1)
-                    throw new IllegalStateException("More than one step matching <" + resolved + "> with keyword <" + keyword + "> got: " + candidateSteps);
-
-                CandidateStep candidateStep = candidateSteps.get(0);
-                invoker.invoke(invocationContext, resolved, candidateStep);
+                invoke(keyword, resolved, candidateStepRegistry, invoker, invocationContext);
             }
 
             @Override
@@ -200,6 +192,21 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
                 throw new UnsupportedOperationException();
             }
         };
+    }
+
+    private void invoke(Keyword keyword, String resolved, CandidateStepRegistry candidateStepRegistry, Invoker invoker, InvocationContext invocationContext) {
+        List<CandidateStep> candidateSteps = candidateStepRegistry.find(keyword, resolved);
+        if (candidateSteps.isEmpty()) {
+            invocationContext.stepInvocationFailed(resolved, candidateSteps, "No step matching <" + resolved + "> with keyword <" + keyword + ">");
+            return;
+        }
+        else if (candidateSteps.size() > 1) {
+            invocationContext.stepInvocationFailed(resolved, candidateSteps, "More than one step matching <" + resolved + "> with keyword <" + keyword + "> got: " + candidateSteps);
+            return;
+        }
+
+        CandidateStep candidateStep = candidateSteps.get(0);
+        invoker.invoke(invocationContext, resolved, candidateStep);
     }
 
     private Listener toParserListener(final StoryBuilder builder) {
