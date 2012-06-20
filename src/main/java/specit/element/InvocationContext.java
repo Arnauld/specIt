@@ -1,8 +1,9 @@
 package specit.element;
 
 import specit.invocation.CandidateStep;
-import specit.invocation.InvocationException;
 import specit.invocation.Lifecycle;
+import specit.report.Reporter;
+import specit.report.ReporterNull;
 import specit.util.New;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.Map;
 public class InvocationContext {
     private final Map<Object,Object> values = New.hashMap();
     private final InvocationContext parent;
+    private final InvocationContextListener listener;
     private final Story currentStory;
     private boolean lifecycleInError;
     private boolean stepInError;
@@ -24,8 +26,13 @@ public class InvocationContext {
     }
 
     public InvocationContext(InvocationContext parent, Story currentStory) {
+        this(parent, currentStory, new InvocationContextListenerNull());
+    }
+
+    public InvocationContext(InvocationContext parent, Story currentStory, InvocationContextListener listener) {
         this.parent = parent;
         this.currentStory = currentStory;
+        this.listener = listener;
     }
 
     public boolean isNestedContext() {
@@ -55,28 +62,49 @@ public class InvocationContext {
 
     public void lifecycleInvocationFailed(Lifecycle lifecycle, String message) {
         lifecycleInError = true;
-        throw new InvocationException(message);
+        listener.lifecycleInvocationFailed(lifecycle, message);
     }
 
     public void lifecycleInvocationFailed(Lifecycle lifecycle, String message, Exception cause) {
         lifecycleInError = true;
-        throw new InvocationException(message, cause);
+        listener.lifecycleInvocationFailed(lifecycle, message, cause);
     }
 
     public boolean canInvokeLifecycle(Lifecycle lifecycle) {
+        return !isLifecycleInError() && !isStepInError();
+    }
+
+    public void lifecycleSkipped(Lifecycle lifecycle) {
+        listener.lifecycleSkipped(lifecycle);
+    }
+
+    public boolean isStepInError() {
+        return stepInError;
+    }
+
+    public void stepInvocationFailed(String keywordAlias, String input, CandidateStep candidateStep, String message, Exception cause) {
+        stepInError = true;
+        listener.stepInvocationFailed(keywordAlias, input, candidateStep, message, cause);
+    }
+
+    public void stepInvocationFailed(String keywordAlias, String resolved, List<CandidateStep> candidateSteps, String message) {
+        stepInError = true;
+        listener.stepInvocationFailed(keywordAlias, resolved, candidateSteps, message);
+    }
+
+    public boolean canInvokeStep(String keywordAlias, String input, CandidateStep candidateStep) {
         return !lifecycleInError && !stepInError;
     }
 
-    public void stepInvocationFailed(String input, CandidateStep candidateStep, String message, Exception cause) {
-        stepInError = true;
+    public void stepSkipped(String keywordAlias, String input, CandidateStep candidateStep) {
+        listener.stepSkipped(keywordAlias, input, candidateStep);
     }
 
-    public void stepInvocationFailed(String resolved, List<CandidateStep> candidateSteps, String message) {
-        stepInError = true;
+    public void lifecycleInvoked(Lifecycle lifecycle) {
+        listener.lifecycleInvoked(lifecycle);
     }
 
-    public boolean canInvokeStep(String input, CandidateStep candidateStep) {
-        return !lifecycleInError && !stepInError;
+    public void stepInvoked(String keywordAlias, String input, CandidateStep candidateStep) {
+        listener.stepInvoked(keywordAlias, input, candidateStep);
     }
-
 }

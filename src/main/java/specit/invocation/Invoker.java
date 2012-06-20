@@ -22,8 +22,10 @@ public class Invoker {
     }
 
     public void invoke(InvocationContext context, Lifecycle lifecycle) {
-        if(!context.canInvokeLifecycle(lifecycle))
+        if(!context.canInvokeLifecycle(lifecycle)) {
+            context.lifecycleSkipped(lifecycle);
             return;
+        }
 
         try {
             Object instance = instanceProvider.getInstance(lifecycle.getOwningType());
@@ -32,6 +34,7 @@ public class Invoker {
             if(parameterTypes.length==1) {
                 if(InvocationContext.class.isAssignableFrom(parameterTypes[0])) {
                     method.invoke(instance, context);
+                    context.lifecycleInvoked(lifecycle);
                 }
                 else {
                     context.lifecycleInvocationFailed(lifecycle, "Invalid parameter type on lifecycle <" + method + ">");
@@ -42,6 +45,7 @@ public class Invoker {
             }
             else {
                 method.invoke(instance);
+                context.lifecycleInvoked(lifecycle);
             }
         } catch (IllegalAccessException e) {
             context.lifecycleInvocationFailed(lifecycle, "Failed to invoke lifecycle", e);
@@ -52,23 +56,26 @@ public class Invoker {
         }
     }
 
-    public void invoke(InvocationContext context, String input, CandidateStep candidateStep) {
-        if(!context.canInvokeStep(input, candidateStep))
+    public void invoke(InvocationContext context, String keywordAlias, String input, CandidateStep candidateStep) {
+        if(!context.canInvokeStep(keywordAlias, input, candidateStep)) {
+            context.stepSkipped(keywordAlias, input, candidateStep);
             return;
+        }
 
         try {
             Object[] arguments = prepareMethodArguments(context, input, candidateStep);
             Object instance = instanceProvider.getInstance(candidateStep.getOwningType());
             Method method = candidateStep.getMethod();
             method.invoke(instance, arguments);
+            context.stepInvoked(keywordAlias, input, candidateStep);
         } catch (IllegalAccessException e) {
-            context.stepInvocationFailed(input, candidateStep, "Failed to invoke step on input [" + input + "]", e);
+            context.stepInvocationFailed(keywordAlias, input, candidateStep, "Failed to invoke step on input [" + input + "]", e);
         } catch (InvocationTargetException e) {
-            context.stepInvocationFailed(input, candidateStep, "Failed to invoke step on input [" + input + "]", e);
+            context.stepInvocationFailed(keywordAlias, input, candidateStep, "Failed to invoke step on input [" + input + "]", e);
         } catch (ConverterException e) {
-            context.stepInvocationFailed(input, candidateStep, "Failed to invoke step on input [" + input + "]", e);
+            context.stepInvocationFailed(keywordAlias, input, candidateStep, "Failed to invoke step on input [" + input + "]", e);
         } catch (InstanceProviderException e) {
-            context.stepInvocationFailed(input, candidateStep, "Failed to invoke step on input [" + input + "]", e);
+            context.stepInvocationFailed(keywordAlias, input, candidateStep, "Failed to invoke step on input [" + input + "]", e);
         }
     }
 

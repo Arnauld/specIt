@@ -32,17 +32,17 @@ public class Fragment extends ExecutablePart {
 
     @Override
     public void addExemple(Example example) {
-        throw new IllegalArgumentException("Cannot add Example to Fragment");
+        throw new InvalidElementDefinitionException("Cannot add Example to Fragment");
     }
 
     @Override
     public void addFragment(Fragment fragment) {
-        throw new IllegalArgumentException("Cannot add Fragment to Fragment");
+        throw new InvalidElementDefinitionException("Cannot add Fragment to Fragment");
     }
 
     @Override
     public void fragmentEnds() {
-        throw new IllegalArgumentException("Cannot add Fragment to Fragment");
+        throw new InvalidElementDefinitionException("Cannot add Fragment to Fragment, thus it cannot ends!");
     }
 
     public String getFragmentReference() {

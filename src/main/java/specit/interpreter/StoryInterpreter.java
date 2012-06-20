@@ -107,7 +107,7 @@ public class StoryInterpreter {
         Map<String, String> variables = context.getVariables();
         String resolved = conf.templateEngine().resolve(rawContent, variables).toString();
 
-        listener.invokeStep(rawPart.getKeyword(), resolved, context);
+        listener.invokeStep(rawPart.getKeyword(), rawPart.getKeywordAlias(), resolved, context);
     }
 
     /**

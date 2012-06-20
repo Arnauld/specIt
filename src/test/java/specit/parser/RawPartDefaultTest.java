@@ -1,20 +1,23 @@
-package specit.element;
+package specit.parser;
 
 import org.junit.Test;
+import specit.element.InvalidElementDefinitionException;
+import specit.element.Keyword;
+import specit.element.RawPart;
 import specit.parser.RawPartDefault;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 
-public class RawPartTest {
+public class RawPartDefaultTest {
 
     @Test
     public void integrity_step_mustContains_keywordAlias_ok() {
         new RawPartDefault(17, Keyword.Given, "  \t When a user clicks \n", "When");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = InvalidElementDefinitionException.class)
     public void integrity_step_mustContains_keywordAlias_ko() {
         new RawPartDefault(17, Keyword.Given, "  \t When a user clicks \n", "Whoot");
     }
@@ -31,7 +34,7 @@ public class RawPartTest {
         try {
             new RawPartDefault(17, kw, "  \t When a user clicks \n", null);
             fail(message);
-        } catch (IllegalArgumentException e) {
+        } catch (InvalidElementDefinitionException e) {
             // ok :)
         }
     }

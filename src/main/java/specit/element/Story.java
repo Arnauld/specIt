@@ -14,6 +14,7 @@ public class Story extends Element implements FragmentHolder {
 
     private Stack<ExecutablePart> currentExecutablePart = New.stack();
     //
+    private String storyPath;
     private Narrative narrative;
     private List<ExecutablePart> scenarioList = New.arrayList();
     private List<ExecutablePart> backgroundList = New.arrayList();
@@ -103,6 +104,10 @@ public class Story extends Element implements FragmentHolder {
         return !scenarioList.isEmpty() || !backgroundList.isEmpty();
     }
 
+    public Narrative getNarrative() {
+        return narrative;
+    }
+
     public List<ExecutablePart> getScenarioList() {
         return scenarioList;
     }
@@ -137,5 +142,9 @@ public class Story extends Element implements FragmentHolder {
     @Override
     public void fragmentEnds() {
         currentExecutablePart.pop();
+    }
+
+    public String getStoryPath() {
+        return storyPath;
     }
 }

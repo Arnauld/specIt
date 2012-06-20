@@ -36,7 +36,7 @@ public class InterpreterListenerRecorder extends InterpreterListener {
     }
 
     @Override
-    public void invokeStep(Keyword keyword, String resolved, InterpreterContext context) {
+    public void invokeStep(Keyword keyword, String keywordAlias, String resolved, InterpreterContext context) {
         events.add(new InvokeStep(keyword, resolved, context));
     }
 

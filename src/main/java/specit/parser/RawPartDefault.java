@@ -41,17 +41,17 @@ public class RawPartDefault implements RawPart {
 
     private static void integrityCheck(Keyword keyword, String rawContent, String keywordAlias) {
         if (rawContent == null) {
-            throw new IllegalArgumentException("Raw content must be defined");
+            throw new InvalidElementDefinitionException("Raw content must be defined");
         }
         if (keywordAlias == null) {
             if (keyword != Keyword.Unknown) {
-                throw new IllegalArgumentException("Undefined alias requires the Unknown keyword");
+                throw new InvalidElementDefinitionException("Undefined alias requires the Unknown keyword");
             }
             return;
         }
         int indexOf = rawContent.indexOf(keywordAlias);
         if (indexOf < 0) {
-            throw new IllegalArgumentException("Keyword alias is not in raw content!");
+            throw new InvalidElementDefinitionException("Keyword alias is not in raw content!");
         }
     }
 

@@ -4,10 +4,14 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import specit.SpecIt;
-import specit.element.*;
+import specit.element.DumpVisitor;
+import specit.element.ExecutablePart;
+import specit.element.Keyword;
+import specit.element.Story;
 import specit.interpreter.InterpreterContext;
 import specit.interpreter.InterpreterListener;
 import specit.interpreter.StoryInterpreter;
+import specit.report.ConsoleColoredReporter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,40 +40,8 @@ public class IncubationTest {
     @Test
     public void scenario1() throws IOException {
         String resourceName = "/stories/incubation/complete_usecase_003_fragment_light.story";
-        Story story = specIt.parseAndBuildStory(resourceAsString(resourceName));
-        story.traverse(new DumpVisitor());
-        new StoryInterpreter(specIt).interpretStory(story, new InterpreterListener() {
-            @Override
-            public void beginStory(Story story) {
-                System.out.println("IncubationTest.beginStory(" + story .getRawPart() + ")");
-            }
-
-            @Override
-            public void endStory(Story story) {
-                System.out.println("IncubationTest.endStory");
-            }
-
-            @Override
-            public void beginScenario(ExecutablePart scenario, InterpreterContext context) {
-                System.out.println("IncubationTest.beginScenario(" + scenario.getRawPart() +")");
-            }
-
-            @Override
-            public void endScenario(ExecutablePart scenario, InterpreterContext context) {
-                System.out.println("IncubationTest.endScenario");
-            }
-
-            @Override
-            public void invokeStep(Keyword keyword, String resolved, InterpreterContext context) {
-                System.out.println("IncubationTest.invokeStep(" + keyword + ":" +resolved +")" );
-            }
-
-            @Override
-            public void invokeRequire(String resolved, InterpreterContext context) {
-                System.out.println("IncubationTest.invokeRequire(" + resolved + ")");
-            }
-
-        });
+        specIt.withReporter(new ConsoleColoredReporter());
+        specIt.executeStory(resourceAsString(resourceName));
     }
 
     private static String resourceAsString(String resourceName) throws IOException {

@@ -13,12 +13,19 @@ import specit.invocation.*;
 import specit.invocation.converter.IntegerConverter;
 import specit.invocation.converter.StringConverter;
 import specit.parser.*;
+import specit.report.ConsoleColoredReporter;
+import specit.report.Reporter;
+import specit.report.Reporters;
+import specit.util.New;
+import specit.util.ProxyDispatch;
 import specit.util.TemplateEngine;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static specit.report.Reporters.asInvocationContextListener;
 
 public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
 
@@ -27,6 +34,7 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
     private CandidateStepRegistry candidateStepRegistry;
     private ConverterRegistry converterRegistry;
     private LifecycleRegistry lifecycleRegistry;
+    private final List<Reporter> reporters = New.arrayList();
 
     @Override
     public String ignoredCharactersOnPartStart() {
@@ -47,6 +55,15 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
         for(String value : values)
             withAlias(kw, value);
         return this;
+    }
+
+    public SpecIt withReporter(Reporter reporter) {
+        reporters.add(reporter);
+        return this;
+    }
+
+    protected Reporter getReporterDispatch() {
+        return ProxyDispatch.proxy(reporters, Reporter.class);
     }
 
     @Override
@@ -89,17 +106,23 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
     }
 
     public void executeStory(String storyContent) {
+        Reporter reporterDispatch = getReporterDispatch();
         Story story = parseAndBuildStory(storyContent);
-        interpretStory(story);
+        interpretStory(story, reporterDispatch);
     }
 
     public void interpretStory(Story story) {
-        InvocationContext invocationContext = newInvocationContext(null, story);
+        interpretStory(story, getReporterDispatch());
+    }
+
+    protected void interpretStory(Story story, Reporter reporterDispatch) {
+        InvocationContext invocationContext = newInvocationContext(null, story, reporterDispatch);
         new StoryInterpreter(this).interpretStory(story, interpreterListener(
                 invocationContext,
                 getCandidateStepRegistry(),
                 getLifecycleRegistry(),
-                newInvoker()));
+                newInvoker(),
+                reporterDispatch));
     }
 
     public Story parseAndBuildStory(String storyContent) {
@@ -108,9 +131,13 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
         return builder.getStory();
     }
 
-    protected InvocationContext newInvocationContext(InvocationContext parent, Story currentStory) {
-        return new InvocationContext(parent, currentStory);
+    protected InvocationContext newInvocationContext(InvocationContext parent,
+                                                     Story currentStory,
+                                                     Reporter reporterDispatch) {
+        return new InvocationContext(parent, currentStory, asInvocationContextListener(reporterDispatch));
     }
+
+
 
     protected Invoker newInvoker() {
         InstanceProvider instanceProvider = new InstanceProviderBasic();
@@ -153,38 +180,45 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
             final InvocationContext invocationContext,
             final CandidateStepRegistry candidateStepRegistry,
             final LifecycleRegistry lifecycleRegistry,
-            final Invoker invoker) {
+            final Invoker invoker,
+            final Reporter reporterDispatch) {
         return new InterpreterListener() {
 
             @Override
             public void beginStory(Story story) {
-                invokeLifecycle(BeforeStory.class);
-            }
-
-            private void invokeLifecycle(Class<? extends Annotation> annotationType) {
-                for (Lifecycle lifecycle : lifecycleRegistry.getLifecycles(annotationType)) {
-                    invoker.invoke(invocationContext, lifecycle);
-                }
+                reporterDispatch.startStory(story);
+                doInvokeLifecycle(BeforeStory.class, invoker, invocationContext);
             }
 
             @Override
             public void endStory(Story story) {
-                invokeLifecycle(AfterStory.class);
+                doInvokeLifecycle(AfterStory.class, invoker, invocationContext);
+                reporterDispatch.endStory(story);
             }
 
             @Override
-            public void beginScenario(ExecutablePart scenario, InterpreterContext context) {
-                invokeLifecycle(BeforeScenario.class);
+            public void beginScenario(ExecutablePart scenarioOrBackground, InterpreterContext context) {
+                if(scenarioOrBackground instanceof Scenario)
+                    reporterDispatch.startScenario((Scenario)scenarioOrBackground);
+                else
+                if(scenarioOrBackground instanceof Background)
+                    reporterDispatch.startBackground((Background)scenarioOrBackground);
+                doInvokeLifecycle(BeforeScenario.class, invoker, invocationContext);
             }
 
             @Override
-            public void endScenario(ExecutablePart scenario, InterpreterContext context) {
-                invokeLifecycle(AfterScenario.class);
+            public void endScenario(ExecutablePart scenarioOrBackground, InterpreterContext context) {
+                doInvokeLifecycle(AfterScenario.class, invoker, invocationContext);
+                if(scenarioOrBackground instanceof Scenario)
+                    reporterDispatch.endScenario((Scenario) scenarioOrBackground);
+                else
+                if(scenarioOrBackground instanceof Background)
+                    reporterDispatch.endBackground((Background) scenarioOrBackground);
             }
 
             @Override
-            public void invokeStep(Keyword keyword, String resolved, InterpreterContext context) {
-                invoke(keyword, resolved, candidateStepRegistry, invoker, invocationContext);
+            public void invokeStep(Keyword keyword, String keywordAlias, String resolved, InterpreterContext context) {
+                doInvokeStep(keyword, keywordAlias, resolved, candidateStepRegistry, invoker, invocationContext);
             }
 
             @Override
@@ -194,19 +228,25 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
         };
     }
 
-    private void invoke(Keyword keyword, String resolved, CandidateStepRegistry candidateStepRegistry, Invoker invoker, InvocationContext invocationContext) {
+    private void doInvokeLifecycle(Class<? extends Annotation> annotationType, Invoker invoker, InvocationContext invocationContext) {
+        for (Lifecycle lifecycle : lifecycleRegistry.getLifecycles(annotationType)) {
+            invoker.invoke(invocationContext, lifecycle);
+        }
+    }
+
+    private void doInvokeStep(Keyword keyword, String keywordAlias, String resolved, CandidateStepRegistry candidateStepRegistry, Invoker invoker, InvocationContext invocationContext) {
         List<CandidateStep> candidateSteps = candidateStepRegistry.find(keyword, resolved);
         if (candidateSteps.isEmpty()) {
-            invocationContext.stepInvocationFailed(resolved, candidateSteps, "No step matching <" + resolved + "> with keyword <" + keyword + ">");
+            invocationContext.stepInvocationFailed(keywordAlias, resolved, candidateSteps, "No step matching <" + resolved + "> with keyword <" + keyword + ">");
             return;
         }
         else if (candidateSteps.size() > 1) {
-            invocationContext.stepInvocationFailed(resolved, candidateSteps, "More than one step matching <" + resolved + "> with keyword <" + keyword + "> got: " + candidateSteps);
+            invocationContext.stepInvocationFailed(keywordAlias, resolved, candidateSteps, "More than one step matching <" + resolved + "> with keyword <" + keyword + "> got: " + candidateSteps);
             return;
         }
 
         CandidateStep candidateStep = candidateSteps.get(0);
-        invoker.invoke(invocationContext, resolved, candidateStep);
+        invoker.invoke(invocationContext, keywordAlias, resolved, candidateStep);
     }
 
     private Listener toParserListener(final StoryBuilder builder) {
@@ -217,4 +257,5 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
             }
         };
     }
+
 }
