@@ -50,7 +50,8 @@ public class InterpreterListenerRecorder extends InterpreterListener {
         return events;
     }
 
-    public interface Event {}
+    public interface Event {
+    }
 
     public class BeginStory implements InterpreterListenerRecorder.Event {
         private final Story story;
@@ -93,6 +94,7 @@ public class InterpreterListenerRecorder extends InterpreterListener {
             return context;
         }
     }
+
     public class EndScenario implements InterpreterListenerRecorder.Event {
         private final ExecutablePart scenario;
         private final InterpreterContext context;

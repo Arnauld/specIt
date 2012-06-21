@@ -128,10 +128,10 @@ public class RawPartDefault implements RawPart {
 
     @Override
     public Table getExampleTable() {
-        if(keyword!=Keyword.Example)
+        if (keyword != Keyword.Example)
             throw new IllegalStateException("Cannot retrieve an ExampleTable from a " + keyword + " part!");
         ensureParserConfIsDefined();
-        if(exampleTable==null) {
+        if (exampleTable == null) {
             exampleTable = parserConf.tableParser().parse(rawContent);
         }
         return exampleTable;
@@ -139,16 +139,16 @@ public class RawPartDefault implements RawPart {
 
     @Override
     public RepeatParameters getRepeatParameters() {
-        if(keyword!=Keyword.Repeat)
+        if (keyword != Keyword.Repeat)
             throw new IllegalStateException("Cannot retrieve RepeatParameters from a " + keyword + " part!");
-        if(repeatParameters==null)
+        if (repeatParameters == null)
             repeatParameters = parserConf.repeatParametersParser().parse(rawContent);
         return repeatParameters;
     }
 
     @Override
     public List<Comment> getNestedComments() {
-        if(nestedComments==null)
+        if (nestedComments == null)
             nestedComments = parserConf.commentParser().parseComments(offset, rawContent);
         return nestedComments;
     }
@@ -159,7 +159,7 @@ public class RawPartDefault implements RawPart {
     }
 
     private void ensureParserConfIsDefined() {
-        if(parserConf==null)
+        if (parserConf == null)
             throw new IllegalStateException("ParserConf is not set!");
     }
 

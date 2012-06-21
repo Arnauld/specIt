@@ -8,6 +8,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  *
  */
+@SuppressWarnings("PMD.LooseCoupling")
 public final class New {
 
     private New() {

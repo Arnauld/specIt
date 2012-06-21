@@ -30,15 +30,15 @@ public abstract class ExecutablePart extends Element implements FragmentHolder {
 
     @Override
     public Fragment findFragment(String fragmentRef, boolean searchInChildren) {
-        for(Fragment fragment : fragments) {
-            if(fragmentRef.equalsIgnoreCase(fragment.getFragmentReference()))
+        for (Fragment fragment : fragments) {
+            if (fragmentRef.equalsIgnoreCase(fragment.getFragmentReference()))
                 return fragment;
         }
 
-        if(searchInChildren) {
+        if (searchInChildren) {
             for (ExecutablePart part : executableParts) {
                 Fragment fragment = part.findFragment(fragmentRef, searchInChildren);
-                if(fragment!=null)
+                if (fragment != null)
                     return fragment;
             }
         }
@@ -46,7 +46,7 @@ public abstract class ExecutablePart extends Element implements FragmentHolder {
     }
 
     public void traverseExecutablePart(ElementVisitor visitor) {
-        for(Fragment fragment : fragments) {
+        for (Fragment fragment : fragments) {
             fragment.traverse(visitor);
         }
         for (Require require : requires) {
@@ -68,10 +68,9 @@ public abstract class ExecutablePart extends Element implements FragmentHolder {
      */
     public void addStep(Step step) {
         ExecutablePart executablePart = currentExecutablePart.peek();
-        if(executablePart!=this) {
+        if (executablePart != this) {
             executablePart.addStep(step);
-        }
-        else {
+        } else {
             executableParts.add(step);
             step.setParent(this);
         }
@@ -79,10 +78,9 @@ public abstract class ExecutablePart extends Element implements FragmentHolder {
 
     public void addExemple(Example example) {
         ExecutablePart executablePart = currentExecutablePart.peek();
-        if(executablePart!=this) {
+        if (executablePart != this) {
             executablePart.addExemple(example);
-        }
-        else {
+        } else {
             examples.add(example);
             example.setParent(this);
         }
@@ -91,17 +89,16 @@ public abstract class ExecutablePart extends Element implements FragmentHolder {
 
     public void addRequire(Require require) {
         ExecutablePart executablePart = currentExecutablePart.peek();
-        if(executablePart!=this) {
+        if (executablePart != this) {
             executablePart.addRequire(require);
-        }
-        else {
+        } else {
             requires.add(require);
             require.setParent(this);
         }
     }
 
     public boolean hasContent() {
-        return hasExample() ||  hasExecutablePart() || hasRequire() || hasFragment();
+        return hasExample() || hasExecutablePart() || hasRequire() || hasFragment();
     }
 
     private boolean hasExecutablePart() {
@@ -140,7 +137,7 @@ public abstract class ExecutablePart extends Element implements FragmentHolder {
 
     @Override
     public void fragmentEnds() {
-        if(!(currentExecutablePart.pop() instanceof Fragment))
+        if (!(currentExecutablePart.pop() instanceof Fragment))
             throw new InvalidCallException("Current ExecutablePart was not a Fragment!");
     }
 }

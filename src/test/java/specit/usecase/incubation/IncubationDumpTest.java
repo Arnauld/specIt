@@ -41,7 +41,7 @@ public class IncubationDumpTest {
         new StoryInterpreter(specIt).interpretStory(story, new InterpreterListener() {
             @Override
             public void beginStory(Story story) {
-                System.out.println("IncubationDumpTest.beginStory(" + story .getRawPart() + ")");
+                System.out.println("IncubationDumpTest.beginStory(" + story.getRawPart() + ")");
             }
 
             @Override
@@ -51,7 +51,7 @@ public class IncubationDumpTest {
 
             @Override
             public void beginScenario(ExecutablePart scenario, InterpreterContext context) {
-                System.out.println("IncubationDumpTest.beginScenario(" + scenario.getRawPart() +")");
+                System.out.println("IncubationDumpTest.beginScenario(" + scenario.getRawPart() + ")");
             }
 
             @Override
@@ -61,7 +61,7 @@ public class IncubationDumpTest {
 
             @Override
             public void invokeStep(InvokableStep invokableStep, InterpreterContext context) {
-                System.out.println("IncubationDumpTest.stepInvoked(" + invokableStep.getKeyword() + ":" +invokableStep.getAdjustedInput() +")" );
+                System.out.println("IncubationDumpTest.stepInvoked(" + invokableStep.getKeyword() + ":" + invokableStep.getAdjustedInput() + ")");
             }
 
             @Override

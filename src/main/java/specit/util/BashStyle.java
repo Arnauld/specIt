@@ -17,8 +17,8 @@ public enum BashStyle {
     Magenta(35, 39),
     Cyan(36, 39),
     White(37, 39),
-    Grey(90,39),
-    GreenHi(92,32),
+    Grey(90, 39),
+    GreenHi(92, 32),
     CyanHi(96, 39);
 
     private final int beg;
@@ -31,10 +31,9 @@ public enum BashStyle {
 
     /**
      * Format text with the specified style
-     *
      */
     public String stylize(String content) {
-      return open() + content + close();
+        return open() + content + close();
     }
 
     public String close() {

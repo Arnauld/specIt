@@ -4,7 +4,6 @@ import org.junit.Test;
 import specit.element.InvalidElementDefinitionException;
 import specit.element.Keyword;
 import specit.element.RawPart;
-import specit.parser.RawPartDefault;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -24,8 +23,8 @@ public class RawPartDefaultTest {
 
     @Test
     public void integrity_noKeywordAlias_notUnknownKeyword_mustThrowAnException() {
-        for(Keyword kw : Keyword.values()) {
-            if(kw != Keyword.Unknown)
+        for (Keyword kw : Keyword.values()) {
+            if (kw != Keyword.Unknown)
                 assertExceptionIsThrownWithNullAlias("" + kw + " should not be allowed with null alias", kw);
         }
     }

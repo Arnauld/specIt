@@ -7,9 +7,7 @@ import specit.util.ParametrizedString;
 
 import java.lang.reflect.Method;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
@@ -36,7 +34,7 @@ public class ParameterMappingsBuilderTest {
         assertThat(parameterMappings, notNullValue());
         assertThat(parameterMappings.length, equalTo(1));
         assertThat(parameterMappings[0].getParameterIndex(), equalTo(0));
-        assertThat(parameterMappings[0].getParameterType(), equalTo((Class)int.class));
+        assertThat(parameterMappings[0].getParameterType(), equalTo((Class) int.class));
         assertThat(parameterMappings[0].getVariableName(), equalTo("variable"));
     }
 
@@ -67,11 +65,11 @@ public class ParameterMappingsBuilderTest {
         assertThat(parameterMappings, notNullValue());
         assertThat(parameterMappings.length, equalTo(2));
         assertThat(parameterMappings[0].getParameterIndex(), equalTo(0));
-        assertThat(parameterMappings[0].getParameterType(), equalTo((Class)int.class));
+        assertThat(parameterMappings[0].getParameterType(), equalTo((Class) int.class));
         assertThat(parameterMappings[0].getVariableName(), equalTo("variable1"));
 
         assertThat(parameterMappings[1].getParameterIndex(), equalTo(1));
-        assertThat(parameterMappings[1].getParameterType(), equalTo((Class)String.class));
+        assertThat(parameterMappings[1].getParameterType(), equalTo((Class) String.class));
         assertThat(parameterMappings[1].getVariableName(), equalTo("variable2"));
     }
 
@@ -88,11 +86,11 @@ public class ParameterMappingsBuilderTest {
         assertThat(parameterMappings, notNullValue());
         assertThat(parameterMappings.length, equalTo(2));
         assertThat(parameterMappings[0].getParameterIndex(), equalTo(0));
-        assertThat(parameterMappings[0].getParameterType(), equalTo((Class)int.class));
+        assertThat(parameterMappings[0].getParameterType(), equalTo((Class) int.class));
         assertThat(parameterMappings[0].getVariableName(), equalTo("amount"));
 
         assertThat(parameterMappings[1].getParameterIndex(), equalTo(1));
-        assertThat(parameterMappings[1].getParameterType(), equalTo((Class)String.class));
+        assertThat(parameterMappings[1].getParameterType(), equalTo((Class) String.class));
         assertThat(parameterMappings[1].getVariableName(), equalTo("name"));
     }
 
@@ -103,11 +101,11 @@ public class ParameterMappingsBuilderTest {
         assertThat(parameterMappings, notNullValue());
         assertThat(parameterMappings.length, equalTo(2));
         assertThat(parameterMappings[0].getParameterIndex(), equalTo(0));
-        assertThat(parameterMappings[0].getParameterType(), equalTo((Class)int.class));
+        assertThat(parameterMappings[0].getParameterType(), equalTo((Class) int.class));
         assertThat(parameterMappings[0].getVariableName(), equalTo("amount"));
 
         assertThat(parameterMappings[1].getParameterIndex(), equalTo(1));
-        assertThat(parameterMappings[1].getParameterType(), equalTo((Class)String.class));
+        assertThat(parameterMappings[1].getParameterType(), equalTo((Class) String.class));
         assertThat(parameterMappings[1].getVariableName(), equalTo("name"));
     }
 
@@ -118,11 +116,11 @@ public class ParameterMappingsBuilderTest {
         assertThat(parameterMappings, notNullValue());
         assertThat(parameterMappings.length, equalTo(2));
         assertThat(parameterMappings[0].getParameterIndex(), equalTo(0));
-        assertThat(parameterMappings[0].getParameterType(), equalTo((Class)InvocationContext.class));
+        assertThat(parameterMappings[0].getParameterType(), equalTo((Class) InvocationContext.class));
         assertThat(parameterMappings[0].getVariableName(), nullValue());
 
         assertThat(parameterMappings[1].getParameterIndex(), equalTo(1));
-        assertThat(parameterMappings[1].getParameterType(), equalTo((Class)int.class));
+        assertThat(parameterMappings[1].getParameterType(), equalTo((Class) int.class));
         assertThat(parameterMappings[1].getVariableName(), equalTo("variable"));
     }
 
@@ -133,15 +131,15 @@ public class ParameterMappingsBuilderTest {
         assertThat(parameterMappings, notNullValue());
         assertThat(parameterMappings.length, equalTo(3));
         assertThat(parameterMappings[0].getParameterIndex(), equalTo(0));
-        assertThat(parameterMappings[0].getParameterType(), equalTo((Class)String.class));
+        assertThat(parameterMappings[0].getParameterType(), equalTo((Class) String.class));
         assertThat(parameterMappings[0].getVariableName(), equalTo("name"));
 
         assertThat(parameterMappings[1].getParameterIndex(), equalTo(1));
-        assertThat(parameterMappings[1].getParameterType(), equalTo((Class)InvocationContext.class));
+        assertThat(parameterMappings[1].getParameterType(), equalTo((Class) InvocationContext.class));
         assertThat(parameterMappings[1].getVariableName(), nullValue());
 
         assertThat(parameterMappings[2].getParameterIndex(), equalTo(2));
-        assertThat(parameterMappings[2].getParameterType(), equalTo((Class)int.class));
+        assertThat(parameterMappings[2].getParameterType(), equalTo((Class) int.class));
         assertThat(parameterMappings[2].getVariableName(), equalTo("amount"));
     }
 
@@ -152,18 +150,17 @@ public class ParameterMappingsBuilderTest {
         assertThat(parameterMappings, notNullValue());
         assertThat(parameterMappings.length, equalTo(3));
         assertThat(parameterMappings[0].getParameterIndex(), equalTo(0));
-        assertThat(parameterMappings[0].getParameterType(), equalTo((Class)int.class));
+        assertThat(parameterMappings[0].getParameterType(), equalTo((Class) int.class));
         assertThat(parameterMappings[0].getVariableName(), equalTo("amount"));
 
         assertThat(parameterMappings[1].getParameterIndex(), equalTo(1));
-        assertThat(parameterMappings[1].getParameterType(), equalTo((Class)InvocationContext.class));
+        assertThat(parameterMappings[1].getParameterType(), equalTo((Class) InvocationContext.class));
         assertThat(parameterMappings[1].getVariableName(), nullValue());
 
         assertThat(parameterMappings[2].getParameterIndex(), equalTo(2));
-        assertThat(parameterMappings[2].getParameterType(), equalTo((Class)String.class));
+        assertThat(parameterMappings[2].getParameterType(), equalTo((Class) String.class));
         assertThat(parameterMappings[2].getVariableName(), equalTo("name"));
     }
-
 
 
     // ---
@@ -177,8 +174,8 @@ public class ParameterMappingsBuilderTest {
     }
 
     private static Method sampleMethodByName(String methodName) {
-        for(Method method : Sample.class.getMethods()) {
-            if(method.getName().equals(methodName))
+        for (Method method : Sample.class.getMethods()) {
+            if (method.getName().equals(methodName))
                 return method;
         }
         throw new IllegalArgumentException("No method found matching <" + methodName + ">");

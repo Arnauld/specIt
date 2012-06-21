@@ -1,14 +1,11 @@
 package specit.parser;
 
-import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import specit.element.Comment;
 
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**

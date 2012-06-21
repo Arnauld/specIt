@@ -21,7 +21,7 @@ public enum Keyword {
     }
 
     public Class<? extends Annotation> annotationType() {
-        switch(this) {
+        switch (this) {
             case Given:
                 return specit.annotation.Given.class;
             case When:

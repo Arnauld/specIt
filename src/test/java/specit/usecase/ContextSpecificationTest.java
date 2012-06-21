@@ -5,9 +5,9 @@ import org.junit.Test;
 import specit.SpecIt;
 import specit.element.Keyword;
 import specit.element.RawPart;
-import specit.parser.RawPartDefault;
 import specit.parser.ListenerCollector;
 import specit.parser.Parser;
+import specit.parser.RawPartDefault;
 
 import java.util.List;
 
@@ -35,13 +35,13 @@ public class ContextSpecificationTest {
     }
 
     @Test
-    public void specIt_canBeUsed_forContextSpecification () {
+    public void specIt_canBeUsed_forContextSpecification() {
         String story =
                 "When a product is added that is not already in the cart\n" +
-                " - The cart item factory should be used to create a cart item for the product being added.\n" +
-                "When an item is added\n" +
-                " - The item count should be incremented\n" +
-                " - The item should be added to the underlying list";
+                        " - The cart item factory should be used to create a cart item for the product being added.\n" +
+                        "When an item is added\n" +
+                        " - The item count should be incremented\n" +
+                        " - The item should be added to the underlying list";
 
         specIt.withAlias(Keyword.When, "When").withAlias(Keyword.Then, "-");
         parser.scan(story, listener);

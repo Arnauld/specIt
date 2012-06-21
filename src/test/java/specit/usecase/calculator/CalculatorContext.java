@@ -19,7 +19,8 @@ public class CalculatorContext {
         // instance
         threadContext.set(new CalculatorContext());
     }
-    public static void dispose () {
+
+    public static void dispose() {
         threadContext.remove();
     }
 

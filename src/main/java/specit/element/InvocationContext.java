@@ -13,16 +13,12 @@ import java.util.Map;
  *
  */
 public class InvocationContext {
-    private final Map<Object,Object> values = New.hashMap();
+    private final Map<Object, Object> values = New.hashMap();
     private final InvocationContext parent;
     private final InvocationContextListener listener;
     private final Story currentStory;
     private boolean lifecycleInError;
     private boolean stepInError;
-
-    public InvocationContext(Story currentStory) {
-        this(null, currentStory);
-    }
 
     public InvocationContext(InvocationContext parent, Story currentStory) {
         this(parent, currentStory, Proxies.proxyNoOp(InvocationContextListener.class));
@@ -35,7 +31,7 @@ public class InvocationContext {
     }
 
     public boolean isNestedContext() {
-        return (parent!=null);
+        return (parent != null);
     }
 
     public InvocationContext getParentContext() {
@@ -47,7 +43,7 @@ public class InvocationContext {
     }
 
     public <T> T get(Object key) {
-        return (T)values.get(key);
+        return (T) values.get(key);
     }
 
     public InvocationContext set(Object key, Object value) {

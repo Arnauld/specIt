@@ -21,14 +21,14 @@ public class RepeatParametersParser {
     public RepeatParametersParser(ParserConf conf) {
         this.conf = conf;
         // (?s) <=> DOTALL <=> '.' matches also line terminators
-        this.withPattern  = Pattern.compile(FRAGMENT_REF + "with:(?s)(.*)");
+        this.withPattern = Pattern.compile(FRAGMENT_REF + "with:(?s)(.*)");
         this.timesPattern = Pattern.compile(FRAGMENT_REF + "(\\d+)\\s+time[s]?");
     }
 
     public RepeatParameters parse(String content) {
         String trimmed = content.trim();
         Matcher matcher = withPattern.matcher(trimmed);
-        if(matcher.matches()) {
+        if (matcher.matches()) {
             String reference = matcher.group(1);
             String tableAsString = matcher.group(2);
 
@@ -37,7 +37,7 @@ public class RepeatParametersParser {
         }
 
         matcher = timesPattern.matcher(trimmed);
-        if(matcher.matches()) {
+        if (matcher.matches()) {
             String reference = matcher.group(1);
             String loopAsString = matcher.group(2);
 

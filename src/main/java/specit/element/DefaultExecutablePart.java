@@ -10,7 +10,7 @@ public class DefaultExecutablePart extends ExecutablePart {
 
     @Override
     public void traverse(ElementVisitor visitor) {
-        if(visitor.beginDefaultExecutablePart(this))
+        if (visitor.beginDefaultExecutablePart(this))
             traverseExecutablePart(visitor);
         visitor.endDefaultExecutablePart(this);
     }

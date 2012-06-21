@@ -11,7 +11,7 @@ public class Fragment extends ExecutablePart {
 
     @Override
     public void traverse(ElementVisitor visitor) {
-        if(visitor.beginFragment(this))
+        if (visitor.beginFragment(this))
             traverseExecutablePart(visitor);
         visitor.endFragment(this);
     }
@@ -23,10 +23,10 @@ public class Fragment extends ExecutablePart {
     }
 
     private void checkForFragmentTermination(Step step) {
-        if(step.endsWithBlankLine()) {
+        if (step.endsWithBlankLine()) {
             Element parent = getParent();
-            if(parent instanceof FragmentHolder)
-                ((FragmentHolder)parent).fragmentEnds();
+            if (parent instanceof FragmentHolder)
+                ((FragmentHolder) parent).fragmentEnds();
         }
     }
 

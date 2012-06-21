@@ -7,10 +7,10 @@ public final class CharSequences {
     private CharSequences() {
     }
 
-    private static final Pattern pattern = Pattern.compile(".*(?:\n|\r|\r\n)+\\s*(?:\n|\r|\r\n)");
+    private static final Pattern ENDS_WITH_BLANKLINES = Pattern.compile(".*(?:\n|\r|\r\n)+\\s*(?:\n|\r|\r\n)");
 
     public static boolean endsWithBlankLine(CharSequence sequence) {
-        return pattern.matcher(sequence).matches();
+        return ENDS_WITH_BLANKLINES.matcher(sequence).matches();
     }
 
     public static boolean startsWith(CharSequence sequence, String prefix) {

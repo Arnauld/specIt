@@ -28,7 +28,7 @@ public class ParserTest {
     }
 
     @Test
-    public void scan_singleStep () {
+    public void scan_singleStep() {
         specIt.withAlias(Keyword.Given, "With");
         parser.scan("With a simple step", listener);
 
@@ -38,7 +38,7 @@ public class ParserTest {
     }
 
     @Test
-    public void scan_withTrailingNewlines () {
+    public void scan_withTrailingNewlines() {
         specIt.withAlias(Keyword.Given, "With");
         parser.scan("\n\nWith a simple step", listener);
 
@@ -49,7 +49,7 @@ public class ParserTest {
     }
 
     @Test
-    public void scan_withTrailingWhitechars_spaces () {
+    public void scan_withTrailingWhitechars_spaces() {
         specIt.withAlias(Keyword.Given, "With");
         parser.scan("\n\n  With a simple step", listener);
 
@@ -60,10 +60,10 @@ public class ParserTest {
     }
 
     @Test
-    public void scan_multipleAliasesForKeyword () {
+    public void scan_multipleAliasesForKeyword() {
         String story =
                 "Given a defined step" + NL +
-                "With an other simple step";
+                        "With an other simple step";
 
         specIt.withAlias(Keyword.Given, "With");
         specIt.withAlias(Keyword.Given, "Given");
@@ -76,11 +76,11 @@ public class ParserTest {
     }
 
     @Test
-    public void scan_multipleKeywords_andIsResolvedUsingPrevious () {
+    public void scan_multipleKeywords_andIsResolvedUsingPrevious() {
         String story =
                 "Given a defined step" + NL +
-                "With an other step" + NL +
-                "And yet an other one";
+                        "With an other step" + NL +
+                        "And yet an other one";
 
         specIt.withAlias(Keyword.Given, "Given");
         specIt.withAlias(Keyword.Given, "With");

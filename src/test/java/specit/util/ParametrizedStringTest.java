@@ -1,36 +1,36 @@
 package specit.util;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsMapContaining.hasEntry;
+import org.junit.Test;
+import specit.util.ParametrizedString.Token;
+import specit.util.ParametrizedString.WeightChain;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import specit.util.ParametrizedString.Token;
-import specit.util.ParametrizedString.WeightChain;
-import org.junit.Test;
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsMapContaining.hasEntry;
 
 public class ParametrizedStringTest {
 
     @Test
-    public void getParameters () {
+    public void getParameters() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
         assertThat(s.getParameters(), equalTo(asList("name")));
     }
 
     @Test
-    public void getParameters_parameterAtEnd () {
+    public void getParameters_parameterAtEnd() {
         ParametrizedString s = new ParametrizedString("a user named $name");
         assertThat(s.getParameters(), equalTo(asList("name")));
     }
 
     @Test
-    public void getTokens () {
+    public void getTokens() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
         List<Token> tokens = s.getTokens();
         assertThat(tokens.get(0).value(), equalTo("a user named "));
@@ -48,14 +48,14 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void acceptsInputPart_noParameter () {
+    public void acceptsInputPart_noParameter() {
         assertThat(pString("a user clicks").acceptsBeginning("a use"), is(1));
         assertThat(pString("a user clicks").acceptsBeginning("a user clicks"), is(2));
         assertThat(pString("a user clicks").acceptsBeginning("a man"), is(0));
     }
 
     @Test
-    public void weightChain_noParameter_ex1 () {
+    public void weightChain_noParameter_ex1() {
         ParametrizedString s = new ParametrizedString("a user clicks");
 
         WeightChain chain = s.calculateWeightChain("a use");
@@ -63,7 +63,7 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void weightChain_noParameter_ex2 () {
+    public void weightChain_noParameter_ex2() {
         ParametrizedString s = new ParametrizedString("a user clicks");
 
         WeightChain chain = s.calculateWeightChain("a user clicks");
@@ -71,7 +71,7 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void weightChain_noParameter_ex3 () {
+    public void weightChain_noParameter_ex3() {
         ParametrizedString s = new ParametrizedString("a user clicks");
 
         WeightChain chain = s.calculateWeightChain("a man");
@@ -79,15 +79,15 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void extractParameterValues_noParameter_ex1 () {
+    public void extractParameterValues_noParameter_ex1() {
         ParametrizedString s = new ParametrizedString("a user clicks");
 
         Map<String, String> values = s.extractParameterValues("a use");
-        assertThat(values, equalTo(Collections.<String,String>emptyMap()));
+        assertThat(values, equalTo(Collections.<String, String>emptyMap()));
     }
 
     @Test
-    public void complete_noParameter_ex1 () {
+    public void complete_noParameter_ex1() {
         ParametrizedString s = new ParametrizedString("a user clicks");
 
         String complete = s.complete("a use");
@@ -95,7 +95,7 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void complete_noParameter_ex2 () {
+    public void complete_noParameter_ex2() {
         ParametrizedString s = new ParametrizedString("a user clicks");
 
         String complete = s.complete("a user clicks");
@@ -103,7 +103,7 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void complete_noParameter_ex3 () {
+    public void complete_noParameter_ex3() {
         ParametrizedString s = new ParametrizedString("a user clicks");
 
         String complete = s.complete("a man");
@@ -115,13 +115,13 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void acceptsInputPart_withParameter_beforeParameter_insideLiteral_ex1 () {
+    public void acceptsInputPart_withParameter_beforeParameter_insideLiteral_ex1() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
         assertThat(s.acceptsBeginning("a use"), is(1));
     }
 
     @Test
-    public void weightChain_withParameter_beforeParameter_insideLiteral_ex1 () {
+    public void weightChain_withParameter_beforeParameter_insideLiteral_ex1() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
 
         WeightChain chain = s.calculateWeightChain("a use");
@@ -129,15 +129,15 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void extractParameterValues_withParameter_beforeParameter_insideLiteral_ex1 () {
+    public void extractParameterValues_withParameter_beforeParameter_insideLiteral_ex1() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
 
         Map<String, String> values = s.extractParameterValues("a use");
-        assertThat(values, equalTo(Collections.<String,String>emptyMap()));
+        assertThat(values, equalTo(Collections.<String, String>emptyMap()));
     }
 
     @Test
-    public void complete_withParameter_beforeParameter_insideLiteral_ex1 () {
+    public void complete_withParameter_beforeParameter_insideLiteral_ex1() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
 
         String complete = s.complete("a use");
@@ -145,13 +145,13 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void acceptsInputPart_withParameter_beforeParameter_insideLiteral_ex2 () {
+    public void acceptsInputPart_withParameter_beforeParameter_insideLiteral_ex2() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
         assertThat(s.acceptsBeginning("a user named"), is(1));
     }
 
     @Test
-    public void weightChain_withParameter_beforeParameter_insideLiteral_ex2 () {
+    public void weightChain_withParameter_beforeParameter_insideLiteral_ex2() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
 
         WeightChain chain = s.calculateWeightChain("a user named");
@@ -159,7 +159,7 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void complete_withParameter_beforeParameter_insideLiteral_ex2 () {
+    public void complete_withParameter_beforeParameter_insideLiteral_ex2() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
 
         String complete = s.complete("a user named");
@@ -167,13 +167,13 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void acceptsInputPart_withParameter_beforeParameter_fullLiteral () {
+    public void acceptsInputPart_withParameter_beforeParameter_fullLiteral() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
         assertThat(s.acceptsBeginning("a user named "), is(2));
     }
 
     @Test
-    public void weightChain_withParameter_beforeParameter_fullLiteral () {
+    public void weightChain_withParameter_beforeParameter_fullLiteral() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
 
         WeightChain chain = s.calculateWeightChain("a user named ");
@@ -181,7 +181,7 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void complete_withParameter_beforeParameter_fullLiteral () {
+    public void complete_withParameter_beforeParameter_fullLiteral() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
 
         String complete = s.complete("a user named ");
@@ -189,13 +189,13 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void acceptsInputPart_withParameter_beforeParameter_invalidLiteral () {
+    public void acceptsInputPart_withParameter_beforeParameter_invalidLiteral() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
         assertThat(s.acceptsBeginning("a user whose "), is(0));
     }
 
     @Test
-    public void weightChain_withParameter_beforeParameter_invalidLiteral () {
+    public void weightChain_withParameter_beforeParameter_invalidLiteral() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
 
         WeightChain chain = s.calculateWeightChain("a user whose ");
@@ -203,15 +203,15 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void extractParameterValues_withParameter_beforeParameter_invalidLiteral () {
+    public void extractParameterValues_withParameter_beforeParameter_invalidLiteral() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
 
         Map<String, String> values = s.extractParameterValues("a user whose ");
-        assertThat(values, equalTo(Collections.<String,String>emptyMap()));
+        assertThat(values, equalTo(Collections.<String, String>emptyMap()));
     }
 
     @Test
-    public void complete_withParameter_beforeParameter_invalidLiteral () {
+    public void complete_withParameter_beforeParameter_invalidLiteral() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
 
         String complete = s.complete("a user whose ");
@@ -219,13 +219,13 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void acceptsInputPart_withParameter_insideParameter () {
+    public void acceptsInputPart_withParameter_insideParameter() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
         assertThat(s.acceptsBeginning("a user named Travis"), is(3));
     }
 
     @Test
-    public void weightChain_withParameter_insideParameter () {
+    public void weightChain_withParameter_insideParameter() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
 
         WeightChain chain = s.calculateWeightChain("a user named Travis");
@@ -233,7 +233,7 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void extractParameterValues_withParameter_insideParameter () {
+    public void extractParameterValues_withParameter_insideParameter() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
 
         Map<String, String> values = s.extractParameterValues("a user named Travis");
@@ -241,7 +241,7 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void complete_withParameter_insideParameter () {
+    public void complete_withParameter_insideParameter() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
 
         String complete = s.complete("a user named Travis");
@@ -249,13 +249,13 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void acceptsInputPart_withParameter_afterParameter () {
+    public void acceptsInputPart_withParameter_afterParameter() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
         assertThat(s.acceptsBeginning("a user named Travis cli"), is(4));
     }
 
     @Test
-    public void weightChain_withParameter_afterParameter () {
+    public void weightChain_withParameter_afterParameter() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
 
         WeightChain chain = s.calculateWeightChain("a user named Travis cli");
@@ -263,7 +263,7 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void extractParameterValues_withParameter_afterParameter () {
+    public void extractParameterValues_withParameter_afterParameter() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
 
         Map<String, String> values = s.extractParameterValues("a user named Travis cli");
@@ -271,7 +271,7 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void complete_withParameter_afterParameter () {
+    public void complete_withParameter_afterParameter() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
 
         String complete = s.complete("a user named Travis cli");
@@ -279,13 +279,13 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void acceptsInputPart_withParameter_fullMatch () {
+    public void acceptsInputPart_withParameter_fullMatch() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
         assertThat(s.acceptsBeginning("a user named Travis clicks"), is(5));
     }
 
     @Test
-    public void weightChain_withParameter_fullMatch () {
+    public void weightChain_withParameter_fullMatch() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
 
         WeightChain chain = s.calculateWeightChain("a user named Travis clicks");
@@ -293,15 +293,15 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void extractParameterValues_withParameter_fullMatch () {
+    public void extractParameterValues_withParameter_fullMatch() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
 
         Map<String, String> values = s.extractParameterValues("a user named Travis clicks");
-        assertThat(values, equalTo((Map)New.hashMap("name", "Travis")));
+        assertThat(values, equalTo((Map) New.hashMap("name", "Travis")));
     }
 
     @Test
-    public void complete_withParameter_fullMatch () {
+    public void complete_withParameter_fullMatch() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
 
         String complete = s.complete("a user named Travis clicks");
@@ -313,18 +313,18 @@ public class ParametrizedStringTest {
         ParametrizedString s = new ParametrizedString("a user named \"$name\"");
 
         WeightChain chain = s.calculateWeightChain("a user named \"Bob\"");
-        assertThat(chain.tokenize(), equalTo(Arrays.asList("a user named \"","Bob","\"")));
+        assertThat(chain.tokenize(), equalTo(Arrays.asList("a user named \"", "Bob", "\"")));
     }
 
     @Test
-    public void acceptsInputPart_with2Parameters_before2ndParameter () {
+    public void acceptsInputPart_with2Parameters_before2ndParameter() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks on $button button");
         assertThat(s.acceptsBeginning("a user named Travis cli"), is(4));
         assertThat(s.acceptsBeginning("a user named Travis clicks on "), is(5));
     }
 
     @Test
-    public void weightChain_with2Parameters_before2ndParameter_ex1 () {
+    public void weightChain_with2Parameters_before2ndParameter_ex1() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks on $button button");
 
         WeightChain chain = s.calculateWeightChain("a user named Travis cli");
@@ -332,15 +332,15 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void extractParameterValues_with2Parameters_before2ndParameter_ex1  () {
+    public void extractParameterValues_with2Parameters_before2ndParameter_ex1() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks on $button button");
 
         Map<String, String> values = s.extractParameterValues("a user named Travis clicks");
-        assertThat(values, equalTo((Map)New.hashMap("name", "Travis")));
+        assertThat(values, equalTo((Map) New.hashMap("name", "Travis")));
     }
 
     @Test
-    public void weightChain_with2Parameters_before2ndParameter_ex2 () {
+    public void weightChain_with2Parameters_before2ndParameter_ex2() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks on $button button");
 
         WeightChain chain = s.calculateWeightChain("a user named Travis clicks on ");
@@ -348,15 +348,15 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void extractParameterValues_with2Parameters_before2ndParameter_ex2   () {
+    public void extractParameterValues_with2Parameters_before2ndParameter_ex2() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks on $button button");
 
         Map<String, String> values = s.extractParameterValues("a user named Travis clicks on ");
-        assertThat(values, equalTo((Map)New.hashMap("name", "Travis")));
+        assertThat(values, equalTo((Map) New.hashMap("name", "Travis")));
     }
 
     @Test
-    public void complete_with2Parameters_before2ndParameter_ex1 () {
+    public void complete_with2Parameters_before2ndParameter_ex1() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks on $button button");
 
         String complete = s.complete("a user named Travis cli");
@@ -364,7 +364,7 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void complete_with2Parameters_before2ndParameter_ex2 () {
+    public void complete_with2Parameters_before2ndParameter_ex2() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks on $button button");
 
         String complete = s.complete("a user named Travis clicks on ");
@@ -373,29 +373,29 @@ public class ParametrizedStringTest {
 
 
     @Test
-    public void acceptsInputPart_with2Parameters_inside2ndParameter () {
+    public void acceptsInputPart_with2Parameters_inside2ndParameter() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks on $button button");
         assertThat(s.acceptsBeginning("a user named Travis clicks on enter"), is(6));
     }
 
     @Test
-    public void weightChain_with2Parameters_inside2ndParameter () {
+    public void weightChain_with2Parameters_inside2ndParameter() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks on $button button");
 
         WeightChain chain = s.calculateWeightChain("a user named Travis clicks on enter");
-        assertThat(chain.tokenize(), equalTo(Arrays.asList("a user named ","Travis"," clicks on ", "enter")));
+        assertThat(chain.tokenize(), equalTo(Arrays.asList("a user named ", "Travis", " clicks on ", "enter")));
     }
 
     @Test
-    public void extractParameterValues_with2Parameters_inside2ndParameter   () {
+    public void extractParameterValues_with2Parameters_inside2ndParameter() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks on $button button");
 
         Map<String, String> values = s.extractParameterValues("a user named Travis clicks on enter");
-        assertThat(values, equalTo((Map)New.hashMap("name", "Travis", "button", "enter")));
+        assertThat(values, equalTo((Map) New.hashMap("name", "Travis", "button", "enter")));
     }
 
     @Test
-    public void complete_with2Parameters_inside2ndParameter () {
+    public void complete_with2Parameters_inside2ndParameter() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks on $button button");
 
         String complete = s.complete("a user named Travis clicks on enter");
@@ -403,13 +403,13 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void acceptsInputPart_with2Parameters_after2ndParameter () {
+    public void acceptsInputPart_with2Parameters_after2ndParameter() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks on $button button");
         assertThat(s.acceptsBeginning("a user named Travis clicks on enter butt"), is(7));
     }
 
     @Test
-    public void weightChain_with2Parameters_after2ndParameter () {
+    public void weightChain_with2Parameters_after2ndParameter() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks on $button button");
 
         WeightChain chain = s.calculateWeightChain("a user named Travis clicks on enter butt");
@@ -417,15 +417,15 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void extractParameterValues_with2Parameters_after2ndParameter   () {
+    public void extractParameterValues_with2Parameters_after2ndParameter() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks on $button button");
 
         Map<String, String> values = s.extractParameterValues("a user named Travis clicks on enter butt");
-        assertThat(values, equalTo((Map)New.hashMap("name", "Travis", "button", "enter")));
+        assertThat(values, equalTo((Map) New.hashMap("name", "Travis", "button", "enter")));
     }
 
     @Test
-    public void complete_with2Parameters_after2ndParameter () {
+    public void complete_with2Parameters_after2ndParameter() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks on $button button");
 
         String complete = s.complete("a user named Travis clicks on enter butt");
@@ -434,13 +434,13 @@ public class ParametrizedStringTest {
 
 
     @Test
-    public void acceptsInputPart_with2Parameters_fullMatch () {
+    public void acceptsInputPart_with2Parameters_fullMatch() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks on $button button");
         assertThat(s.acceptsBeginning("a user named Travis clicks on enter button"), is(8));
     }
 
     @Test
-    public void weightChain_with2Parameters_fullMatch () {
+    public void weightChain_with2Parameters_fullMatch() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks on $button button");
         WeightChain chain = s.calculateWeightChain("a user named Travis clicks on enter button");
         List<String> inputFrags = chain.tokenize();
@@ -448,7 +448,7 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void complete_with2Parameters_fullMatch () {
+    public void complete_with2Parameters_fullMatch() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks on $button button");
 
         String complete = s.complete("a user named Travis clicks on enter button");
@@ -456,7 +456,7 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void matches_noParameter () {
+    public void matches_noParameter() {
         ParametrizedString s = new ParametrizedString("a user clicks");
         assertThat(s.matches("a user clicks"), is(true));
         assertThat(s.matches("a user clicks "), is(false));
@@ -465,7 +465,7 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void matches_withOneParameter () {
+    public void matches_withOneParameter() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks");
         assertThat(s.matches("a user named Travis clicks"), is(true));
         assertThat(s.matches("a user named $name clicks"), is(true));
@@ -473,7 +473,7 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void matches_withTwoParameters () {
+    public void matches_withTwoParameters() {
         ParametrizedString s = new ParametrizedString("a user named $name clicks on $button button");
         assertThat(s.matches("a user named Travis clicks on enter button"), is(true));
         assertThat(s.matches("a user named $name clicks on $butoon button"), is(true));
@@ -481,7 +481,7 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void weightChain_withNewlines () {
+    public void weightChain_withNewlines() {
         ParametrizedString s = new ParametrizedString("a user named $name with the following properties $exampleTable");
         String content = "a user named Bob with the following properties \n" +
                 "|key|value|\n" +
@@ -502,7 +502,7 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void extractParameterValues_withNewlines   () {
+    public void extractParameterValues_withNewlines() {
         ParametrizedString s = new ParametrizedString("a user named $name with the following properties $exampleTable");
         String content = "a user named Bob with the following properties \n" +
                 "|key|value|\n" +
@@ -518,7 +518,7 @@ public class ParametrizedStringTest {
     }
 
     @Test
-    public void weightChain_withNewlines_noParameterBefore () {
+    public void weightChain_withNewlines_noParameterBefore() {
         ParametrizedString s = new ParametrizedString("a user named Bob with the following properties $exampleTable");
         String content = "a user named Bob with the following properties \n" +
                 "|key|value|\n" +

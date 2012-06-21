@@ -23,7 +23,7 @@ public class Invoker {
     }
 
     public void invoke(InvocationContext context, Lifecycle lifecycle) {
-        if(!context.canInvokeLifecycle(lifecycle)) {
+        if (!context.canInvokeLifecycle(lifecycle)) {
             context.lifecycleSkipped(lifecycle);
             return;
         }
@@ -32,19 +32,16 @@ public class Invoker {
             Object instance = instanceProvider.getInstance(lifecycle.getOwningType());
             Method method = lifecycle.getMethod();
             Class<?>[] parameterTypes = method.getParameterTypes();
-            if(parameterTypes.length==1) {
-                if(InvocationContext.class.isAssignableFrom(parameterTypes[0])) {
+            if (parameterTypes.length == 1) {
+                if (InvocationContext.class.isAssignableFrom(parameterTypes[0])) {
                     method.invoke(instance, context);
                     context.lifecycleInvoked(lifecycle);
-                }
-                else {
+                } else {
                     context.lifecycleInvocationFailed(lifecycle, "Invalid parameter type on lifecycle <" + method + ">");
                 }
-            }
-            else if(parameterTypes.length>1) {
+            } else if (parameterTypes.length > 1) {
                 context.lifecycleInvocationFailed(lifecycle, "Invalid number of parameter on lifecycle <" + method + ">");
-            }
-            else {
+            } else {
                 method.invoke(instance);
                 context.lifecycleInvoked(lifecycle);
             }
@@ -58,7 +55,7 @@ public class Invoker {
     }
 
     public void invoke(InvocationContext context, InvokableStep invokableStep, CandidateStep candidateStep) {
-        if(!context.canInvokeStep(invokableStep, candidateStep)) {
+        if (!context.canInvokeStep(invokableStep, candidateStep)) {
             context.stepSkipped(invokableStep, candidateStep);
             return;
         }

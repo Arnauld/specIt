@@ -1,7 +1,5 @@
 package specit.util;
 
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;

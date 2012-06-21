@@ -80,6 +80,7 @@ public class ElementVisitor {
     public boolean beginFragment(Fragment fragment) {
         return beginDefaultFallback(fragment);
     }
+
     public void endFragment(Fragment fragment) {
         endDefaultFallback(fragment);
     }
@@ -87,6 +88,7 @@ public class ElementVisitor {
     public boolean beginRepeat(Repeat repeat) {
         return beginDefaultFallback(repeat);
     }
+
     public void endRepeat(Repeat repeat) {
         endDefaultFallback(repeat);
     }

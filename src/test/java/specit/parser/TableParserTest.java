@@ -21,9 +21,9 @@ public class TableParserTest {
     @Test
     public void getVariables() {
         String content = "Example:\n" +
-                        "|<name>|<value>|\n" +
-                        "| bob  |     12|\n" +
-                        "| alice|   1257|\n";
+                "|<name>|<value>|\n" +
+                "| bob  |     12|\n" +
+                "| alice|   1257|\n";
         Table variablesRows =
                 new TableParser(specIt).parse(content);
         assertThat(variablesRows.getRowCount(), equalTo(2));

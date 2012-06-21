@@ -142,23 +142,22 @@ public class StoryInterpreter {
             }
 
             RepeatParameters parameters = repeat.getRepeatParameters();
-            if(!parameters.hasReference())
+            if (!parameters.hasReference())
                 return false;
 
             Fragment fragment = repeat.findParentInStoryTree();
-            if(fragment==null) {
+            if (fragment == null) {
                 throw new IllegalStateException("No fragment found for Repeat directive [" + parameters.getReference() + "]");
             }
 
-            if(parameters.hasWithTable()) {
+            if (parameters.hasWithTable()) {
                 Table table = parameters.getWithTable();
-                for(Table.Row row : table) {
+                for (Table.Row row : table) {
                     InterpreterContext subContext = context.nestedContext(row.asMap());
                     fragment.traverseExecutablePart(new ExecutionVisitor(subContext, listener));
                 }
-            }
-            else {
-                for(int i=0; i<parameters.getLoopCount(); i++) {
+            } else {
+                for (int i = 0; i < parameters.getLoopCount(); i++) {
                     fragment.traverseExecutablePart(this);
                 }
             }

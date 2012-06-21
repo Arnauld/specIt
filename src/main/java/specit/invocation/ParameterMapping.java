@@ -45,7 +45,7 @@ public class ParameterMapping {
     }
 
     public Object extractValue(ConverterRegistry converterRegistry, InvocationContext context, Map<String, String> variableValues) throws ConverterException {
-        if(parameterType.equals(InvocationContext.class)) {
+        if (parameterType.equals(InvocationContext.class)) {
             return context;
         }
         Converter converter = getConverter(converterRegistry);

@@ -26,7 +26,7 @@ public class Calculator {
 
     protected int getVariableValueOrFail(String variable) {
         Integer existing = context.get(variable);
-        if(existing==null)
+        if (existing == null)
             throw new IllegalStateException("Variable <" + variable + "> is not defined");
         return existing;
     }

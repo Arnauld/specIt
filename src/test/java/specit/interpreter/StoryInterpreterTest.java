@@ -3,7 +3,10 @@ package specit.interpreter;
 import org.junit.Before;
 import org.junit.Test;
 import specit.SpecIt;
-import specit.element.*;
+import specit.element.Keyword;
+import specit.element.RawPart;
+import specit.element.Story;
+import specit.element.StoryBuilder;
 import specit.interpreter.InterpreterListenerRecorder.*;
 import specit.parser.RawPartDefault;
 
@@ -22,7 +25,7 @@ public class StoryInterpreterTest {
     private SpecIt specIt;
 
     @Before
-    public void setUp () {
+    public void setUp() {
         specIt = new SpecIt();
     }
 
@@ -31,7 +34,7 @@ public class StoryInterpreterTest {
         // Given
         Story story = new StoryBuilder()
                 .append(rawPart(Keyword.Narrative, "Narrative:\nAs a tester\nI want to test my builder\n\n"))
-                // scenario 1
+                        // scenario 1
                 .append(rawPart(Keyword.Scenario, "Scenario: First scenario\n"))
                 .append(rawPart(Keyword.Require, "Require: /story/scenario-env.story\n\n", "Require:"))
                 .append(rawPart(Keyword.Given, "Given a initial step for the first scenario\n"))
@@ -59,12 +62,12 @@ public class StoryInterpreterTest {
         // Given
         Story story = new StoryBuilder()
                 .append(rawPart(Keyword.Narrative, "Narrative:\nAs a tester\nI want to test my builder\n\n"))
-                // background
+                        // background
                 .append(rawPart(Keyword.Background, "Background:\n"))
                 .append(rawPart(Keyword.Require, "Require: /story/scenario-shared.story\n\n", "Require:"))
                 .append(rawPart(Keyword.Given, "Given steps for all scenario\n"))
                 .append(rawPart(Keyword.Given, "Given other steps for all scenario\n\n"))
-                // scenario 1
+                        // scenario 1
                 .append(rawPart(Keyword.Scenario, "Scenario: First scenario\n"))
                 .append(rawPart(Keyword.Require, "Require: /story/scenario-env.story\n\n", "Require:"))
                 .append(rawPart(Keyword.Given, "Given a initial step for the first scenario\n"))
@@ -246,13 +249,13 @@ public class StoryInterpreterTest {
 
     private static void assertInvokeStep(Event event, Keyword keyword, String resolved) {
         assertThat(event, instanceOf(InvokeStep.class));
-        assertThat(((InvokeStep)event).getKeyword(), equalTo(keyword));
-        assertThat(((InvokeStep)event).getResolved(), equalTo(resolved));
+        assertThat(((InvokeStep) event).getKeyword(), equalTo(keyword));
+        assertThat(((InvokeStep) event).getResolved(), equalTo(resolved));
     }
 
     private static void assertInvokeRequire(Event event, String resolved) {
         assertThat(event, instanceOf(InvokeRequire.class));
-        assertThat(((InvokeRequire)event).getResolved(), equalTo(resolved));
+        assertThat(((InvokeRequire) event).getResolved(), equalTo(resolved));
     }
 
 }

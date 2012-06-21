@@ -1,6 +1,5 @@
 package specit.invocation;
 
-import specit.SpecItRuntimeException;
 import specit.util.New;
 
 import java.util.Map;

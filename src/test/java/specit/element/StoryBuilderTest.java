@@ -17,8 +17,7 @@ public class StoryBuilderTest {
         Story story = new StoryBuilder()
                 .append(rawPart(Keyword.Narrative, "Narrative:\nAs a tester\nI want to test my builder\n\n"))
                 .append(rawPart(Keyword.Require, "Require: /story/scenario-shared-env.story\n\n"))
-                .getStory()
-                ;
+                .getStory();
         assertThat(story.getScenarioList().size(), equalTo(1));
         assertThat(story.getScenarioList().get(0), instanceOf(DefaultExecutablePart.class));
     }

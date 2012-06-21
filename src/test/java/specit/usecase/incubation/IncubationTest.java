@@ -4,13 +4,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import specit.SpecIt;
-import specit.element.DumpVisitor;
-import specit.element.ExecutablePart;
 import specit.element.Keyword;
-import specit.element.Story;
-import specit.interpreter.InterpreterContext;
-import specit.interpreter.InterpreterListener;
-import specit.interpreter.StoryInterpreter;
 import specit.invocation.ParameterMappingException;
 import specit.report.ConsoleColoredReporter;
 

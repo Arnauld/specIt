@@ -2,7 +2,6 @@ package specit.element;
 
 import specit.util.New;
 
-import java.util.AbstractList;
 import java.util.List;
 import java.util.Stack;
 
@@ -22,7 +21,7 @@ public class Story extends Element implements FragmentHolder {
 
     @Override
     public void traverse(ElementVisitor visitor) {
-        if(visitor.beginStory(this)) {
+        if (visitor.beginStory(this)) {
             if (narrative != null) {
                 narrative.traverse(visitor);
             }
@@ -129,12 +128,11 @@ public class Story extends Element implements FragmentHolder {
     }
 
     public void addFragment(Fragment fragment) {
-        if(currentExecutablePart.empty()) {
+        if (currentExecutablePart.empty()) {
             fragments.add(fragment);
             fragment.setParent(this);
             currentExecutablePart.push(fragment);
-        }
-        else {
+        } else {
             currentExecutablePart.peek().addFragment(fragment);
         }
     }

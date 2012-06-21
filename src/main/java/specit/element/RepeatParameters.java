@@ -24,8 +24,8 @@ public class RepeatParameters {
         return reference;
     }
 
-    public boolean hasLoopCount () {
-        return loopCount!=null;
+    public boolean hasLoopCount() {
+        return loopCount != null;
     }
 
     public Integer getLoopCount() {
@@ -33,7 +33,7 @@ public class RepeatParameters {
     }
 
     public boolean hasWithTable() {
-        return withTable!=null;
+        return withTable != null;
     }
 
     public Table getWithTable() {
@@ -50,6 +50,6 @@ public class RepeatParameters {
     }
 
     public boolean hasReference() {
-        return reference!=null;
+        return reference != null;
     }
 }

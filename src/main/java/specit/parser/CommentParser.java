@@ -24,7 +24,7 @@ public class CommentParser {
     }
 
     private Pattern commentsPattern() {
-        if(pattern==null)
+        if (pattern == null)
             pattern = Pattern.compile(commentsRegex(), Pattern.MULTILINE);
         return pattern;
     }
