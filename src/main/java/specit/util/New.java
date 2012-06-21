@@ -76,4 +76,8 @@ public final class New {
     public static <T> Stack<T> stack() {
         return new Stack<T>();
     }
+
+    public static <T> LinkedHashSet<T> linkedHashSet() {
+        return new LinkedHashSet<T>();
+    }
 }

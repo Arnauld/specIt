@@ -60,8 +60,8 @@ public class IncubationDumpTest {
             }
 
             @Override
-            public void invokeStep(Keyword keyword, String keywordAlias, String resolved, InterpreterContext context) {
-                System.out.println("IncubationDumpTest.stepInvoked(" + keyword + ":" +resolved +")" );
+            public void invokeStep(InvokableStep invokableStep, InterpreterContext context) {
+                System.out.println("IncubationDumpTest.stepInvoked(" + invokableStep.getKeyword() + ":" +invokableStep.getAdjustedInput() +")" );
             }
 
             @Override

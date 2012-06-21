@@ -13,11 +13,9 @@ import specit.invocation.*;
 import specit.invocation.converter.IntegerConverter;
 import specit.invocation.converter.StringConverter;
 import specit.parser.*;
-import specit.report.ConsoleColoredReporter;
 import specit.report.Reporter;
-import specit.report.Reporters;
 import specit.util.New;
-import specit.util.ProxyDispatch;
+import specit.util.Proxies;
 import specit.util.TemplateEngine;
 
 import java.lang.annotation.Annotation;
@@ -63,7 +61,7 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
     }
 
     protected Reporter getReporterDispatch() {
-        return ProxyDispatch.proxy(reporters, Reporter.class);
+        return Proxies.proxyDispatch(reporters, Reporter.class);
     }
 
     @Override
@@ -217,8 +215,8 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
             }
 
             @Override
-            public void invokeStep(Keyword keyword, String keywordAlias, String resolved, InterpreterContext context) {
-                doInvokeStep(keyword, keywordAlias, resolved, candidateStepRegistry, invoker, invocationContext);
+            public void invokeStep(InvokableStep invokableStep, InterpreterContext context) {
+                doInvokeStep(invokableStep, candidateStepRegistry, invoker, invocationContext);
             }
 
             @Override
@@ -234,19 +232,22 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
         }
     }
 
-    private void doInvokeStep(Keyword keyword, String keywordAlias, String resolved, CandidateStepRegistry candidateStepRegistry, Invoker invoker, InvocationContext invocationContext) {
+    private void doInvokeStep(InvokableStep invokableStep, CandidateStepRegistry candidateStepRegistry, Invoker invoker, InvocationContext invocationContext) {
+        String resolved = invokableStep.getAdjustedInput();
+        Keyword keyword = invokableStep.getKeyword();
+
         List<CandidateStep> candidateSteps = candidateStepRegistry.find(keyword, resolved);
         if (candidateSteps.isEmpty()) {
-            invocationContext.stepInvocationFailed(keywordAlias, resolved, candidateSteps, "No step matching <" + resolved + "> with keyword <" + keyword + ">");
+            invocationContext.stepInvocationFailed(invokableStep, candidateSteps, "No step matching <" + resolved + "> with keyword <" + keyword + ">");
             return;
         }
         else if (candidateSteps.size() > 1) {
-            invocationContext.stepInvocationFailed(keywordAlias, resolved, candidateSteps, "More than one step matching <" + resolved + "> with keyword <" + keyword + "> got: " + candidateSteps);
+            invocationContext.stepInvocationFailed(invokableStep, candidateSteps, "More than one step matching <" + resolved + "> with keyword <" + keyword + "> got: " + candidateSteps);
             return;
         }
 
         CandidateStep candidateStep = candidateSteps.get(0);
-        invoker.invoke(invocationContext, keywordAlias, resolved, candidateStep);
+        invoker.invoke(invocationContext, invokableStep, candidateStep);
     }
 
     private Listener toParserListener(final StoryBuilder builder) {

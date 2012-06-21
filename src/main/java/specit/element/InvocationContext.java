@@ -2,9 +2,8 @@ package specit.element;
 
 import specit.invocation.CandidateStep;
 import specit.invocation.Lifecycle;
-import specit.report.Reporter;
-import specit.report.ReporterNull;
 import specit.util.New;
+import specit.util.Proxies;
 
 import java.util.List;
 import java.util.Map;
@@ -26,7 +25,7 @@ public class InvocationContext {
     }
 
     public InvocationContext(InvocationContext parent, Story currentStory) {
-        this(parent, currentStory, new InvocationContextListenerNull());
+        this(parent, currentStory, Proxies.proxyNoOp(InvocationContextListener.class));
     }
 
     public InvocationContext(InvocationContext parent, Story currentStory, InvocationContextListener listener) {
@@ -82,29 +81,29 @@ public class InvocationContext {
         return stepInError;
     }
 
-    public void stepInvocationFailed(String keywordAlias, String input, CandidateStep candidateStep, String message, Exception cause) {
+    public void stepInvocationFailed(InvokableStep invokableStep, CandidateStep candidateStep, String message, Exception cause) {
         stepInError = true;
-        listener.stepInvocationFailed(keywordAlias, input, candidateStep, message, cause);
+        listener.stepInvocationFailed(invokableStep, candidateStep, message, cause);
     }
 
-    public void stepInvocationFailed(String keywordAlias, String resolved, List<CandidateStep> candidateSteps, String message) {
+    public void stepInvocationFailed(InvokableStep invokableStep, List<CandidateStep> candidateSteps, String message) {
         stepInError = true;
-        listener.stepInvocationFailed(keywordAlias, resolved, candidateSteps, message);
+        listener.stepInvocationFailed(invokableStep, candidateSteps, message);
     }
 
-    public boolean canInvokeStep(String keywordAlias, String input, CandidateStep candidateStep) {
+    public boolean canInvokeStep(InvokableStep invokableStep, CandidateStep candidateStep) {
         return !lifecycleInError && !stepInError;
     }
 
-    public void stepSkipped(String keywordAlias, String input, CandidateStep candidateStep) {
-        listener.stepSkipped(keywordAlias, input, candidateStep);
+    public void stepSkipped(InvokableStep invokableStep, CandidateStep candidateStep) {
+        listener.stepSkipped(invokableStep, candidateStep);
     }
 
     public void lifecycleInvoked(Lifecycle lifecycle) {
         listener.lifecycleInvoked(lifecycle);
     }
 
-    public void stepInvoked(String keywordAlias, String input, CandidateStep candidateStep) {
-        listener.stepInvoked(keywordAlias, input, candidateStep);
+    public void stepInvoked(InvokableStep invokableStep, CandidateStep candidateStep) {
+        listener.stepInvoked(invokableStep, candidateStep);
     }
 }

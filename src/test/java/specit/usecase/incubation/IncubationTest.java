@@ -11,6 +11,7 @@ import specit.element.Story;
 import specit.interpreter.InterpreterContext;
 import specit.interpreter.InterpreterListener;
 import specit.interpreter.StoryInterpreter;
+import specit.invocation.ParameterMappingException;
 import specit.report.ConsoleColoredReporter;
 
 import java.io.IOException;
@@ -38,9 +39,10 @@ public class IncubationTest {
     }
 
     @Test
-    public void scenario1() throws IOException {
+    public void scenario1() throws IOException, ParameterMappingException {
         String resourceName = "/stories/incubation/complete_usecase_003_fragment_light.story";
         specIt.withReporter(new ConsoleColoredReporter());
+        specIt.scanAnnotations(IncubationSteps.class);
         specIt.executeStory(resourceAsString(resourceName));
     }
 

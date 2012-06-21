@@ -1,6 +1,7 @@
 package specit.report;
 
 import specit.element.InvocationContextListener;
+import specit.element.InvokableStep;
 import specit.invocation.CandidateStep;
 import specit.invocation.Lifecycle;
 
@@ -35,23 +36,23 @@ public class Reporters {
             }
 
             @Override
-            public void stepInvocationFailed(String keywordAlias, String resolved, CandidateStep candidateStep, String message, Exception cause) {
-                reporter.stepInvocationFailed(keywordAlias, resolved, candidateStep, message, cause);
+            public void stepInvocationFailed(InvokableStep invokableStep, CandidateStep candidateStep, String message, Exception cause) {
+                reporter.stepInvocationFailed(invokableStep, candidateStep, message, cause);
             }
 
             @Override
-            public void stepInvocationFailed(String keywordAlias, String resolved, List<CandidateStep> candidateSteps, String message) {
-                reporter.stepInvocationFailed(keywordAlias, resolved, candidateSteps, message);
+            public void stepInvocationFailed(InvokableStep invokableStep, List<CandidateStep> candidateSteps, String message) {
+                reporter.stepInvocationFailed(invokableStep, candidateSteps, message);
             }
 
             @Override
-            public void stepSkipped(String keywordAlias, String input, CandidateStep candidateStep) {
-                reporter.stepSkipped(keywordAlias, input, candidateStep);
+            public void stepSkipped(InvokableStep invokableStep, CandidateStep candidateStep) {
+                reporter.stepSkipped(invokableStep, candidateStep);
             }
 
             @Override
-            public void stepInvoked(String keywordAlias, String input, CandidateStep candidateStep) {
-                reporter.stepInvoked(keywordAlias, input, candidateStep);
+            public void stepInvoked(InvokableStep invokableStep, CandidateStep candidateStep) {
+                reporter.stepInvoked(invokableStep, candidateStep);
             }
         };
     }

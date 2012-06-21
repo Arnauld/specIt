@@ -1,7 +1,7 @@
 package specit.interpreter;
 
 import specit.element.ExecutablePart;
-import specit.element.Keyword;
+import specit.element.InvokableStep;
 import specit.element.Story;
 
 /**
@@ -21,7 +21,7 @@ public class InterpreterListener {
     public void endScenario(ExecutablePart scenario, InterpreterContext context) {
     }
 
-    public void invokeStep(Keyword keyword, String keywordAlias, String resolved, InterpreterContext context) {
+    public void invokeStep(InvokableStep invokableStep, InterpreterContext context) {
     }
 
     public void invokeRequire(String resolved, InterpreterContext context) {

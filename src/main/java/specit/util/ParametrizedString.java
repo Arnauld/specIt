@@ -165,6 +165,41 @@ public class ParametrizedString {
         return chain;
     }
 
+    public static class StringToken {
+        private final String value;
+        private final boolean identifier;
+
+        public StringToken(String value, boolean identifier) {
+            this.value = value;
+            this.identifier = identifier;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public boolean isIdentifier() {
+            return identifier;
+        }
+    }
+
+    public List<StringToken> tokenize(String stepInput) {
+
+        List<StringToken> stringTokens = New.arrayList();
+
+        WeightChain chain = calculateWeightChain(stepInput);
+        List<String> inputTokens = chain.tokenize();
+        while (chain != null) {
+            if (!chain.isZero()) {
+                Token token = tokens.get(chain.getTokenIndex());
+                String value = inputTokens.get(chain.getTokenIndex());
+                stringTokens.add(new StringToken(value, token.isIdentifier));
+            }
+            chain = chain.getNext();
+        }
+        return stringTokens;
+    }
+
     public Map<String, String> extractParameterValues(String input) {
         Map<String, String> namedParameters = New.hashMap();
 

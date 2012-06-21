@@ -102,12 +102,12 @@ public class StoryInterpreter {
     /**
      * Resolves any variables and invoke the <code>Step</code> directive.
      */
-    private void invokeStep(InterpreterContext context, RawPart rawPart, InterpreterListener listener) {
-        String rawContent = rawPart.contentAfterAlias().trim();
+    private void invokeStep(InterpreterContext context, Step step, InterpreterListener listener) {
+        String rawContent = step.getRawPart().contentAfterAlias().trim();
         Map<String, String> variables = context.getVariables();
         String resolved = conf.templateEngine().resolve(rawContent, variables).toString();
 
-        listener.invokeStep(rawPart.getKeyword(), rawPart.getKeywordAlias(), resolved, context);
+        listener.invokeStep(new InvokableStep(step, resolved), context);
     }
 
     /**
@@ -175,7 +175,7 @@ public class StoryInterpreter {
                 return false;
             }
 
-            invokeStep(context, step.getRawPart(), listener);
+            invokeStep(context, step, listener);
             return true;
         }
 

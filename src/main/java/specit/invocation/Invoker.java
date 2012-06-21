@@ -1,6 +1,7 @@
 package specit.invocation;
 
 import specit.element.InvocationContext;
+import specit.element.InvokableStep;
 import specit.util.ParametrizedString;
 
 import java.lang.reflect.InvocationTargetException;
@@ -56,26 +57,28 @@ public class Invoker {
         }
     }
 
-    public void invoke(InvocationContext context, String keywordAlias, String input, CandidateStep candidateStep) {
-        if(!context.canInvokeStep(keywordAlias, input, candidateStep)) {
-            context.stepSkipped(keywordAlias, input, candidateStep);
+    public void invoke(InvocationContext context, InvokableStep invokableStep, CandidateStep candidateStep) {
+        if(!context.canInvokeStep(invokableStep, candidateStep)) {
+            context.stepSkipped(invokableStep, candidateStep);
             return;
         }
+
+        String input = invokableStep.getAdjustedInput();
 
         try {
             Object[] arguments = prepareMethodArguments(context, input, candidateStep);
             Object instance = instanceProvider.getInstance(candidateStep.getOwningType());
             Method method = candidateStep.getMethod();
             method.invoke(instance, arguments);
-            context.stepInvoked(keywordAlias, input, candidateStep);
+            context.stepInvoked(invokableStep, candidateStep);
         } catch (IllegalAccessException e) {
-            context.stepInvocationFailed(keywordAlias, input, candidateStep, "Failed to invoke step on input [" + input + "]", e);
+            context.stepInvocationFailed(invokableStep, candidateStep, "Failed to invoke step on input [" + input + "]", e);
         } catch (InvocationTargetException e) {
-            context.stepInvocationFailed(keywordAlias, input, candidateStep, "Failed to invoke step on input [" + input + "]", e);
+            context.stepInvocationFailed(invokableStep, candidateStep, "Failed to invoke step on input [" + input + "]", e);
         } catch (ConverterException e) {
-            context.stepInvocationFailed(keywordAlias, input, candidateStep, "Failed to invoke step on input [" + input + "]", e);
+            context.stepInvocationFailed(invokableStep, candidateStep, "Failed to invoke step on input [" + input + "]", e);
         } catch (InstanceProviderException e) {
-            context.stepInvocationFailed(keywordAlias, input, candidateStep, "Failed to invoke step on input [" + input + "]", e);
+            context.stepInvocationFailed(invokableStep, candidateStep, "Failed to invoke step on input [" + input + "]", e);
         }
     }
 

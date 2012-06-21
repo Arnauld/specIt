@@ -10,6 +10,7 @@ public enum BashStyle {
     Underline(4, 24),
     Black(30, 39),
     Red(31, 39),
+    RedHi(91, 39),
     Green(32, 39),
     Yellow(33, 39),
     Blue(34, 39),

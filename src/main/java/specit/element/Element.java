@@ -40,4 +40,12 @@ public abstract class Element {
     public Fragment findFragment(String fragmentRef, boolean searchInChildren) {
         return null;
     }
+
+    public String getKeywordAlias() {
+        return getRawPart().getKeywordAlias();
+    }
+
+    public Keyword getKeyword() {
+        return getRawPart().getKeyword();
+    }
 }

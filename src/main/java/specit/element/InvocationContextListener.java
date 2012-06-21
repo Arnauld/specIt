@@ -16,11 +16,11 @@ public interface InvocationContextListener {
 
     void lifecycleSkipped(Lifecycle lifecycle);
 
-    void stepInvocationFailed(String keywordAlias, String resolved, CandidateStep candidateStep, String message, Exception cause);
+    void stepInvocationFailed(InvokableStep invokableStep, CandidateStep candidateStep, String message, Exception cause);
 
-    void stepInvocationFailed(String keywordAlias, String resolved, List<CandidateStep> candidateSteps, String message);
+    void stepInvocationFailed(InvokableStep invokableStep, List<CandidateStep> candidateSteps, String message);
 
-    void stepSkipped(String keywordAlias, String input, CandidateStep candidateStep);
+    void stepSkipped(InvokableStep invokableStep, CandidateStep candidateStep);
 
-    void stepInvoked(String keywordAlias, String input, CandidateStep candidateStep);
+    void stepInvoked(InvokableStep invokableStep, CandidateStep candidateStep);
 }

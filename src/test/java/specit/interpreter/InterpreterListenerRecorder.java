@@ -1,6 +1,7 @@
 package specit.interpreter;
 
 import specit.element.ExecutablePart;
+import specit.element.InvokableStep;
 import specit.element.Keyword;
 import specit.element.Story;
 import specit.util.New;
@@ -36,8 +37,8 @@ public class InterpreterListenerRecorder extends InterpreterListener {
     }
 
     @Override
-    public void invokeStep(Keyword keyword, String keywordAlias, String resolved, InterpreterContext context) {
-        events.add(new InvokeStep(keyword, resolved, context));
+    public void invokeStep(InvokableStep invokableStep, InterpreterContext context) {
+        events.add(new InvokeStep(invokableStep, context));
     }
 
     @Override
@@ -112,22 +113,20 @@ public class InterpreterListenerRecorder extends InterpreterListener {
 
     public class InvokeStep implements InterpreterListenerRecorder.Event {
 
-        private final Keyword keyword;
-        private final String resolved;
+        private final InvokableStep invokableStep;
         private final InterpreterContext context;
 
-        public InvokeStep(Keyword keyword, String resolved, InterpreterContext context) {
-            this.keyword = keyword;
-            this.resolved = resolved;
+        public InvokeStep(InvokableStep invokableStep, InterpreterContext context) {
+            this.invokableStep = invokableStep;
             this.context = context;
         }
 
         public Keyword getKeyword() {
-            return keyword;
+            return invokableStep.getKeyword();
         }
 
         public String getResolved() {
-            return resolved;
+            return invokableStep.getAdjustedInput();
         }
 
         public InterpreterContext getContext() {

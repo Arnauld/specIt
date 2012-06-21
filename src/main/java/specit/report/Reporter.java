@@ -1,9 +1,6 @@
 package specit.report;
 
-import specit.element.Background;
-import specit.element.Keyword;
-import specit.element.Scenario;
-import specit.element.Story;
+import specit.element.*;
 import specit.invocation.CandidateStep;
 import specit.invocation.InvocationException;
 import specit.invocation.Lifecycle;
@@ -25,10 +22,10 @@ public interface Reporter {
     void endBackground(Background background);
     void startScenario(Scenario scenario);
 
-    void stepInvoked(String keywordAlias, String stepInput, CandidateStep candidateStep);
-    void stepSkipped(String keywordAlias, String stepInput, CandidateStep candidateStep);
-    void stepInvocationFailed(String keywordAlias, String stepInput, CandidateStep candidateStep, String message, Exception cause);
-    void stepInvocationFailed(String keywordAlias, String stepInput, List<CandidateStep> candidateSteps, String message);
+    void stepInvoked(InvokableStep invokableStep, CandidateStep candidateStep);
+    void stepSkipped(InvokableStep invokableStep, CandidateStep candidateStep);
+    void stepInvocationFailed(InvokableStep invokableStep, CandidateStep candidateStep, String message, Exception cause);
+    void stepInvocationFailed(InvokableStep invokableStep, List<CandidateStep> candidateSteps, String message);
 
     void endScenario(Scenario scenario);
     void endStory(Story story);
