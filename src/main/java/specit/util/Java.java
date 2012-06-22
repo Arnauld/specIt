@@ -4,7 +4,7 @@ package specit.util;
  *
  *
  */
-public class Java {
+public final class Java {
     private Java() {
     }
 

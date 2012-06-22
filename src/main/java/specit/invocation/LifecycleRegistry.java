@@ -72,9 +72,11 @@ public class LifecycleRegistry {
 
     public List<Lifecycle> getLifecycles(Class<? extends Annotation> lifecycleType) {
         List<Lifecycle> lifecycles = lifecyclePerType.get(lifecycleType);
-        if (lifecycles == null)
+        if (lifecycles == null) {
             return Collections.emptyList();
-        else
+        }
+        else {
             return lifecycles;
+        }
     }
 }

@@ -4,7 +4,7 @@ package specit.util;
  *
  *
  */
-public class FJ {
+public final class FJ {
 
     private FJ() {
     }

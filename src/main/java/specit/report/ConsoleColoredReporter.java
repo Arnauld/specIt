@@ -69,10 +69,12 @@ public class ConsoleColoredReporter implements Reporter {
         out.print(Yellow.open());
         out.print(Bold.stylize(rawPart.getKeywordAlias()));
         out.print(rawPart.contentAfterAlias());
-        if (rawPart.endsWithBlankLine())
+        if (rawPart.endsWithBlankLine()) {
             out.println(Yellow.close());
-        else
+        }
+        else {
             out.print(Yellow.close());
+        }
     }
 
     @Override
@@ -99,10 +101,12 @@ public class ConsoleColoredReporter implements Reporter {
         out.print(Bold.stylize(keywordAlias));
         out.print(' ');
         for (ParametrizedString.StringToken stringToken : candidateStep.getPattern().tokenize(stepInput)) {
-            if (stringToken.isIdentifier())
+            if (stringToken.isIdentifier()) {
                 out.print(Bold.stylize(stringToken.getValue()));
-            else
+            }
+            else {
                 out.print(stringToken.getValue());
+            }
         }
         out.println(Yellow.close());
     }
@@ -117,10 +121,12 @@ public class ConsoleColoredReporter implements Reporter {
         out.print(Bold.stylize(keywordAlias));
         out.print(' ');
         for (ParametrizedString.StringToken stringToken : candidateStep.getPattern().tokenize(stepInput)) {
-            if (stringToken.isIdentifier())
+            if (stringToken.isIdentifier()) {
                 out.print(Bold.stylize(stringToken.getValue()));
-            else
+            }
+            else {
                 out.print(stringToken.getValue());
+            }
         }
         out.println(Green.close());
     }
@@ -134,10 +140,12 @@ public class ConsoleColoredReporter implements Reporter {
         out.print(Bold.stylize(keywordAlias));
         out.print(' ');
         for (ParametrizedString.StringToken stringToken : candidateStep.getPattern().tokenize(stepInput)) {
-            if (stringToken.isIdentifier())
+            if (stringToken.isIdentifier()) {
                 out.print(Bold.stylize(stringToken.getValue()));
-            else
+            }
+            else {
                 out.print(stringToken.getValue());
+            }
         }
         out.println();
         //out.println("Ouch! " + message);
@@ -183,8 +191,9 @@ public class ConsoleColoredReporter implements Reporter {
 
     @Override
     public void endScenario(Scenario scenario) {
-        if (suggestedSteps.isEmpty())
+        if (suggestedSteps.isEmpty()) {
             return;
+        }
 
         out.println();
         LinkedHashSet<String> suggestions = New.linkedHashSet();
@@ -195,8 +204,9 @@ public class ConsoleColoredReporter implements Reporter {
         }
 
         out.print(Blue.open());
-        for (String suggestion : suggestions)
+        for (String suggestion : suggestions) {
             out.println(Italic.stylize(suggestion));
+        }
         out.print(Blue.close());
     }
 

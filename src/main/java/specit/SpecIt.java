@@ -50,8 +50,9 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
     }
 
     public SpecIt withAliases(Keyword kw, String... values) {
-        for (String value : values)
+        for (String value : values) {
             withAlias(kw, value);
+        }
         return this;
     }
 
@@ -223,20 +224,24 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
 
         @Override
         public void beginScenario(ExecutablePart scenarioOrBackground, InterpreterContext context) {
-            if (scenarioOrBackground instanceof Scenario)
+            if (scenarioOrBackground instanceof Scenario) {
                 reporterDispatch.startScenario((Scenario) scenarioOrBackground);
-            else if (scenarioOrBackground instanceof Background)
+            }
+            else if (scenarioOrBackground instanceof Background) {
                 reporterDispatch.startBackground((Background) scenarioOrBackground);
+            }
             doInvokeLifecycle(BeforeScenario.class, invoker, invocationContext);
         }
 
         @Override
         public void endScenario(ExecutablePart scenarioOrBackground, InterpreterContext context) {
             doInvokeLifecycle(AfterScenario.class, invoker, invocationContext);
-            if (scenarioOrBackground instanceof Scenario)
+            if (scenarioOrBackground instanceof Scenario) {
                 reporterDispatch.endScenario((Scenario) scenarioOrBackground);
-            else if (scenarioOrBackground instanceof Background)
+            }
+            else if (scenarioOrBackground instanceof Background) {
                 reporterDispatch.endBackground((Background) scenarioOrBackground);
+            }
         }
 
         @Override
@@ -272,6 +277,5 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
             invoker.invoke(invocationContext, invokableStep, candidateStep);
         }
     }
-
 
 }

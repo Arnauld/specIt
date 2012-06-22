@@ -11,7 +11,7 @@ import java.util.List;
  *
  *
  */
-public class Reporters {
+public final class Reporters {
 
     private Reporters() {
     }

@@ -13,7 +13,7 @@ import java.util.List;
  *
  *
  */
-public class Proxies {
+public final class Proxies {
 
     private Proxies() {
     }

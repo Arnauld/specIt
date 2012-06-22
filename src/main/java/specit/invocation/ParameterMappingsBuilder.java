@@ -70,10 +70,12 @@ public class ParameterMappingsBuilder {
         int nbParameters = parameterTypes.length;
         int nonSpecialIndex = 0;
         for (int parameterIndex = 0; parameterIndex < nbParameters; parameterIndex++) {
-            if (isSpecialArgument(parameterTypes[parameterIndex]))
+            if (isSpecialArgument(parameterTypes[parameterIndex])) {
                 defineSpecialParameterMapping(parameterIndex);
-            else
+            }
+            else {
                 defineParameterMapping(parameterIndex, variableNames.get(nonSpecialIndex++));
+            }
         }
     }
 
@@ -92,8 +94,9 @@ public class ParameterMappingsBuilder {
         int nbParameters = parameterTypes.length;
         // complete with specials
         for (int parameterIndex = 0; parameterIndex < nbParameters; parameterIndex++) {
-            if (isSpecialArgument(parameterTypes[parameterIndex]))
+            if (isSpecialArgument(parameterTypes[parameterIndex])) {
                 defineSpecialParameterMapping(parameterIndex);
+            }
         }
     }
 
@@ -152,10 +155,12 @@ public class ParameterMappingsBuilder {
 
     private static Class<? extends Converter> lookupConverter(Annotation[] annotations) {
         specit.annotation.Converter converter = lookupAnnotation(specit.annotation.Converter.class, annotations);
-        if (converter == null)
+        if (converter == null) {
             return null;
-        else
+        }
+        else {
             return converter.value();
+        }
     }
 
     @SuppressWarnings("unchecked")

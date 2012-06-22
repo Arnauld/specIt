@@ -69,8 +69,9 @@ public final class New {
 
     public static <T> HashSet<T> hashSet(Iterable<? extends T> values) {
         HashSet<T> set = new HashSet<T>();
-        for (T value : values)
+        for (T value : values) {
             set.add(value);
+        }
         return set;
     }
 

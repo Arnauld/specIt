@@ -16,6 +16,8 @@ public class ParametrizedString {
     private List<Token> tokens = new ArrayList<Token>();
     private final String content;
     private final String parameterPrefix;
+    private int parameterCount = -1; // lazily calculated
+
 
     public ParametrizedString(String content) {
         this(content, "$");
@@ -99,13 +101,6 @@ public class ParametrizedString {
         }
     }
 
-    public static boolean isIdentifierChar(char c) {
-        return ('a' <= c && c <= 'z')
-                || ('A' <= c && c <= 'Z')
-                || ('0' <= c && c <= '9')
-                || (c == '-' || c == '_');
-    }
-
     public Token getToken(int index) {
         return tokens.get(index);
     }
@@ -126,8 +121,6 @@ public class ParametrizedString {
     public int getTokenCount() {
         return tokens.size();
     }
-
-    private int parameterCount = -1;
 
     public int getParameterCount() {
         if (parameterCount == -1) {
@@ -247,8 +240,10 @@ public class ParametrizedString {
                             if ((inputIndex + overlaping) == input.length())
                                 // no more data, break the loop now
                                 return pair;
-                        } else // break looop
+                        } // break looop
+                        else {
                             return pair;
+                        }
 
                         inputIndex += overlaping;
                         WeightChain next = new WeightChain();
