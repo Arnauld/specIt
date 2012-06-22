@@ -1,4 +1,4 @@
-package specit.usecase.calculator;
+package specit.usecase.calculator.specitcontext;
 
 import org.junit.Before;
 import org.junit.Test;

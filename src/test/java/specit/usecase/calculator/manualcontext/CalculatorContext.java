@@ -1,4 +1,6 @@
-package specit.usecase.calculator;
+package specit.usecase.calculator.manualcontext;
+
+import specit.usecase.calculator.Calculator;
 
 public class CalculatorContext {
 

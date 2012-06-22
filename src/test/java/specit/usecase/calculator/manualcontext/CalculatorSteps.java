@@ -1,4 +1,4 @@
-package specit.usecase.calculator;
+package specit.usecase.calculator.manualcontext;
 
 import specit.annotation.Given;
 import specit.annotation.Then;
@@ -9,8 +9,8 @@ import specit.annotation.lifecycle.BeforeScenario;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static specit.usecase.calculator.CalculatorContext.calculator;
-import static specit.usecase.calculator.CalculatorContext.context;
+import static specit.usecase.calculator.manualcontext.CalculatorContext.calculator;
+import static specit.usecase.calculator.manualcontext.CalculatorContext.context;
 
 public class CalculatorSteps {
 
