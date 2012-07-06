@@ -6,6 +6,7 @@ import specit.SpecItRuntimeException;
 import specit.element.*;
 import specit.invocation.CandidateStep;
 import specit.invocation.Lifecycle;
+import specit.invocation.UserContextSupport;
 import specit.util.Java;
 import specit.util.New;
 import specit.util.ParametrizedString;
@@ -243,5 +244,16 @@ public class ConsoleColoredReporter implements Reporter {
 
     @Override
     public void endStory(Story story) {
+    }
+
+    @Override
+    public void userContextDefined(UserContextSupport userContextSupport) {
+        out.print(Grey.open());
+        out.print("UserContext  " + userContextSupport.scope() + ", " + userContextSupport.getUserContext());
+        out.println(Grey.close());
+    }
+
+    @Override
+    public void userContextDiscarded(UserContextSupport userContextSupport) {
     }
 }

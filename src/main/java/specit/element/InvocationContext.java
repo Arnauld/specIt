@@ -1,10 +1,15 @@
 package specit.element;
 
+import specit.annotation.UserContext;
+import specit.annotation.UserContextScope;
 import specit.invocation.CandidateStep;
+import specit.invocation.InvocationException;
 import specit.invocation.Lifecycle;
+import specit.invocation.UserContextSupport;
 import specit.util.New;
 import specit.util.Proxies;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +21,7 @@ public class InvocationContext {
     private final Map<Object, Object> values = New.hashMap();
     private final InvocationContext parent;
     private final InvocationContextListener listener;
+    private final List<UserContextSupport> userContexts = New.arrayList();
     private final Story currentStory;
     private boolean lifecycleInError;
     private boolean stepInError;
@@ -101,5 +107,29 @@ public class InvocationContext {
 
     public void stepInvoked(InvokableStep invokableStep, CandidateStep candidateStep) {
         listener.stepInvoked(invokableStep, candidateStep);
+    }
+
+    public void defineUserContext(UserContextSupport userContextSupport) {
+        listener.userContextDefined(userContextSupport);
+        userContexts.add(userContextSupport);
+    }
+
+    public Object lookupUserContext(Class<?> userContextType, UserContext userContextAnnotation) {
+        for(UserContextSupport userContext : userContexts) {
+            if(userContext.matches(userContextType, userContextAnnotation))
+                return userContext.getUserContext();
+        }
+        throw new InvocationException("No User Context matching {" + userContextType + ", @" + userContextAnnotation + "}");
+    }
+
+    public void discardUserContexts(UserContextScope scope) {
+        Iterator<UserContextSupport> userContexts = this.userContexts.iterator();
+        while(userContexts.hasNext()) {
+            UserContextSupport userContext = userContexts.next();
+            if(userContext.scope()==scope) {
+                listener.userContextDiscarded(userContext);
+                userContexts.remove();
+            }
+        }
     }
 }

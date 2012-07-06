@@ -1,11 +1,13 @@
 package specit.invocation;
 
+import specit.SpecItRuntimeException;
 import specit.element.InvocationContext;
 import specit.element.InvokableStep;
 import specit.util.ParametrizedString;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -22,6 +24,20 @@ public class Invoker {
         this.instanceProvider = instanceProvider;
     }
 
+    public void invoke(InvocationContext invocationContext, UserContextFactorySupport factory) {
+        try {
+
+            Object instance = instanceProvider.getInstance(factory.getOwningType());
+            Method method = factory.getMethod();
+
+            Object userContext = method.invoke(instance);
+            invocationContext.defineUserContext(new UserContextSupport(userContext, factory));
+        }
+        catch (Exception e) {
+            throw new SpecItRuntimeException(e);
+        }
+    }
+
     public void invoke(InvocationContext context, Lifecycle lifecycle) {
         if (!context.canInvokeLifecycle(lifecycle)) {
             context.lifecycleSkipped(lifecycle);
@@ -29,27 +45,18 @@ public class Invoker {
         }
 
         try {
+            Object[] arguments = prepareMethodArguments(context, lifecycle);
             Object instance = instanceProvider.getInstance(lifecycle.getOwningType());
             Method method = lifecycle.getMethod();
-            Class<?>[] parameterTypes = method.getParameterTypes();
-            if (parameterTypes.length == 1) {
-                if (InvocationContext.class.isAssignableFrom(parameterTypes[0])) {
-                    method.invoke(instance, context);
-                    context.lifecycleInvoked(lifecycle);
-                } else {
-                    context.lifecycleInvocationFailed(lifecycle, "Invalid parameter type on lifecycle <" + method + ">");
-                }
-            } else if (parameterTypes.length > 1) {
-                context.lifecycleInvocationFailed(lifecycle, "Invalid number of parameter on lifecycle <" + method + ">");
-            } else {
-                method.invoke(instance);
-                context.lifecycleInvoked(lifecycle);
-            }
+            method.invoke(instance, arguments);
+            context.lifecycleInvoked(lifecycle);
         } catch (IllegalAccessException e) {
             context.lifecycleInvocationFailed(lifecycle, "Failed to invoke lifecycle", e);
         } catch (InvocationTargetException e) {
             context.lifecycleInvocationFailed(lifecycle, "Failed to invoke lifecycle", e);
         } catch (InstanceProviderException e) {
+            context.lifecycleInvocationFailed(lifecycle, "Failed to invoke lifecycle", e);
+        } catch (ConverterException e) {
             context.lifecycleInvocationFailed(lifecycle, "Failed to invoke lifecycle", e);
         }
     }
@@ -82,9 +89,17 @@ public class Invoker {
     private Object[] prepareMethodArguments(InvocationContext context, String input, CandidateStep candidateStep) throws ConverterException {
         ParametrizedString pattern = candidateStep.getPattern();
         ParameterMapping[] parameterMappings = candidateStep.getParameterMappings();
-
         Map<String, String> variableValues = pattern.extractParameterValues(input);
+        return prepareMethodArguments(context, parameterMappings, variableValues);
+    }
 
+    private Object[] prepareMethodArguments(InvocationContext context, Lifecycle lifecycle) throws ConverterException {
+        ParameterMapping[] parameterMappings = lifecycle.getParameterMappings();
+        Map<String, String> variableValues = Collections.emptyMap();
+        return prepareMethodArguments(context, parameterMappings, variableValues);
+    }
+
+    private Object[] prepareMethodArguments(InvocationContext context, ParameterMapping[] parameterMappings, Map<String,String> variableValues) throws ConverterException {
         Object[] arguments = new Object[parameterMappings.length];
         for (ParameterMapping mapping : parameterMappings) {
             int parameterIndex = mapping.getParameterIndex();
@@ -92,4 +107,5 @@ public class Invoker {
         }
         return arguments;
     }
+
 }

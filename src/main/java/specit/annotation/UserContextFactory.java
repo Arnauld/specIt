@@ -1,11 +1,22 @@
 package specit.annotation;
 
+import java.lang.annotation.*;
+
 /**
- * Created with IntelliJ IDEA.
- * User: arnauld
- * Date: 22/06/12
- * Time: 09:23
- * To change this template use File | Settings | File Templates.
+ *
  */
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
 public @interface UserContextFactory {
+    /**
+     * (Optional) Name of the context created.
+     * @return
+     */
+    String name() default "";
+
+    /**
+     * Scope of the context created.
+     */
+    UserContextScope scope();
 }

@@ -30,5 +30,9 @@ public class Calculator {
             throw new IllegalStateException("Variable <" + variable + "> is not defined");
         return existing;
     }
+
+    public void clearVariables() {
+        context.clear();
+    }
 }
 

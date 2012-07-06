@@ -4,6 +4,7 @@ import specit.element.InvocationContextListener;
 import specit.element.InvokableStep;
 import specit.invocation.CandidateStep;
 import specit.invocation.Lifecycle;
+import specit.invocation.UserContextSupport;
 
 import java.util.List;
 
@@ -66,6 +67,16 @@ public final class Reporters {
         @Override
         public void stepInvoked(InvokableStep invokableStep, CandidateStep candidateStep) {
             reporter.stepInvoked(invokableStep, candidateStep);
+        }
+
+        @Override
+        public void userContextDefined(UserContextSupport userContextSupport) {
+            reporter.userContextDefined(userContextSupport);
+        }
+
+        @Override
+        public void userContextDiscarded(UserContextSupport userContextSupport) {
+            reporter.userContextDiscarded(userContextSupport);
         }
     }
 }

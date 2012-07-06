@@ -5,6 +5,7 @@ import org.junit.Test;
 import specit.SpecIt;
 import specit.element.Keyword;
 import specit.invocation.ParameterMappingException;
+import specit.report.ConsoleColoredReporter;
 
 /**
  *
@@ -25,7 +26,9 @@ public class CalculatorTest {
         specIt.withAlias(Keyword.Scenario, "Scenario:")
                 .withAlias(Keyword.Given, "Given")
                 .withAlias(Keyword.When, "When")
-                .withAlias(Keyword.Then, "Then");
+                .withAlias(Keyword.Then, "Then")
+                .withReporter(new ConsoleColoredReporter())
+        ;
     }
 
     @Test

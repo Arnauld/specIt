@@ -2,6 +2,7 @@ package specit.element;
 
 import specit.invocation.CandidateStep;
 import specit.invocation.Lifecycle;
+import specit.invocation.UserContextSupport;
 
 import java.util.List;
 
@@ -23,4 +24,8 @@ public interface InvocationContextListener {
     void stepSkipped(InvokableStep invokableStep, CandidateStep candidateStep);
 
     void stepInvoked(InvokableStep invokableStep, CandidateStep candidateStep);
+
+    void userContextDefined(UserContextSupport userContextSupport);
+
+    void userContextDiscarded(UserContextSupport userContextSupport);
 }

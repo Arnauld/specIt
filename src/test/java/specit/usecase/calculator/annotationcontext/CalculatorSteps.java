@@ -10,61 +10,75 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class CalculatorSteps {
 
-    @UserContextFactory()
-    public void inializeScenario(ScenarioContext scenarioContext) {
-        scenarioContext.setUserData(Calculator.class, new Calculator());
+    public static class ExceptionHolder {
+        private Exception exception;
+
+        public void setException(Exception exception) {
+            this.exception = exception;
+        }
+
+        public Exception getException() {
+            return exception;
+        }
+    }
+
+    @UserContextFactory(scope=UserContextScope.Scenario)
+    public ExceptionHolder exceptionHolder() {
+        return new ExceptionHolder();
+    }
+
+    @UserContextFactory(scope=UserContextScope.Scenario)
+    public Calculator scenarioCalculator() {
+        Calculator calculator = new Calculator();
+        return calculator;
     }
 
     @AfterScenario
-    public void disposeScenario(ScenarioContext scenarioContext) {
-        // not necessary since scenario context will be disposed
-        // but kept for information purpose
-        scenarioContext.removeUserData(Calculator.class);
+    public void disposeScenario(@UserContext Calculator calculator) {
+        System.out.println("CalculatorSteps.disposeScenario(" + calculator + ")");
+        calculator.clearVariables();
     }
 
     @Given("a variable $variable with value $value")
-    public void defineNamedVariableWithValue(ScenarioContext scenarioContext, String variable, int value) {
-        calculator(scenarioContext).defineVariable(variable, value);
+    public void defineNamedVariableWithValue(@UserContext Calculator calculator, String variable, int value) {
+        calculator.defineVariable(variable, value);
     }
 
     @When("I add $value to $variable")
-    public void addValueToVariable(ScenarioContext scenarioContext,
+    public void addValueToVariable(@UserContext Calculator calculator,
+                                   @UserContext ExceptionHolder exceptionHolder,
                                    @Variable("variable") String variable,
                                    @Variable("value") String value) {
         try {
             if (value.matches("\\d+")) {
-                calculator(scenarioContext).addToVariable(variable, Integer.parseInt(value));
+                calculator.addToVariable(variable, Integer.parseInt(value));
             } else {
-                calculator(scenarioContext).addToVariable(variable, value);
+                calculator.addToVariable(variable, value);
             }
         } catch (Exception e) {
-            scenarioContext.setUserData(Exception.class, e);
+            exceptionHolder.setException(e);
         }
     }
 
     @Then("$variable should equal to $expected")
-    public void assertVariableEqualTo(ScenarioContext scenarioContext,
+    public void assertVariableEqualTo(@UserContext Calculator calculator,
                                       String variable,
                                       int expectedValue) {
-        assertThat(calculator(scenarioContext).getVariableValue(variable), equalTo(expectedValue));
+        assertThat(calculator.getVariableValue(variable), equalTo(expectedValue));
     }
 
     @Then("the calculator should display the message '$errorMessage'")
-    public void assertErrorMessageIsDisplayed(ScenarioContext scenarioContext,
+    public void assertErrorMessageIsDisplayed(@UserContext ExceptionHolder exceptionHolder,
                                               String errorMessage) {
-        Exception lastError = scenarioContext.getUserData(Exception.class);
+        Exception lastError = exceptionHolder.getException();
         assertThat("Not in error situtation", lastError, notNullValue());
         assertThat("Wrong error message", lastError.getMessage(), equalTo(errorMessage));
     }
 
     @Then("the calculator should not be in error")
-    public void assertNoErrorMessageIsDisplayed(ScenarioContext scenarioContext) {
-        Exception lastError = scenarioContext.getUserData(Exception.class);
-        assertThat(lastError, nullValue());
-    }
-
-    private static Calculator calculator(ScenarioContext scenarioContext) {
-        return scenarioContext.getUserData(Calculator.class);
+    public void assertNoErrorMessageIsDisplayed(@UserContext ExceptionHolder exceptionHolder) {
+        System.out.println("CalculatorSteps.assertNoErrorMessageIsDisplayed");
+        assertThat(exceptionHolder.getException(), nullValue());
     }
 
 }

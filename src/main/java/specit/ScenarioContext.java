@@ -1,6 +1,6 @@
 package specit;
 
-import specit.element.Story;
+import specit.element.Scenario;
 
 /**
  *
@@ -8,7 +8,9 @@ import specit.element.Story;
  */
 public interface ScenarioContext {
 
-    public Story getCurrentStory();
+    public Scenario getCurrentScenario();
+
+    public StoryContext getStoryContext();
 
     public <T> T getUserData(Object key);
 

@@ -1,5 +1,8 @@
 package specit.invocation;
 
+import specit.ScenarioContext;
+import specit.StoryContext;
+import specit.annotation.UserContext;
 import specit.annotation.Variable;
 import specit.element.InvocationContext;
 import specit.util.New;
@@ -7,6 +10,7 @@ import specit.util.ParametrizedString;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,6 +28,9 @@ public class ParameterMappingsBuilder {
     // results
     private ParameterMapping[] parameterMappings;
 
+    public ParameterMappingsBuilder(Method method) {
+        this(method, null);
+    }
     public ParameterMappingsBuilder(Method method, ParametrizedString pattern) {
         this.method = method;
         this.pattern = pattern;
@@ -35,22 +42,22 @@ public class ParameterMappingsBuilder {
     }
 
     private void generateParameterMappings() throws ParameterMappingException {
-        Class<?>[] parameterTypes = method.getParameterTypes();
-
-        final int nbParameters = parameterTypes.length;
-        final int nbVariables = pattern.getParameterCount();
+        final int nbParameters = method.getParameterTypes().length;
+        final int nbVariables = (pattern==null)?0:pattern.getParameterCount();
 
         // if one parameterType is an instance of InvocationContext then it won't
         // be matched to any variable
-        int nbVariablesRequired = countNonSpecialParameters(parameterTypes);
+        int nbVariablesRequired = countNonSpecialParameters(method);
         if (nbVariables != nbVariablesRequired) {
-            throw new ParameterMappingException("Incompatible number of variables and method parameters on " + method);
+            throw new ParameterMappingException(
+                    "Incompatible number of variables and method parameters on " + formatMethod(method) +
+                    " number of variables: " + nbVariables + ", number of non special variables: " + nbVariablesRequired);
         }
 
-        List<String> variableNames = pattern.getParameters();
+        List<String> variableNames = (pattern==null)? Collections.<String>emptyList():pattern.getParameters();
         Set<String> uniqueVariableNames = New.hashSet(variableNames);
         if (uniqueVariableNames.size() != variableNames.size()) {
-            throw new ParameterMappingException("Duplicate variable name (" + variableNames + ") in pattern on " + method);
+            throw new ParameterMappingException("Duplicate variable name (" + variableNames + ") in pattern on " + formatMethod(method));
         }
 
         parameterMappings = new ParameterMapping[nbParameters];
@@ -65,22 +72,23 @@ public class ParameterMappingsBuilder {
         }
     }
 
+    private static String formatMethod(Method method) {
+        return method.getDeclaringClass().getName() + '#' + method.getName();
+    }
+
     private void createMappingsUsingParameterOrders(List<String> variableNames) {
-        Class<?>[] parameterTypes = method.getParameterTypes();
-        int nbParameters = parameterTypes.length;
+        int nbParameters = nbParametersOf(method);
         int nonSpecialIndex = 0;
         for (int parameterIndex = 0; parameterIndex < nbParameters; parameterIndex++) {
-            if (isSpecialArgument(parameterTypes[parameterIndex])) {
+            if (isParameterSpecial(method, parameterIndex)) {
                 defineSpecialParameterMapping(parameterIndex);
-            }
-            else {
+            } else {
                 defineParameterMapping(parameterIndex, variableNames.get(nonSpecialIndex++));
             }
         }
     }
 
     private void createMappingsUsingVariableNames(Set<String> uniqueVariableNames, Map<String, Integer> variableNameToParamIndex) throws ParameterMappingException {
-        Class<?>[] parameterTypes = method.getParameterTypes();
         if (variableNameToParamIndex.size() != uniqueVariableNames.size())
             throw new ParameterMappingException("All parameters or none must define @" + Variable.class.getName() + " on " + method);
         for (Map.Entry<String, Integer> entry : variableNameToParamIndex.entrySet()) {
@@ -91,31 +99,23 @@ public class ParameterMappingsBuilder {
             }
             defineParameterMapping(parameterIndex, variableName);
         }
-        int nbParameters = parameterTypes.length;
+        int nbParameters = method.getParameterTypes().length;
         // complete with specials
         for (int parameterIndex = 0; parameterIndex < nbParameters; parameterIndex++) {
-            if (isSpecialArgument(parameterTypes[parameterIndex])) {
+            if (isParameterSpecial(method, parameterIndex)) {
                 defineSpecialParameterMapping(parameterIndex);
             }
         }
     }
 
-    private int countNonSpecialParameters(Class<?>[] parameterTypes) {
-        int nonSpecials = 0;
-        for (Class<?> parameterType : parameterTypes) {
-            if (!isSpecialArgument(parameterType)) {
-                nonSpecials++;
-            }
-        }
-        return nonSpecials;
-    }
-
     private void defineSpecialParameterMapping(int parameterIndex) {
         Class<?>[] parameterTypes = method.getParameterTypes();
+        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         parameterMappings[parameterIndex] =
                 new ParameterMapping(
                         parameterTypes[parameterIndex],
-                        parameterIndex);
+                        parameterIndex,
+                        parameterAnnotations[parameterIndex]);
     }
 
     private void defineParameterMapping(int parameterIndex, String variableName) {
@@ -126,12 +126,42 @@ public class ParameterMappingsBuilder {
                 new ParameterMapping(
                         parameterTypes[parameterIndex],
                         parameterIndex,
+                        parameterAnnotations[parameterIndex],
                         variableName,
                         converterClass);
     }
 
-    private boolean isSpecialArgument(Class<?> parameterType) {
-        return InvocationContext.class.isAssignableFrom(parameterType);
+    private static int nbParametersOf(Method method) {
+        return method.getParameterTypes().length;
+    }
+
+    private static int countNonSpecialParameters(Method method) {
+        int nonSpecials = 0;
+        for (int i=0, n= nbParametersOf(method); i<n; i++) {
+            if (!isParameterSpecial(method, i)) {
+                nonSpecials++;
+            }
+        }
+        return nonSpecials;
+    }
+
+    private static boolean isParameterSpecial(Method method, int parameterIndex) {
+        return isPredefinedContext(method.getParameterTypes()[parameterIndex])
+                || hasContextAnnotation(method.getParameterAnnotations()[parameterIndex]);
+    }
+
+    private static boolean hasContextAnnotation(Annotation[] annotations) {
+        for(Annotation annotation : annotations) {
+            if(annotation.annotationType().equals(UserContext.class))
+                return true;
+        }
+        return false;
+    }
+
+    private static boolean isPredefinedContext(Class<?> parameterType) {
+        return StoryContext.class.isAssignableFrom(parameterType)
+                || ScenarioContext.class.isAssignableFrom(parameterType)
+                || InvocationContext.class.isAssignableFrom(parameterType);
     }
 
     private Map<String, Integer> generateVariableNameToParameterIndex(Annotation[][] parameterAnnotations) throws ParameterMappingException {
@@ -157,8 +187,7 @@ public class ParameterMappingsBuilder {
         specit.annotation.Converter converter = lookupAnnotation(specit.annotation.Converter.class, annotations);
         if (converter == null) {
             return null;
-        }
-        else {
+        } else {
             return converter.value();
         }
     }

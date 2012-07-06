@@ -6,6 +6,7 @@ import specit.element.Scenario;
 import specit.element.Story;
 import specit.invocation.CandidateStep;
 import specit.invocation.Lifecycle;
+import specit.invocation.UserContextSupport;
 
 import java.util.List;
 
@@ -41,4 +42,8 @@ public interface Reporter {
     void endScenario(Scenario scenario);
 
     void endStory(Story story);
+
+    void userContextDefined(UserContextSupport userContextSupport);
+
+    void userContextDiscarded(UserContextSupport userContextSupport);
 }

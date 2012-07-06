@@ -1,11 +1,18 @@
 package specit;
 
+import specit.element.Story;
+
 /**
- * Created with IntelliJ IDEA.
- * User: arnauld
- * Date: 22/06/12
- * Time: 09:08
- * To change this template use File | Settings | File Templates.
+ *
+ *
  */
-public class StoryContext {
+public interface StoryContext {
+
+    public Story getCurrentStory();
+
+    public <T> T getUserData(Object key);
+
+    public void setUserData(Object key, Object value);
+
+    public void removeUserData(Object key);
 }

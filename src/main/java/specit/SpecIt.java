@@ -1,5 +1,6 @@
 package specit;
 
+import specit.annotation.UserContextScope;
 import specit.annotation.lifecycle.AfterScenario;
 import specit.annotation.lifecycle.AfterStory;
 import specit.annotation.lifecycle.BeforeScenario;
@@ -31,7 +32,7 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
     private final TemplateEngine templateEngine = new TemplateEngine();
     private CandidateStepRegistry candidateStepRegistry;
     private ConverterRegistry converterRegistry;
-    private LifecycleRegistry lifecycleRegistry;
+    private AnnotationRegistry annotationRegistry;
     private final List<Reporter> reporters = New.arrayList();
 
     @Override
@@ -112,10 +113,12 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
 
     protected void interpretStory(Story story, Reporter reporterDispatch) {
         InvocationContext invocationContext = newInvocationContext(null, story, reporterDispatch);
+        InstanceProvider instanceProvider = new InstanceProviderBasic();
+
         new StoryInterpreter(this).interpretStory(story, interpreterListener(
                 invocationContext,
                 getCandidateStepRegistry(),
-                newInvoker(),
+                newInvoker(instanceProvider),
                 reporterDispatch));
     }
 
@@ -131,16 +134,15 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
         return new InvocationContext(parent, currentStory, asInvocationContextListener(reporterDispatch));
     }
 
-    protected Invoker newInvoker() {
-        InstanceProvider instanceProvider = new InstanceProviderBasic();
+    protected Invoker newInvoker(InstanceProvider instanceProvider) {
         return new Invoker(getConverterRegistry(), instanceProvider);
     }
 
-    public LifecycleRegistry getLifecycleRegistry() {
-        if (lifecycleRegistry == null) {
-            lifecycleRegistry = new LifecycleRegistry();
+    public AnnotationRegistry getAnnotationRegistry() {
+        if (annotationRegistry == null) {
+            annotationRegistry = new AnnotationRegistry();
         }
-        return lifecycleRegistry;
+        return annotationRegistry;
     }
 
     public ConverterRegistry getConverterRegistry() {
@@ -157,9 +159,10 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
         registry.registerConverter(int.class, new IntegerConverter());
     }
 
-    public void scanAnnotations(Class<?> stepOrLifecycleDefinitions) throws ParameterMappingException {
-        getCandidateStepRegistry().scan(stepOrLifecycleDefinitions);
-        getLifecycleRegistry().scan(stepOrLifecycleDefinitions);
+    public SpecIt scanAnnotations(Class<?> annotationDefinitions) throws ParameterMappingException {
+        getCandidateStepRegistry().scan(annotationDefinitions);
+        getAnnotationRegistry().scan(annotationDefinitions);
+        return this;
     }
 
     protected CandidateStepRegistry getCandidateStepRegistry() {
@@ -176,7 +179,7 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
         return new InterpreterListenerAdapter(
                 invocationContext,
                 candidateStepRegistry,
-                lifecycleRegistry,
+                annotationRegistry,
                 invoker,
                 reporterDispatch);
     }
@@ -194,18 +197,18 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
 
         private final InvocationContext invocationContext;
         private final CandidateStepRegistry candidateStepRegistry;
-        private final LifecycleRegistry lifecycleRegistry;
+        private final AnnotationRegistry annotationRegistry;
         private final Invoker invoker;
         private final Reporter reporterDispatch;
 
         public InterpreterListenerAdapter(InvocationContext invocationContext,
                                           CandidateStepRegistry candidateStepRegistry,
-                                          LifecycleRegistry lifecycleRegistry,
+                                          AnnotationRegistry annotationRegistry,
                                           Invoker invoker,
                                           Reporter reporterDispatch) {
             this.invocationContext = invocationContext;
             this.candidateStepRegistry = candidateStepRegistry;
-            this.lifecycleRegistry = lifecycleRegistry;
+            this.annotationRegistry = annotationRegistry;
             this.invoker = invoker;
             this.reporterDispatch = reporterDispatch;
         }
@@ -213,12 +216,14 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
         @Override
         public void beginStory(Story story) {
             reporterDispatch.startStory(story);
-            doInvokeLifecycle(BeforeStory.class, invoker, invocationContext);
+            doCreateUserContexts(UserContextScope.Story, invoker, invocationContext);
+            doInvokeLifecycles(BeforeStory.class, invoker, invocationContext);
         }
 
         @Override
         public void endStory(Story story) {
-            doInvokeLifecycle(AfterStory.class, invoker, invocationContext);
+            doInvokeLifecycles(AfterStory.class, invoker, invocationContext);
+            doDiscardUserContexts(UserContextScope.Story, invoker, invocationContext);
             reporterDispatch.endStory(story);
         }
 
@@ -230,12 +235,14 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
             else if (scenarioOrBackground instanceof Background) {
                 reporterDispatch.startBackground((Background) scenarioOrBackground);
             }
-            doInvokeLifecycle(BeforeScenario.class, invoker, invocationContext);
+            doCreateUserContexts(UserContextScope.Scenario, invoker, invocationContext);
+            doInvokeLifecycles(BeforeScenario.class, invoker, invocationContext);
         }
 
         @Override
         public void endScenario(ExecutablePart scenarioOrBackground, InterpreterContext context) {
-            doInvokeLifecycle(AfterScenario.class, invoker, invocationContext);
+            doInvokeLifecycles(AfterScenario.class, invoker, invocationContext);
+            doDiscardUserContexts(UserContextScope.Scenario, invoker, invocationContext);
             if (scenarioOrBackground instanceof Scenario) {
                 reporterDispatch.endScenario((Scenario) scenarioOrBackground);
             }
@@ -254,10 +261,20 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
             throw new UnsupportedOperationException();
         }
 
-        private void doInvokeLifecycle(Class<? extends Annotation> annotationType, Invoker invoker, InvocationContext invocationContext) {
-            for (Lifecycle lifecycle : lifecycleRegistry.getLifecycles(annotationType)) {
+        private void doInvokeLifecycles(Class<? extends Annotation> annotationType, Invoker invoker, InvocationContext invocationContext) {
+            for (Lifecycle lifecycle : annotationRegistry.getLifecycles(annotationType)) {
                 invoker.invoke(invocationContext, lifecycle);
             }
+        }
+
+        private void doCreateUserContexts(UserContextScope scope, Invoker invoker, InvocationContext invocationContext) {
+            for(UserContextFactorySupport factory : annotationRegistry.getUserContextFactories(scope)) {
+                invoker.invoke(invocationContext, factory);
+            }
+        }
+
+        private void doDiscardUserContexts(UserContextScope scope, Invoker invoker, InvocationContext invocationContext) {
+            invocationContext.discardUserContexts(scope);
         }
 
         private void doInvokeStep(InvokableStep invokableStep, CandidateStepRegistry candidateStepRegistry, Invoker invoker, InvocationContext invocationContext) {

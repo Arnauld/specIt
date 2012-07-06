@@ -11,11 +11,13 @@ public class Lifecycle {
     private final Class<?> owningType;
     private final Method method;
     private final Annotation lifecycleAnnotation;
+    private final ParameterMapping[] parameterMappings;
 
-    public Lifecycle(Class<?> owningType, Method method, Annotation lifecycleAnnotation) {
+    public Lifecycle(Class<?> owningType, Method method, Annotation lifecycleAnnotation, ParameterMapping[] parameterMappings) {
         this.owningType = owningType;
         this.method = method;
         this.lifecycleAnnotation = lifecycleAnnotation;
+        this.parameterMappings = parameterMappings;
     }
 
     public Class<?> getOwningType() {
@@ -32,6 +34,10 @@ public class Lifecycle {
 
     public Class<? extends Annotation> getLifecycleType() {
         return lifecycleAnnotation.annotationType();
+    }
+
+    public ParameterMapping[] getParameterMappings() {
+        return parameterMappings;
     }
 
     @Override
