@@ -1,11 +1,12 @@
 package specit.parser;
 
+import static specit.util.CharSequences.startsWithIgnoringChars;
+
 import specit.element.Alias;
 import specit.element.Keyword;
 import specit.element.RawPart;
 import specit.util.CharIterator;
 import specit.util.CharIterators;
-import specit.util.CharSequences;
 
 public class Parser {
 
@@ -122,7 +123,10 @@ public class Parser {
 
         public Alias startingAliasEntry() {
             for (Alias alias : conf.aliases()) {
-                if (CharSequences.startsWithIgnoringChars(buffer, alias.getKeywordAlias(), conf.ignoredCharactersOnPartStart())) {
+                if (startsWithIgnoringChars(buffer,
+                        alias.getKeywordAlias(),
+                        conf.ignoredCharactersOnPartStart()))
+                {
                     return alias;
                 }
             }

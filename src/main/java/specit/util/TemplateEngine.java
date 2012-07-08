@@ -24,7 +24,8 @@ public class TemplateEngine {
             String var = variables.get(text.substring(start + 1, end - 1));
             if (var != null) {
                 resolved.append(var);
-            } else {
+            }
+            else {
                 resolved.append(text, start, end);
             }
             prev = end;

@@ -2,6 +2,12 @@ package specit.element;
 
 import java.lang.annotation.Annotation;
 
+/**
+ * List of all keywords managed by <code>specIt</code>.
+ * <p/>
+ * Keywords are used in several places such as for parsing (they provide the starting word
+ * identifying the type of parsed part), step matching or reporting.
+ */
 public enum Keyword {
     Unknown,
     Narrative,
@@ -11,6 +17,9 @@ public enum Keyword {
     Given,
     When,
     Then,
+    /**
+     *
+     */
     And,
     Example,
     Fragment,

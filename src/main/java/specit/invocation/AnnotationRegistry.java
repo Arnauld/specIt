@@ -52,16 +52,20 @@ public class AnnotationRegistry {
         if (annotationType.equals(BeforeScenario.class)) {
             BeforeScenario beforeScenario = (BeforeScenario) annotation;
             register(klazz, method, beforeScenario);
-        } else if (annotationType.equals(AfterScenario.class)) {
+        }
+        else if (annotationType.equals(AfterScenario.class)) {
             AfterScenario afterScenario = (AfterScenario) annotation;
             register(klazz, method, afterScenario);
-        } else if (annotationType.equals(BeforeStory.class)) {
+        }
+        else if (annotationType.equals(BeforeStory.class)) {
             BeforeStory beforeStory = (BeforeStory) annotation;
             register(klazz, method, beforeStory);
-        } else if (annotationType.equals(AfterStory.class)) {
+        }
+        else if (annotationType.equals(AfterStory.class)) {
             AfterStory afterStory = (AfterStory) annotation;
             register(klazz, method, afterStory);
-        } else if (annotationType.equals(UserContextFactory.class)) {
+        }
+        else if (annotationType.equals(UserContextFactory.class)) {
             UserContextFactory factory = (UserContextFactory) annotation;
             register(new UserContextFactorySupport(klazz, method, factory));
         }
@@ -78,8 +82,8 @@ public class AnnotationRegistry {
 
     public List<UserContextFactorySupport> getUserContextFactories(UserContextScope scope) {
         List<UserContextFactorySupport> selected = New.arrayList();
-        for(UserContextFactorySupport factorySupport : userContextFactorySupports) {
-            if(factorySupport.scope() == scope) {
+        for (UserContextFactorySupport factorySupport : userContextFactorySupports) {
+            if (factorySupport.scope() == scope) {
                 selected.add(factorySupport);
             }
         }
@@ -100,7 +104,8 @@ public class AnnotationRegistry {
         List<Lifecycle> lifecycles = lifecyclePerType.get(lifecycleType);
         if (lifecycles == null) {
             return Collections.emptyList();
-        } else {
+        }
+        else {
             return lifecycles;
         }
     }

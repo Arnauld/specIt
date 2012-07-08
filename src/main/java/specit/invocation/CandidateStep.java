@@ -16,7 +16,12 @@ public class CandidateStep {
     private final ParametrizedString pattern;
     private final ParameterMapping[] parameterMappings;
 
-    public CandidateStep(Class<?> owningType, Method method, Keyword keyword, ParametrizedString pattern, ParameterMapping[] parameterMappings) {
+    public CandidateStep(Class<?> owningType,
+                         Method method,
+                         Keyword keyword,
+                         ParametrizedString pattern,
+                         ParameterMapping[] parameterMappings)
+    {
         this.owningType = owningType;
         this.method = method;
         this.keyword = keyword;
@@ -44,18 +49,19 @@ public class CandidateStep {
         return parameterMappings;
     }
 
-    public boolean matches(Keyword keyword, String pattern) {
-        if (getKeyword() != keyword)
+    public boolean matches(Keyword otherKeyword, String otherPattern) {
+        if (getKeyword() != otherKeyword) {
             return false;
-        return getPattern().matches(pattern);
+        }
+        return getPattern().matches(otherPattern);
     }
 
     @Override
     public String toString() {
-        return "CandidateStep{" +
-                "pattern=" + pattern +
-                ", keyword=" + keyword +
-                ", owner=" + owningType + "#" + method.getName() +
-                '}';
+        return "CandidateStep{"
+                + "pattern=" + pattern
+                + ", keyword=" + keyword
+                + ", owner=" + owningType + "#" + method.getName()
+                + '}';
     }
 }

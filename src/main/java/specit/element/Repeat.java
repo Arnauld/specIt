@@ -19,9 +19,9 @@ public class Repeat extends Step {
     }
 
     public String toString() {
-        return "Repeat{" +
-                "parameters='" + getRepeatParameters() + '\'' +
-                "}";
+        return "Repeat{"
+                + "parameters='" + getRepeatParameters() + '\''
+                + "}";
     }
 
     public Fragment findParentInStoryTree() {
@@ -30,8 +30,9 @@ public class Repeat extends Step {
         Element parent = getParent();
         while (parent != null) {
             Fragment fragment = parent.findFragment(fragmentRef, false);
-            if (fragment != null)
+            if (fragment != null) {
                 return fragment;
+            }
             parent = parent.getParent();
         }
         return null;

@@ -1,5 +1,6 @@
 package specit.invocation.converter;
 
+import specit.SpecItRuntimeException;
 import specit.invocation.Converter;
 
 import java.text.DateFormat;
@@ -23,16 +24,18 @@ public class DateConverter implements Converter {
             String trimmed = value.trim();
             try {
                 return dateFormat.parse(trimmed);
-            } catch (ParseException e) {
+            }
+            catch (ParseException e) {
+                throw new SpecItRuntimeException("Value <" + value + "> is not a valid date value", e);
             }
         }
-        throw new IllegalArgumentException("Value <" + value + "> is not a valid date value");
     }
 
     @Override
     public String[] suggest(String prefix) {
-        if (isValid(prefix))
+        if (isValid(prefix)) {
             return new String[]{prefix};
+        }
         return new String[0];
     }
 
@@ -41,7 +44,8 @@ public class DateConverter implements Converter {
             String trimmed = prefix.trim();
             try {
                 return dateFormat.parse(trimmed) != null;
-            } catch (ParseException e) {
+            }
+            catch (ParseException e) {
                 return false;
             }
         }

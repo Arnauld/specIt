@@ -50,13 +50,17 @@ public class Invoker {
             Method method = lifecycle.getMethod();
             method.invoke(instance, arguments);
             context.lifecycleInvoked(lifecycle);
-        } catch (IllegalAccessException e) {
+        }
+        catch (IllegalAccessException e) {
             context.lifecycleInvocationFailed(lifecycle, "Failed to invoke lifecycle", e);
-        } catch (InvocationTargetException e) {
+        }
+        catch (InvocationTargetException e) {
             context.lifecycleInvocationFailed(lifecycle, "Failed to invoke lifecycle", e);
-        } catch (InstanceProviderException e) {
+        }
+        catch (InstanceProviderException e) {
             context.lifecycleInvocationFailed(lifecycle, "Failed to invoke lifecycle", e);
-        } catch (ConverterException e) {
+        }
+        catch (ConverterException e) {
             context.lifecycleInvocationFailed(lifecycle, "Failed to invoke lifecycle", e);
         }
     }
@@ -75,18 +79,28 @@ public class Invoker {
             Method method = candidateStep.getMethod();
             method.invoke(instance, arguments);
             context.stepInvoked(invokableStep, candidateStep);
-        } catch (IllegalAccessException e) {
-            context.stepInvocationFailed(invokableStep, candidateStep, "Failed to invoke step on input [" + input + "]", e);
-        } catch (InvocationTargetException e) {
-            context.stepInvocationFailed(invokableStep, candidateStep, "Failed to invoke step on input [" + input + "]", e);
-        } catch (ConverterException e) {
-            context.stepInvocationFailed(invokableStep, candidateStep, "Failed to invoke step on input [" + input + "]", e);
-        } catch (InstanceProviderException e) {
-            context.stepInvocationFailed(invokableStep, candidateStep, "Failed to invoke step on input [" + input + "]", e);
+        }
+        catch (IllegalAccessException e) {
+            context.stepInvocationFailed(invokableStep, candidateStep,
+                    "Failed to invoke step on input [" + input + "]", e);
+        }
+        catch (InvocationTargetException e) {
+            context.stepInvocationFailed(invokableStep, candidateStep,
+                    "Failed to invoke step on input [" + input + "]", e);
+        }
+        catch (ConverterException e) {
+            context.stepInvocationFailed(invokableStep, candidateStep,
+                    "Failed to invoke step on input [" + input + "]", e);
+        }
+        catch (InstanceProviderException e) {
+            context.stepInvocationFailed(invokableStep, candidateStep,
+                    "Failed to invoke step on input [" + input + "]", e);
         }
     }
 
-    private Object[] prepareMethodArguments(InvocationContext context, String input, CandidateStep candidateStep) throws ConverterException {
+    private Object[] prepareMethodArguments(InvocationContext context, String input, CandidateStep candidateStep)
+            throws ConverterException
+    {
         ParametrizedString pattern = candidateStep.getPattern();
         ParameterMapping[] parameterMappings = candidateStep.getParameterMappings();
         Map<String, String> variableValues = pattern.extractParameterValues(input);
@@ -99,7 +113,10 @@ public class Invoker {
         return prepareMethodArguments(context, parameterMappings, variableValues);
     }
 
-    private Object[] prepareMethodArguments(InvocationContext context, ParameterMapping[] parameterMappings, Map<String,String> variableValues) throws ConverterException {
+    private Object[] prepareMethodArguments(InvocationContext context,
+                                            ParameterMapping[] parameterMappings,
+                                            Map<String, String> variableValues) throws ConverterException
+    {
         Object[] arguments = new Object[parameterMappings.length];
         for (ParameterMapping mapping : parameterMappings) {
             int parameterIndex = mapping.getParameterIndex();

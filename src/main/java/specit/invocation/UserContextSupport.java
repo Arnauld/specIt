@@ -16,7 +16,6 @@ public class UserContextSupport {
     }
 
 
-
     public UserContextScope scope() {
         return factory.scope();
     }

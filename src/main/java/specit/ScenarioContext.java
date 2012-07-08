@@ -8,13 +8,13 @@ import specit.element.Scenario;
  */
 public interface ScenarioContext {
 
-    public Scenario getCurrentScenario();
+    Scenario getCurrentScenario();
 
-    public StoryContext getStoryContext();
+    StoryContext getStoryContext();
 
-    public <T> T getUserData(Object key);
+    <T> T getUserData(Object key);
 
-    public void setUserData(Object key, Object value);
+    void setUserData(Object key, Object value);
 
-    public void removeUserData(Object key);
+    void removeUserData(Object key);
 }

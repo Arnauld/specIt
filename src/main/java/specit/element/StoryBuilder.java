@@ -40,7 +40,10 @@ public class StoryBuilder {
                 break;
             default:
                 // make sure switch evolves with the enum values
-                throw new InvalidElementDefinitionException("Unsupported rawPart type <" + rawPart.getKeyword() + "> using alias <" + rawPart.getKeywordAlias() + ">");
+                throw new InvalidElementDefinitionException(
+                        "Unsupported rawPart"
+                                + " type <" + rawPart.getKeyword() + ">"
+                                + " using alias <" + rawPart.getKeywordAlias() + ">");
         }
         return this;
     }

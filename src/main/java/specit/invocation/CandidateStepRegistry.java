@@ -28,8 +28,9 @@ public class CandidateStepRegistry {
     public List<CandidateStep> find(Keyword keyword, String pattern) {
         List<CandidateStep> found = New.arrayList();
         for (CandidateStep candidateStep : candidateSteps) {
-            if (candidateStep.matches(keyword, pattern))
+            if (candidateStep.matches(keyword, pattern)) {
                 found.add(candidateStep);
+            }
         }
         return found;
     }
@@ -65,13 +66,17 @@ public class CandidateStepRegistry {
         }
     }
 
-    protected void register(Class<?> klazz, Method method, Keyword keyword, String[] patterns) throws ParameterMappingException {
+    protected void register(Class<?> klazz, Method method, Keyword keyword, String[] patterns)
+            throws ParameterMappingException
+    {
         for (String pattern : patterns) {
             register(klazz, method, keyword, pattern);
         }
     }
 
-    protected void register(Class<?> klazz, Method method, Keyword keyword, String pattern) throws ParameterMappingException {
+    protected void register(Class<?> klazz, Method method, Keyword keyword, String pattern)
+            throws ParameterMappingException
+    {
         ParametrizedString pString = new ParametrizedString(pattern, conf.variablePrefix());
 
         ParameterMappingsBuilder builder = new ParameterMappingsBuilder(method, pString);

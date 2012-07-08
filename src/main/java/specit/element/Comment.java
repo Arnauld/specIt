@@ -1,5 +1,7 @@
 package specit.element;
 
+import static specit.util.Hashcodes.PRIME;
+
 /**
  *
  *
@@ -42,10 +44,10 @@ public class Comment {
         if (offset != comment.offset) {
             return false;
         }
-        if (content != null ? !content.equals(comment.content) : comment.content != null) {
+        else if (content != null ? !content.equals(comment.content) : comment.content != null) {
             return false;
         }
-        if (delimiter != null ? !delimiter.equals(comment.delimiter) : comment.delimiter != null) {
+        else if (delimiter != null ? !delimiter.equals(comment.delimiter) : comment.delimiter != null) {
             return false;
         }
 
@@ -55,17 +57,17 @@ public class Comment {
     @Override
     public int hashCode() {
         int result = offset;
-        result = 31 * result + (delimiter != null ? delimiter.hashCode() : 0);
-        result = 31 * result + (content != null ? content.hashCode() : 0);
+        result = PRIME * result + (delimiter != null ? delimiter.hashCode() : 0);
+        result = PRIME * result + (content != null ? content.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return "Comment{" +
-                "offset=" + offset +
-                ", delimiter='" + delimiter + '\'' +
-                ", content='" + content + '\'' +
-                '}';
+        return "Comment{"
+                + "offset=" + offset
+                + ", delimiter='" + delimiter + '\''
+                + ", content='" + content + '\''
+                + '}';
     }
 }

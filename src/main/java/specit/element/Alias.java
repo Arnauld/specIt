@@ -1,5 +1,7 @@
 package specit.element;
 
+import static specit.util.Hashcodes.PRIME;
+
 /**
  *
  */
@@ -51,15 +53,15 @@ public class Alias {
     @Override
     public int hashCode() {
         int result = keyword.hashCode();
-        result = 31 * result + keywordAlias.hashCode();
+        result = PRIME * result + keywordAlias.hashCode();
         return result;
     }
 
     @Override
     public String toString() {
-        return "Alias{" +
-                "keyword=" + keyword +
-                ", keywordAlias='" + keywordAlias + '\'' +
-                '}';
+        return "Alias{"
+                + "keyword=" + keyword
+                + ", keywordAlias='" + keywordAlias + '\''
+                + '}';
     }
 }

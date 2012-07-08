@@ -3,7 +3,6 @@ package specit.invocation;
 import specit.annotation.UserContextFactory;
 import specit.annotation.UserContextScope;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 /**

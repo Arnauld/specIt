@@ -13,20 +13,21 @@ import java.util.regex.Pattern;
  */
 public class CommentParser {
 
-    private Pattern pattern;
+    private Pattern commentsPattern;
 
     public String commentsRegex() {
         return "(?:" + "(#)(.*)$" + ")|(?:" + "(//)(.*)$" + ")";
     }
 
     protected void invalidatePattern() {
-        pattern = null;
+        commentsPattern = null;
     }
 
     private Pattern commentsPattern() {
-        if (pattern == null)
-            pattern = Pattern.compile(commentsRegex(), Pattern.MULTILINE);
-        return pattern;
+        if (commentsPattern == null) {
+            commentsPattern = Pattern.compile(commentsRegex(), Pattern.MULTILINE);
+        }
+        return commentsPattern;
     }
 
     public String contentWithoutComment(String rawContent) {

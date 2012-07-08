@@ -17,6 +17,10 @@
     <spring.version>3.1.1.RELEASE</spring.version>
     <slf4j.version>1.6.4</slf4j.version>
     <fest-assert.version>2.0M5</fest-assert.version>
+
+    <!-- plugin versions -->
+    <checkstyle.version>2.9.1</checkstyle.version>
+    <pmd.version>2.7.1</pmd.version>
   </properties>
 
   <!-- ************************************************ -->
@@ -146,6 +150,80 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  
-  
+
+  <!-- ************************************************ -->
+  <!-- *~~~~~~~~~~~~~~~~~REPORTING~~~~~~~~~~~~~~~~~~~~* -->
+  <!-- ************************************************ -->
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+          <!-- ~~~~~~~~~~~~~REPORTING~~~~~~~~~~~~~ -->
+          <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+          <reportPlugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-project-info-reports-plugin</artifactId>
+              <version>2.4</version>
+              <configuration>
+                <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
+                <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+              </configuration>
+              <!-- simpler configuration without reportSets available for usual cases -->
+              <reports>
+                <report>dependencies</report>
+                <report>scm</report>
+              </reports>
+            </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-javadoc-plugin</artifactId>
+              <version>2.8</version>
+            </plugin>
+
+            <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>cobertura-maven-plugin</artifactId>
+              <version>2.5.1</version>
+            </plugin>
+
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-checkstyle-plugin</artifactId>
+              <version>${checkstyle.version}</version>
+              <configuration>
+                <configLocation>conf/checkstyle.xml</configLocation>
+              </configuration>
+            </plugin>
+
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-pmd-plugin</artifactId>
+              <version>${pmd.version}</version>
+              <configuration>
+                <linkXref>true</linkXref>
+                <sourceEncoding>utf-8</sourceEncoding>
+                <minimumTokens>100</minimumTokens>
+                <targetJdk>1.6</targetJdk>
+                <excludes>
+                  <exclude>**/generated/*.java</exclude>
+                </excludes>
+                <excludeRoots>
+                  <excludeRoot>target/generated-sources/stubs</excludeRoot>
+                </excludeRoots>
+              </configuration>
+            </plugin>
+          </reportPlugins>
+        </configuration>
+      </plugin>
+
+
+    </plugins>
+  </build>
+
 </project>

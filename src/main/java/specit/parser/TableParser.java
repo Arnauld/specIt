@@ -42,7 +42,8 @@ public class TableParser {
                 for (int i = 1; i < cells.length; i++) {
                     headers[i - 1] = cleanUpHeader(cells[i]);
                 }
-            } else {
+            }
+            else {
                 Map<String, String> variablesRow = New.hashMap();
                 // index 0 is the trailing characters before the first |
                 // they don't belongs to the cell

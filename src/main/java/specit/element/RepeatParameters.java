@@ -42,11 +42,11 @@ public class RepeatParameters {
 
     @Override
     public String toString() {
-        return "RepeatParameters{" +
-                "reference='" + reference + '\'' +
-                ", withTable='" + withTable + '\'' +
-                ", loopCount='" + loopCount + '\'' +
-                '}';
+        return "RepeatParameters{"
+                + "reference='" + reference + '\''
+                + ", withTable='" + withTable + '\''
+                + ", loopCount='" + loopCount + '\''
+                + '}';
     }
 
     public boolean hasReference() {

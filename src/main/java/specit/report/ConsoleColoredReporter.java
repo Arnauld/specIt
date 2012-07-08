@@ -1,9 +1,22 @@
 package specit.report;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.text.WordUtils;
+import static specit.util.BashStyle.Blue;
+import static specit.util.BashStyle.Bold;
+import static specit.util.BashStyle.Green;
+import static specit.util.BashStyle.Grey;
+import static specit.util.BashStyle.Italic;
+import static specit.util.BashStyle.Red;
+import static specit.util.BashStyle.RedHi;
+import static specit.util.BashStyle.Yellow;
+
 import specit.SpecItRuntimeException;
-import specit.element.*;
+import specit.element.Background;
+import specit.element.InvokableStep;
+import specit.element.Keyword;
+import specit.element.Narrative;
+import specit.element.RawPart;
+import specit.element.Scenario;
+import specit.element.Story;
 import specit.invocation.CandidateStep;
 import specit.invocation.Lifecycle;
 import specit.invocation.UserContextSupport;
@@ -11,11 +24,11 @@ import specit.util.Java;
 import specit.util.New;
 import specit.util.ParametrizedString;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import java.io.PrintStream;
 import java.util.LinkedHashSet;
 import java.util.List;
-
-import static specit.util.BashStyle.*;
 
 /**
  *
@@ -30,14 +43,16 @@ public class ConsoleColoredReporter implements Reporter {
     @Override
     public void lifecycleInvocationFailed(Lifecycle lifecycle, String message) {
         out.print(Red.open());
-        out.print("Error during " + lifecycle.getLifecycleAnnotation().annotationType().getName() + ": " + message + "");
+        out.print(
+                "Error during " + lifecycle.getLifecycleAnnotation().annotationType().getName() + ": " + message + "");
         out.println(Red.close());
     }
 
     @Override
     public void lifecycleInvocationFailed(Lifecycle lifecycle, String message, Exception cause) {
         out.print(Red.open());
-        out.println("Error during " + lifecycle.getLifecycleAnnotation().annotationType().getName() + ": " + message + "");
+        out.println(
+                "Error during " + lifecycle.getLifecycleAnnotation().annotationType().getName() + ": " + message + "");
         cause.printStackTrace(out);
         out.println(Red.close());
     }
@@ -133,7 +148,11 @@ public class ConsoleColoredReporter implements Reporter {
     }
 
     @Override
-    public void stepInvocationFailed(InvokableStep invokableStep, CandidateStep candidateStep, String message, Exception cause) {
+    public void stepInvocationFailed(InvokableStep invokableStep,
+                                     CandidateStep candidateStep,
+                                     String message,
+                                     Exception cause)
+    {
         String keywordAlias = invokableStep.getUnderlying().getKeywordAlias();
         String stepInput = invokableStep.getAdjustedInput();
 
@@ -156,10 +175,15 @@ public class ConsoleColoredReporter implements Reporter {
             if (traceElement.getClassName().startsWith("specit")) {
                 if (!skipped) {
                     selected.add(traceElement);
-                    selected.add(new StackTraceElement("(----8<------trunked---------)", "", "<<specit framework>>", -1));
+                    selected.add(new StackTraceElement(
+                            "(----8<------trunked---------)",
+                            "",
+                            "<<specit framework>>",
+                            -1));
                 }
                 skipped = true;
-            } else {
+            }
+            else {
                 skipped = false;
                 selected.add(traceElement);
             }
@@ -183,7 +207,8 @@ public class ConsoleColoredReporter implements Reporter {
         if (candidateSteps.isEmpty()) {
             suggestedSteps.add(invokableStep);
             out.print(" " + Bold.stylize("(no matching step defined)"));
-        } else if (candidateSteps.size() > 0) {
+        }
+        else if (candidateSteps.size() > 0) {
             out.print(" " + Bold.stylize("(Ambiguous steps #" + candidateSteps.size() + " matches)"));
         }
         //out.println("Ouch! " + message);
@@ -211,6 +236,8 @@ public class ConsoleColoredReporter implements Reporter {
         out.print(Blue.close());
     }
 
+    private static final String NL = "\n";
+
     protected String formatSuggestion(InvokableStep invokableStep) {
         Keyword keyword = invokableStep.getUnderlying().getKeyword();
         StringBuilder content = new StringBuilder();
@@ -222,13 +249,15 @@ public class ConsoleColoredReporter implements Reporter {
                 break;
             case And:
                 throw new SpecItRuntimeException("Fix me!");
+            default:
+                throw new SpecItRuntimeException("Invalid keyword for step! got: " + keyword);
         }
 
         // one use the original step def. and not the resolved ones due to possible
         // placeholder presence...
         String suggestedStep = invokableStep.getUnderlying().getRawPart().contentAfterAlias().trim();
 
-        final String NL = "\n";
+
         content.append("(\"").append(StringEscapeUtils.escapeJava(suggestedStep)).append("\")").append(NL);
         content.append("public void ").append(methodNameFor(keyword, suggestedStep)).append("() {").append(NL);
         content.append("    throw new UnsupportedOperationException(\"Not implemented\");").append(NL);

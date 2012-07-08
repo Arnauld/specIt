@@ -50,12 +50,19 @@ public final class Reporters {
         }
 
         @Override
-        public void stepInvocationFailed(InvokableStep invokableStep, CandidateStep candidateStep, String message, Exception cause) {
+        public void stepInvocationFailed(InvokableStep invokableStep,
+                                         CandidateStep candidateStep,
+                                         String message,
+                                         Exception cause)
+        {
             reporter.stepInvocationFailed(invokableStep, candidateStep, message, cause);
         }
 
         @Override
-        public void stepInvocationFailed(InvokableStep invokableStep, List<CandidateStep> candidateSteps, String message) {
+        public void stepInvocationFailed(InvokableStep invokableStep,
+                                         List<CandidateStep> candidateSteps,
+                                         String message)
+        {
             reporter.stepInvocationFailed(invokableStep, candidateSteps, message);
         }
 

@@ -17,9 +17,11 @@ public class InstanceProviderBasic implements InstanceProvider {
         if (instance == null) {
             try {
                 instance = owningType.newInstance();
-            } catch (InstantiationException e) {
+            }
+            catch (InstantiationException e) {
                 throw new InstanceProviderException("Failed to instanciate instance for step <" + owningType + ">", e);
-            } catch (IllegalAccessException e) {
+            }
+            catch (IllegalAccessException e) {
                 throw new InstanceProviderException("Failed to instanciate instance for step <" + owningType + ">", e);
             }
             instancePerType.put(owningType, instance);

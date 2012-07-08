@@ -7,6 +7,7 @@ import specit.invocation.UserContextSupport;
 import java.util.List;
 
 /**
+ *
  */
 public interface InvocationContextListener {
     void lifecycleInvoked(Lifecycle lifecycle);
@@ -17,7 +18,8 @@ public interface InvocationContextListener {
 
     void lifecycleSkipped(Lifecycle lifecycle);
 
-    void stepInvocationFailed(InvokableStep invokableStep, CandidateStep candidateStep, String message, Exception cause);
+    void stepInvocationFailed(InvokableStep invokableStep,
+                              CandidateStep candidateStep, String message, Exception cause);
 
     void stepInvocationFailed(InvokableStep invokableStep, List<CandidateStep> candidateSteps, String message);
 

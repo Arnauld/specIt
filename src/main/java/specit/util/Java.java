@@ -5,6 +5,9 @@ package specit.util;
  *
  */
 public final class Java {
+
+    private static final int C127 = 127;
+
     private Java() {
     }
 
@@ -13,7 +16,7 @@ public final class Java {
         int index = 0;
         for (int i = 0; i < content.length(); i++) {
             char ch = content.charAt(i);
-            if (Character.isJavaIdentifierPart(ch) && ch != '$' && ch != 127) {
+            if (Character.isJavaIdentifierPart(ch) && ch != '$' && ch != C127) {
                 filteredName[index++] = ch;
             }
         }

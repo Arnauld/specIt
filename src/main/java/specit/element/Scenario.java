@@ -11,8 +11,9 @@ public class Scenario extends ExecutablePart {
 
     @Override
     public void traverse(ElementVisitor visitor) {
-        if (visitor.beginScenario(this))
+        if (visitor.beginScenario(this)) {
             traverseExecutablePart(visitor);
+        }
         visitor.endScenario(this);
     }
 }

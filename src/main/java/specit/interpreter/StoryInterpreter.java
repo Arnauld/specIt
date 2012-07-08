@@ -1,6 +1,18 @@
 package specit.interpreter;
 
-import specit.element.*;
+import specit.element.Element;
+import specit.element.ElementVisitor;
+import specit.element.Example;
+import specit.element.ExecutablePart;
+import specit.element.Fragment;
+import specit.element.InvokableStep;
+import specit.element.RawPart;
+import specit.element.Repeat;
+import specit.element.RepeatParameters;
+import specit.element.Require;
+import specit.element.Step;
+import specit.element.Story;
+import specit.element.Table;
 import specit.util.New;
 
 import java.util.HashMap;
@@ -44,20 +56,23 @@ public class StoryInterpreter {
                                                }
                 );
             }
-        } finally {
+        }
+        finally {
             listener.endStory(story);
         }
     }
 
     private void interpretScenarioOrBackground(ExecutablePart scenario,
                                                InterpreterListener listener,
-                                               Chain chain) {
+                                               Chain chain)
+    {
         HashMap<String, String> variables = New.hashMap();
 
         List<Example> examples = scenario.getExamples();
         if (examples.isEmpty()) {
             interpretScenarioWithVariables(variables, scenario, listener, chain);
-        } else {
+        }
+        else {
             recursivelyTraverseExamplesThroughInterpret(0, examples, variables, scenario, listener, chain);
         }
     }
@@ -67,7 +82,8 @@ public class StoryInterpreter {
                                                              Map<String, String> cumulatedVariables,
                                                              ExecutablePart scenario,
                                                              InterpreterListener listener,
-                                                             Chain chain) {
+                                                             Chain chain)
+    {
         if (exampleIndex == examples.size()) {
             interpretScenarioWithVariables(cumulatedVariables, scenario, listener, chain);
             return;
@@ -75,21 +91,34 @@ public class StoryInterpreter {
         Example example = examples.get(exampleIndex);
         Table exampleTable = example.getExampleTable();
         if (exampleTable.isEmpty()) {
-            recursivelyTraverseExamplesThroughInterpret(exampleIndex + 1, examples, cumulatedVariables, scenario, listener, chain);
+            recursivelyTraverseExamplesThroughInterpret(
+                    exampleIndex + 1,
+                    examples,
+                    cumulatedVariables,
+                    scenario,
+                    listener,
+                    chain);
             return;
         }
 
         for (Table.Row row : exampleTable) {
             Map<String, String> nextVariables = New.hashMap(cumulatedVariables);
             nextVariables.putAll(row.asMap());
-            recursivelyTraverseExamplesThroughInterpret(exampleIndex + 1, examples, nextVariables, scenario, listener, chain);
+            recursivelyTraverseExamplesThroughInterpret(
+                    exampleIndex + 1,
+                    examples,
+                    nextVariables,
+                    scenario,
+                    listener,
+                    chain);
         }
     }
 
     private void interpretScenarioWithVariables(final Map<String, String> variables,
                                                 final ExecutablePart scenario,
                                                 final InterpreterListener listener,
-                                                Chain chain) {
+                                                Chain chain)
+    {
         chain.invokeNextWithPreProcess(new PreProcess() {
             @Override
             public void preExecute(InterpreterContext context) {
@@ -142,12 +171,14 @@ public class StoryInterpreter {
             }
 
             RepeatParameters parameters = repeat.getRepeatParameters();
-            if (!parameters.hasReference())
+            if (!parameters.hasReference()) {
                 return false;
+            }
 
             Fragment fragment = repeat.findParentInStoryTree();
             if (fragment == null) {
-                throw new IllegalStateException("No fragment found for Repeat directive [" + parameters.getReference() + "]");
+                throw new IllegalStateException(
+                        "No fragment found for Repeat directive [" + parameters.getReference() + "]");
             }
 
             if (parameters.hasWithTable()) {
@@ -156,7 +187,8 @@ public class StoryInterpreter {
                     InterpreterContext subContext = context.nestedContext(row.asMap());
                     fragment.traverseExecutablePart(new ExecutionVisitor(subContext, listener));
                 }
-            } else {
+            }
+            else {
                 for (int i = 0; i < parameters.getLoopCount(); i++) {
                     fragment.traverseExecutablePart(this);
                 }
@@ -231,7 +263,12 @@ public class StoryInterpreter {
             this(story, listener, chainedParts, 0, null);
         }
 
-        private Chain(Story story, InterpreterListener listener, List<ExecutablePart> chainedParts, int chainIndex, Chain previous) {
+        private Chain(Story story,
+                      InterpreterListener listener,
+                      List<ExecutablePart> chainedParts,
+                      int chainIndex,
+                      Chain previous)
+        {
             this.story = story;
             this.listener = listener;
             this.chainedParts = chainedParts;
@@ -239,14 +276,15 @@ public class StoryInterpreter {
             this.previous = previous;
         }
 
-        public void invokeNextWithPreProcess(PreProcess preProcess, PostProcess postProcess) {
-            this.preProcess = preProcess;
-            this.postProcess = postProcess;
+        public void invokeNextWithPreProcess(PreProcess pPreProcess, PostProcess pPostProcess) {
+            this.preProcess = pPreProcess;
+            this.postProcess = pPostProcess;
 
             if (chainedParts.size() == chainIndex) {
                 InterpreterContext context = conf.createInterpreterContext();
                 execute(context);
-            } else {
+            }
+            else {
                 Chain next = new Chain(story, listener, chainedParts, chainIndex + 1, this);
                 interpretScenarioOrBackground(chainedParts.get(chainIndex), listener, next);
             }

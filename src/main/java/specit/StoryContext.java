@@ -8,11 +8,11 @@ import specit.element.Story;
  */
 public interface StoryContext {
 
-    public Story getCurrentStory();
+    Story getCurrentStory();
 
-    public <T> T getUserData(Object key);
+    <T> T getUserData(Object key);
 
-    public void setUserData(Object key, Object value);
+    void setUserData(Object key, Object value);
 
-    public void removeUserData(Object key);
+    void removeUserData(Object key);
 }

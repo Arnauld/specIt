@@ -31,6 +31,7 @@ public class ParameterMappingsBuilder {
     public ParameterMappingsBuilder(Method method) {
         this(method, null);
     }
+
     public ParameterMappingsBuilder(Method method, ParametrizedString pattern) {
         this.method = method;
         this.pattern = pattern;
@@ -43,21 +44,23 @@ public class ParameterMappingsBuilder {
 
     private void generateParameterMappings() throws ParameterMappingException {
         final int nbParameters = method.getParameterTypes().length;
-        final int nbVariables = (pattern==null)?0:pattern.getParameterCount();
+        final int nbVariables = (pattern == null) ? 0 : pattern.getParameterCount();
 
         // if one parameterType is an instance of InvocationContext then it won't
         // be matched to any variable
         int nbVariablesRequired = countNonSpecialParameters(method);
         if (nbVariables != nbVariablesRequired) {
             throw new ParameterMappingException(
-                    "Incompatible number of variables and method parameters on " + formatMethod(method) +
-                    " number of variables: " + nbVariables + ", number of non special variables: " + nbVariablesRequired);
+                    "Incompatible number of variables and method parameters on " + formatMethod(method)
+                            + " number of variables: " + nbVariables + ","
+                            + " number of non special variables: " + nbVariablesRequired);
         }
 
-        List<String> variableNames = (pattern==null)? Collections.<String>emptyList():pattern.getParameters();
+        List<String> variableNames = (pattern == null) ? Collections.<String>emptyList() : pattern.getParameters();
         Set<String> uniqueVariableNames = New.hashSet(variableNames);
         if (uniqueVariableNames.size() != variableNames.size()) {
-            throw new ParameterMappingException("Duplicate variable name (" + variableNames + ") in pattern on " + formatMethod(method));
+            throw new ParameterMappingException(
+                    "Duplicate variable name (" + variableNames + ") in pattern on " + formatMethod(method));
         }
 
         parameterMappings = new ParameterMapping[nbParameters];
@@ -67,7 +70,8 @@ public class ParameterMappingsBuilder {
 
         if (!variableNameToParamIndex.isEmpty()) {
             createMappingsUsingVariableNames(uniqueVariableNames, variableNameToParamIndex);
-        } else {
+        }
+        else {
             createMappingsUsingParameterOrders(variableNames);
         }
     }
@@ -82,20 +86,27 @@ public class ParameterMappingsBuilder {
         for (int parameterIndex = 0; parameterIndex < nbParameters; parameterIndex++) {
             if (isParameterSpecial(method, parameterIndex)) {
                 defineSpecialParameterMapping(parameterIndex);
-            } else {
+            }
+            else {
                 defineParameterMapping(parameterIndex, variableNames.get(nonSpecialIndex++));
             }
         }
     }
 
-    private void createMappingsUsingVariableNames(Set<String> uniqueVariableNames, Map<String, Integer> variableNameToParamIndex) throws ParameterMappingException {
-        if (variableNameToParamIndex.size() != uniqueVariableNames.size())
-            throw new ParameterMappingException("All parameters or none must define @" + Variable.class.getName() + " on " + method);
+    private void createMappingsUsingVariableNames(Set<String> uniqueVariableNames,
+                                                  Map<String, Integer> variableNameToParamIndex)
+            throws ParameterMappingException
+    {
+        if (variableNameToParamIndex.size() != uniqueVariableNames.size()) {
+            throw new ParameterMappingException(
+                    "All parameters or none must define @" + Variable.class.getName() + " on " + method);
+        }
         for (Map.Entry<String, Integer> entry : variableNameToParamIndex.entrySet()) {
             String variableName = entry.getKey();
             int parameterIndex = entry.getValue();
             if (!uniqueVariableNames.contains(variableName)) {
-                throw new ParameterMappingException("Variable name mismatch between @" + Variable.class.getName() + " (" + variableNameToParamIndex.keySet() + ") and step pattern (" + uniqueVariableNames + ")");
+                throw new ParameterMappingException("Variable name mismatch between @" + Variable.class.getName() + " ("
+                        + variableNameToParamIndex.keySet() + ") and step pattern (" + uniqueVariableNames + ")");
             }
             defineParameterMapping(parameterIndex, variableName);
         }
@@ -109,24 +120,19 @@ public class ParameterMappingsBuilder {
     }
 
     private void defineSpecialParameterMapping(int parameterIndex) {
-        Class<?>[] parameterTypes = method.getParameterTypes();
-        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         parameterMappings[parameterIndex] =
                 new ParameterMapping(
-                        parameterTypes[parameterIndex],
-                        parameterIndex,
-                        parameterAnnotations[parameterIndex]);
+                        method,
+                        parameterIndex);
     }
 
     private void defineParameterMapping(int parameterIndex, String variableName) {
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-        Class<?>[] parameterTypes = method.getParameterTypes();
         Class<? extends Converter> converterClass = lookupConverter(parameterAnnotations[parameterIndex]);
         parameterMappings[parameterIndex] =
                 new ParameterMapping(
-                        parameterTypes[parameterIndex],
+                        method,
                         parameterIndex,
-                        parameterAnnotations[parameterIndex],
                         variableName,
                         converterClass);
     }
@@ -137,7 +143,7 @@ public class ParameterMappingsBuilder {
 
     private static int countNonSpecialParameters(Method method) {
         int nonSpecials = 0;
-        for (int i=0, n= nbParametersOf(method); i<n; i++) {
+        for (int i = 0, n = nbParametersOf(method); i < n; i++) {
             if (!isParameterSpecial(method, i)) {
                 nonSpecials++;
             }
@@ -151,9 +157,10 @@ public class ParameterMappingsBuilder {
     }
 
     private static boolean hasContextAnnotation(Annotation[] annotations) {
-        for(Annotation annotation : annotations) {
-            if(annotation.annotationType().equals(UserContext.class))
+        for (Annotation annotation : annotations) {
+            if (annotation.annotationType().equals(UserContext.class)) {
                 return true;
+            }
         }
         return false;
     }
@@ -164,7 +171,9 @@ public class ParameterMappingsBuilder {
                 || InvocationContext.class.isAssignableFrom(parameterType);
     }
 
-    private Map<String, Integer> generateVariableNameToParameterIndex(Annotation[][] parameterAnnotations) throws ParameterMappingException {
+    private Map<String, Integer> generateVariableNameToParameterIndex(Annotation[][] parameterAnnotations)
+            throws ParameterMappingException
+    {
         Map<String, Integer> variableNameToParamIndex = New.hashMap();
         for (int index = 0; index < parameterAnnotations.length; index++) {
             // index as parameterIndex
@@ -172,7 +181,8 @@ public class ParameterMappingsBuilder {
             if (variable != null) {
                 Integer prevIndex = variableNameToParamIndex.put(variable.value(), index);
                 if (prevIndex != null) {
-                    throw new ParameterMappingException("Duplicate variable name (" + variable.value() + ") on " + method);
+                    throw new ParameterMappingException(
+                            "Duplicate variable name (" + variable.value() + ") on " + method);
                 }
             }
         }
@@ -187,7 +197,8 @@ public class ParameterMappingsBuilder {
         specit.annotation.Converter converter = lookupAnnotation(specit.annotation.Converter.class, annotations);
         if (converter == null) {
             return null;
-        } else {
+        }
+        else {
             return converter.value();
         }
     }

@@ -55,7 +55,7 @@ public class Story extends Element implements FragmentHolder {
     }
 
     /**
-     * Indicates whether the story can accept a background
+     * Indicates whether the story can accept a background.
      *
      * @return
      */
@@ -95,7 +95,7 @@ public class Story extends Element implements FragmentHolder {
     }
 
     /**
-     * Indicates whether the story can accept a narrative
+     * Indicates whether the story can accept a narrative.
      *
      * @return
      */
@@ -132,7 +132,8 @@ public class Story extends Element implements FragmentHolder {
             fragments.add(fragment);
             fragment.setParent(this);
             currentExecutablePart.push(fragment);
-        } else {
+        }
+        else {
             currentExecutablePart.peek().addFragment(fragment);
         }
     }

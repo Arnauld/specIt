@@ -35,7 +35,10 @@ public interface Reporter {
 
     void stepSkipped(InvokableStep invokableStep, CandidateStep candidateStep);
 
-    void stepInvocationFailed(InvokableStep invokableStep, CandidateStep candidateStep, String message, Exception cause);
+    void stepInvocationFailed(InvokableStep invokableStep,
+                              CandidateStep candidateStep,
+                              String message,
+                              Exception cause);
 
     void stepInvocationFailed(InvokableStep invokableStep, List<CandidateStep> candidateSteps, String message);
 

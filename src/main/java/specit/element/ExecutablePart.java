@@ -31,15 +31,17 @@ public abstract class ExecutablePart extends Element implements FragmentHolder {
     @Override
     public Fragment findFragment(String fragmentRef, boolean searchInChildren) {
         for (Fragment fragment : fragments) {
-            if (fragmentRef.equalsIgnoreCase(fragment.getFragmentReference()))
+            if (fragmentRef.equalsIgnoreCase(fragment.getFragmentReference())) {
                 return fragment;
+            }
         }
 
         if (searchInChildren) {
             for (ExecutablePart part : executableParts) {
                 Fragment fragment = part.findFragment(fragmentRef, searchInChildren);
-                if (fragment != null)
+                if (fragment != null) {
                     return fragment;
+                }
             }
         }
         return null;
@@ -70,7 +72,8 @@ public abstract class ExecutablePart extends Element implements FragmentHolder {
         ExecutablePart executablePart = currentExecutablePart.peek();
         if (executablePart != this) {
             executablePart.addStep(step);
-        } else {
+        }
+        else {
             executableParts.add(step);
             step.setParent(this);
         }
@@ -80,7 +83,8 @@ public abstract class ExecutablePart extends Element implements FragmentHolder {
         ExecutablePart executablePart = currentExecutablePart.peek();
         if (executablePart != this) {
             executablePart.addExemple(example);
-        } else {
+        }
+        else {
             examples.add(example);
             example.setParent(this);
         }
@@ -91,7 +95,8 @@ public abstract class ExecutablePart extends Element implements FragmentHolder {
         ExecutablePart executablePart = currentExecutablePart.peek();
         if (executablePart != this) {
             executablePart.addRequire(require);
-        } else {
+        }
+        else {
             requires.add(require);
             require.setParent(this);
         }
@@ -137,7 +142,8 @@ public abstract class ExecutablePart extends Element implements FragmentHolder {
 
     @Override
     public void fragmentEnds() {
-        if (!(currentExecutablePart.pop() instanceof Fragment))
+        if (!(currentExecutablePart.pop() instanceof Fragment)) {
             throw new InvalidCallException("Current ExecutablePart was not a Fragment!");
+        }
     }
 }

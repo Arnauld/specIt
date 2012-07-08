@@ -1,9 +1,15 @@
 package specit.element;
 
+import static specit.util.Hashcodes.PRIME;
+
 /**
  *
  */
 public class Token {
+
+    /**
+     * Different kind of token.
+     */
     public enum Kind {
         Keyword,
         DefaultContent,
@@ -44,4 +50,44 @@ public class Token {
         return kind;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Token token = (Token) o;
+
+        if (length != token.length) {
+            return false;
+        }
+        if (offset != token.offset) {
+            return false;
+        }
+        if (kind != token.kind) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = offset;
+        result = PRIME * result + length;
+        result = PRIME * result + (kind != null ? kind.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Token{"
+                + "offset=" + offset
+                + ", length=" + length
+                + ", kind=" + kind
+                + '}';
+    }
 }

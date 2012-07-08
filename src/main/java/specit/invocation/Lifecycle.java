@@ -13,7 +13,11 @@ public class Lifecycle {
     private final Annotation lifecycleAnnotation;
     private final ParameterMapping[] parameterMappings;
 
-    public Lifecycle(Class<?> owningType, Method method, Annotation lifecycleAnnotation, ParameterMapping[] parameterMappings) {
+    public Lifecycle(Class<?> owningType,
+                     Method method,
+                     Annotation lifecycleAnnotation,
+                     ParameterMapping[] parameterMappings)
+    {
         this.owningType = owningType;
         this.method = method;
         this.lifecycleAnnotation = lifecycleAnnotation;
@@ -42,10 +46,10 @@ public class Lifecycle {
 
     @Override
     public String toString() {
-        return "Lifecycle{" +
-                "owningType=" + owningType +
-                ", method=" + method +
-                ", lifecycle=" + lifecycleAnnotation +
-                '}';
+        return "Lifecycle{"
+                + "owningType=" + owningType
+                + ", method=" + method
+                + ", lifecycle=" + lifecycleAnnotation
+                + '}';
     }
 }

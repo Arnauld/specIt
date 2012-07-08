@@ -22,10 +22,14 @@ public class ConverterRegistry {
         if (converter == null) {
             try {
                 converter = converterClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new ConverterException("Failed to instantiate new converter from class <" + converterClass + ">", e);
-            } catch (IllegalAccessException e) {
-                throw new ConverterException("Failed to instantiate new converter from class <" + converterClass + ">", e);
+            }
+            catch (InstantiationException e) {
+                throw new ConverterException(
+                        "Failed to instantiate new converter from class <" + converterClass + ">", e);
+            }
+            catch (IllegalAccessException e) {
+                throw new ConverterException(
+                        "Failed to instantiate new converter from class <" + converterClass + ">", e);
             }
             converterPerClass.put(converterClass, converter);
         }
@@ -34,8 +38,9 @@ public class ConverterRegistry {
 
     public Converter getConverterForType(Class<?> toType) throws ConverterException {
         Converter converter = converterPerType.get(toType);
-        if (converter == null)
+        if (converter == null) {
             throw new ConverterException("No converter defined for type <" + toType + ">");
+        }
         return converter;
     }
 }

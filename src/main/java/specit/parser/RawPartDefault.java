@@ -1,6 +1,12 @@
 package specit.parser;
 
-import specit.element.*;
+import specit.element.Comment;
+import specit.element.InvalidElementDefinitionException;
+import specit.element.Keyword;
+import specit.element.RawPart;
+import specit.element.RepeatParameters;
+import specit.element.Table;
+import specit.element.Token;
 import specit.util.CharSequences;
 import specit.util.Equals;
 
@@ -21,7 +27,8 @@ public class RawPartDefault implements RawPart {
     public RawPartDefault(int offset,
                           Keyword keyword,
                           String rawContent,
-                          String keywordAlias) {
+                          String keywordAlias)
+    {
         this(offset, keyword, rawContent, keywordAlias, null);
     }
 
@@ -29,7 +36,8 @@ public class RawPartDefault implements RawPart {
                           Keyword keyword,
                           String rawContent,
                           String keywordAlias,
-                          ParserConf parserConf) {
+                          ParserConf parserConf)
+    {
         super();
         integrityCheck(keyword, rawContent, keywordAlias);
         this.offset = offset;
@@ -111,10 +119,10 @@ public class RawPartDefault implements RawPart {
 
     @Override
     public String toString() {
-        return "RawPart{" +
-                "offset=" + offset +
-                ", rawContent='" + rawContent + '\'' +
-                '}';
+        return "RawPart{"
+                + "offset=" + offset
+                + ", rawContent='" + rawContent + '\''
+                + '}';
     }
 
     @Override
@@ -128,8 +136,9 @@ public class RawPartDefault implements RawPart {
 
     @Override
     public Table getExampleTable() {
-        if (keyword != Keyword.Example)
+        if (keyword != Keyword.Example) {
             throw new IllegalStateException("Cannot retrieve an ExampleTable from a " + keyword + " part!");
+        }
         ensureParserConfIsDefined();
         if (exampleTable == null) {
             exampleTable = parserConf.tableParser().parse(rawContent);
@@ -139,17 +148,20 @@ public class RawPartDefault implements RawPart {
 
     @Override
     public RepeatParameters getRepeatParameters() {
-        if (keyword != Keyword.Repeat)
+        if (keyword != Keyword.Repeat) {
             throw new IllegalStateException("Cannot retrieve RepeatParameters from a " + keyword + " part!");
-        if (repeatParameters == null)
+        }
+        if (repeatParameters == null) {
             repeatParameters = parserConf.repeatParametersParser().parse(rawContent);
+        }
         return repeatParameters;
     }
 
     @Override
     public List<Comment> getNestedComments() {
-        if (nestedComments == null)
+        if (nestedComments == null) {
             nestedComments = parserConf.commentParser().parseComments(offset, rawContent);
+        }
         return nestedComments;
     }
 
@@ -159,8 +171,9 @@ public class RawPartDefault implements RawPart {
     }
 
     private void ensureParserConfIsDefined() {
-        if (parserConf == null)
+        if (parserConf == null) {
             throw new IllegalStateException("ParserConf is not set!");
+        }
     }
 
     @Override

@@ -1,6 +1,5 @@
 package specit.invocation;
 
-import specit.SpecItException;
 import specit.SpecItRuntimeException;
 
 /**

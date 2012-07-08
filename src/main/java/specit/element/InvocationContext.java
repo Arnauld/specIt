@@ -1,5 +1,8 @@
 package specit.element;
 
+import specit.BasicContext;
+import specit.ScenarioContext;
+import specit.StoryContext;
 import specit.annotation.UserContext;
 import specit.annotation.UserContextScope;
 import specit.invocation.CandidateStep;
@@ -7,7 +10,6 @@ import specit.invocation.InvocationException;
 import specit.invocation.Lifecycle;
 import specit.invocation.UserContextSupport;
 import specit.util.New;
-import specit.util.Proxies;
 
 import java.util.Iterator;
 import java.util.List;
@@ -23,12 +25,13 @@ public class InvocationContext {
     private final InvocationContextListener listener;
     private final List<UserContextSupport> userContexts = New.arrayList();
     private final Story currentStory;
+    private Scenario currentScenario;
     private boolean lifecycleInError;
     private boolean stepInError;
+    // Contexts
+    private ScenarioContext scenarioContext;
+    private StoryContext storyContext;
 
-    public InvocationContext(InvocationContext parent, Story currentStory) {
-        this(parent, currentStory, Proxies.proxyNoOp(InvocationContextListener.class));
-    }
 
     public InvocationContext(InvocationContext parent, Story currentStory, InvocationContextListener listener) {
         this.parent = parent;
@@ -38,10 +41,6 @@ public class InvocationContext {
 
     public boolean isNestedContext() {
         return (parent != null);
-    }
-
-    public InvocationContext getParentContext() {
-        return parent;
     }
 
     public Story getCurrentStory() {
@@ -83,7 +82,11 @@ public class InvocationContext {
         return stepInError;
     }
 
-    public void stepInvocationFailed(InvokableStep invokableStep, CandidateStep candidateStep, String message, Exception cause) {
+    public void stepInvocationFailed(InvokableStep invokableStep,
+                                     CandidateStep candidateStep,
+                                     String message,
+                                     Exception cause)
+    {
         stepInError = true;
         listener.stepInvocationFailed(invokableStep, candidateStep, message, cause);
     }
@@ -114,22 +117,68 @@ public class InvocationContext {
         userContexts.add(userContextSupport);
     }
 
-    public Object lookupUserContext(Class<?> userContextType, UserContext userContextAnnotation) {
-        for(UserContextSupport userContext : userContexts) {
-            if(userContext.matches(userContextType, userContextAnnotation))
+    public Object lookupUserContextOrFail(Class<?> userContextType, UserContext userContextAnnotation) {
+        for (UserContextSupport userContext : userContexts) {
+            if (userContext.matches(userContextType, userContextAnnotation)) {
                 return userContext.getUserContext();
+            }
         }
-        throw new InvocationException("No User Context matching {" + userContextType + ", @" + userContextAnnotation + "}");
+        throw new InvocationException("No User Context matching {"
+                + userContextType
+                + ", @" + userContextAnnotation
+                + "}");
     }
 
     public void discardUserContexts(UserContextScope scope) {
-        Iterator<UserContextSupport> userContexts = this.userContexts.iterator();
-        while(userContexts.hasNext()) {
-            UserContextSupport userContext = userContexts.next();
-            if(userContext.scope()==scope) {
+        Iterator<UserContextSupport> userContextIt = userContexts.iterator();
+        while (userContextIt.hasNext()) {
+            UserContextSupport userContext = userContextIt.next();
+            if (userContext.scope() == scope) {
                 listener.userContextDiscarded(userContext);
-                userContexts.remove();
+                userContextIt.remove();
             }
+        }
+    }
+
+    public ScenarioContext getScenarioContext() {
+        if (scenarioContext == null) {
+            scenarioContext = new BasicScenarioContext();
+        }
+        return scenarioContext;
+    }
+
+    public StoryContext getStoryContext() {
+        return storyContext;
+    }
+
+    public void beginScenarioOrBackground(ExecutablePart scenarioOrBackground) {
+        if (scenarioOrBackground instanceof Scenario) {
+            this.currentScenario = (Scenario) scenarioOrBackground;
+        }
+    }
+
+    public void endScenarioOrBackground(ExecutablePart scenarioOrBackground) {
+        if (scenarioOrBackground instanceof Scenario) {
+            this.currentScenario = null;
+        }
+    }
+
+    private class BasicScenarioContext extends BasicContext implements ScenarioContext {
+        @Override
+        public Scenario getCurrentScenario() {
+            return InvocationContext.this.currentScenario;
+        }
+
+        @Override
+        public StoryContext getStoryContext() {
+            return InvocationContext.this.getStoryContext();
+        }
+    }
+
+    private class BasicStoryContext extends BasicContext implements StoryContext {
+        @Override
+        public Story getCurrentStory() {
+            return InvocationContext.this.getCurrentStory();
         }
     }
 }
