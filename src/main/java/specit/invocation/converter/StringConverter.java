@@ -1,5 +1,6 @@
 package specit.invocation.converter;
 
+import specit.SpecItRuntimeException;
 import specit.invocation.Converter;
 
 /**
@@ -13,7 +14,7 @@ public class StringConverter implements Converter {
         if (isValid(value)) {
             return value;
         }
-        throw new IllegalArgumentException("Value <" + value + "> is not a valid string value");
+        throw new SpecItRuntimeException("Value <" + value + "> is not a valid string value");
     }
 
     @Override
