@@ -14,7 +14,7 @@ import specit.element.Background;
 import specit.element.InvokableStep;
 import specit.element.Keyword;
 import specit.element.Narrative;
-import specit.element.RawPart;
+import specit.element.RawElement;
 import specit.element.Scenario;
 import specit.element.Story;
 import specit.invocation.CandidateStep;
@@ -73,19 +73,19 @@ public class ConsoleColoredReporter implements Reporter {
         out.println("(" + Yellow.stylize(story.getStoryPath()) + ")");
         Narrative narrative = story.getNarrative();
         if (narrative != null && narrative.hasRawPart()) {
-            RawPart rawPart = narrative.getRawPart();
-            out.print(Bold.stylize(rawPart.getKeywordAlias()));
-            out.print(rawPart.contentAfterAlias());
+            RawElement rawElement = narrative.getRawElement();
+            out.print(Bold.stylize(rawElement.getKeywordAlias()));
+            out.print(rawElement.contentAfterAlias());
         }
     }
 
     @Override
     public void startBackground(Background background) {
-        RawPart rawPart = background.getRawPart();
+        RawElement rawElement = background.getRawElement();
         out.print(Yellow.open());
-        out.print(Bold.stylize(rawPart.getKeywordAlias()));
-        out.print(rawPart.contentAfterAlias());
-        if (rawPart.endsWithBlankLine()) {
+        out.print(Bold.stylize(rawElement.getKeywordAlias()));
+        out.print(rawElement.contentAfterAlias());
+        if (rawElement.endsWithBlankLine()) {
             out.println(Yellow.close());
         }
         else {
@@ -101,10 +101,10 @@ public class ConsoleColoredReporter implements Reporter {
     public void startScenario(Scenario scenario) {
         suggestedSteps.clear();
 
-        RawPart rawPart = scenario.getRawPart();
+        RawElement rawElement = scenario.getRawElement();
         out.print(Yellow.open());
-        out.print(Bold.stylize(rawPart.getKeywordAlias()));
-        out.print(rawPart.contentAfterAlias().trim());
+        out.print(Bold.stylize(rawElement.getKeywordAlias()));
+        out.print(rawElement.contentAfterAlias().trim());
         out.println(Yellow.close());
     }
 
@@ -255,7 +255,7 @@ public class ConsoleColoredReporter implements Reporter {
 
         // one use the original step def. and not the resolved ones due to possible
         // placeholder presence...
-        String suggestedStep = invokableStep.getUnderlying().getRawPart().contentAfterAlias().trim();
+        String suggestedStep = invokableStep.getUnderlying().getRawElement().contentAfterAlias().trim();
 
 
         content.append("(\"").append(StringEscapeUtils.escapeJava(suggestedStep)).append("\")").append(NL);

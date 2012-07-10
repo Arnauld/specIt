@@ -23,8 +23,8 @@ public abstract class ExecutablePart extends Element implements FragmentHolder {
         currentExecutablePart.push(this);
     }
 
-    public ExecutablePart(RawPart rawPart) {
-        super(rawPart);
+    public ExecutablePart(RawElement rawElement) {
+        super(rawElement);
         currentExecutablePart.push(this);
     }
 

@@ -4,11 +4,11 @@ import org.junit.Before;
 import org.junit.Test;
 import specit.SpecIt;
 import specit.element.Keyword;
-import specit.element.RawPart;
+import specit.element.RawElement;
 import specit.element.Story;
 import specit.element.StoryBuilder;
 import specit.interpreter.InterpreterListenerRecorder.*;
-import specit.parser.RawPartDefault;
+import specit.parser.RawElementDefault;
 
 import java.util.Iterator;
 
@@ -230,13 +230,13 @@ public class StoryInterpreterTest {
 
     private int offset = 0;
 
-    private RawPart rawPart(Keyword kw, String text) {
+    private RawElement rawPart(Keyword kw, String text) {
         return rawPart(kw, text, kw.name());
     }
 
-    private RawPart rawPart(Keyword kw, String text, String keywordAlias) {
+    private RawElement rawPart(Keyword kw, String text, String keywordAlias) {
         try {
-            return new RawPartDefault(
+            return new RawElementDefault(
                     offset,
                     kw,
                     text,

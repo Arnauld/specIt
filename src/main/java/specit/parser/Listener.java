@@ -1,9 +1,9 @@
 package specit.parser;
 
-import specit.element.RawPart;
+import specit.element.RawElement;
 
 public class Listener {
 
-    public void on(RawPart step) {
+    public void on(RawElement step) {
     }
 }

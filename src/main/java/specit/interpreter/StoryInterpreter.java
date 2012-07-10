@@ -6,7 +6,7 @@ import specit.element.Example;
 import specit.element.ExecutablePart;
 import specit.element.Fragment;
 import specit.element.InvokableStep;
-import specit.element.RawPart;
+import specit.element.RawElement;
 import specit.element.Repeat;
 import specit.element.RepeatParameters;
 import specit.element.Require;
@@ -132,7 +132,7 @@ public class StoryInterpreter {
      * Resolves any variables and invoke the <code>Step</code> directive.
      */
     private void invokeStep(InterpreterContext context, Step step, InterpreterListener listener) {
-        String rawContent = step.getRawPart().contentAfterAlias().trim();
+        String rawContent = step.getRawElement().contentAfterAlias().trim();
         Map<String, String> variables = context.getVariables();
         String resolved = conf.templateEngine().resolve(rawContent, variables).toString();
 
@@ -142,8 +142,8 @@ public class StoryInterpreter {
     /**
      * Resolves any variables and invoke the <code>Require</code> directive.
      */
-    private void invokeRequire(InterpreterContext context, RawPart rawPart, InterpreterListener listener) {
-        String rawContent = rawPart.contentAfterAlias().trim();
+    private void invokeRequire(InterpreterContext context, RawElement rawElement, InterpreterListener listener) {
+        String rawContent = rawElement.contentAfterAlias().trim();
         Map<String, String> variables = context.getVariables();
         String resolved = conf.templateEngine().resolve(rawContent, variables).toString();
 
@@ -220,7 +220,7 @@ public class StoryInterpreter {
                 return false;
             }
 
-            invokeRequire(context, require.getRawPart(), listener);
+            invokeRequire(context, require.getRawElement(), listener);
             return true;
         }
 

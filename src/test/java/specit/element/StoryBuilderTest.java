@@ -1,7 +1,8 @@
 package specit.element;
 
 import org.junit.Test;
-import specit.parser.RawPartDefault;
+
+import specit.parser.RawElementDefault;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -67,9 +68,9 @@ public class StoryBuilderTest {
 
     private int offset = 0;
 
-    private RawPart rawPart(Keyword kw, String text) {
-        RawPart part = new RawPartDefault(offset, kw, text, kw.name());
+    private RawElement rawPart(Keyword kw, String text) {
+        RawElement element = new RawElementDefault(offset, kw, text, kw.name());
         offset += text.length();
-        return part;
+        return element;
     }
 }

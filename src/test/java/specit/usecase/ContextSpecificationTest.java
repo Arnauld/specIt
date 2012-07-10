@@ -4,10 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import specit.SpecIt;
 import specit.element.Keyword;
-import specit.element.RawPart;
+import specit.element.RawElement;
 import specit.parser.ListenerCollector;
 import specit.parser.Parser;
-import specit.parser.RawPartDefault;
+import specit.parser.RawElementDefault;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class ContextSpecificationTest {
         specIt.withAlias(Keyword.When, "When").withAlias(Keyword.Then, "-");
         parser.scan(story, listener);
 
-        List<RawPart> steps = listener.getSteps();
+        List<RawElement> steps = listener.getSteps();
         assertThat(steps, hasSize(5));
         assertThat(steps.get(0), equalTo(rawPart(0, Keyword.When, "When a product is added that is not already in the cart\n", "When")));
         assertThat(steps.get(1), equalTo(rawPart(56, Keyword.Then, " - The cart item factory should be used to create a cart item for the product being added.\n", "-")));
@@ -55,7 +55,7 @@ public class ContextSpecificationTest {
         assertThat(steps.get(4), equalTo(rawPart(209, Keyword.Then, " - The item should be added to the underlying list", "-")));
     }
 
-    private static RawPart rawPart(int offset, Keyword kw, String rawContent, String alias) {
-        return new RawPartDefault(offset, kw, rawContent, alias);
+    private static RawElement rawPart(int offset, Keyword kw, String rawContent, String alias) {
+        return new RawElementDefault(offset, kw, rawContent, alias);
     }
 }

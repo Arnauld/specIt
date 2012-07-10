@@ -4,8 +4,8 @@ package specit.element;
  *
  */
 public class Step extends ExecutablePart {
-    public Step(RawPart rawPart) {
-        super(rawPart);
+    public Step(RawElement rawElement) {
+        super(rawElement);
     }
 
     @Override

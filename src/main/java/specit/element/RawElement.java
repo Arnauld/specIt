@@ -5,7 +5,7 @@ import java.util.List;
 /**
  *
  */
-public interface RawPart {
+public interface RawElement {
     /**
      * Returns the offset of this part in the original story text.
      *

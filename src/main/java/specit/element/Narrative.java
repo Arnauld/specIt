@@ -4,8 +4,8 @@ package specit.element;
  *
  */
 public class Narrative extends Element {
-    public Narrative(RawPart rawPart) {
-        super(rawPart);
+    public Narrative(RawElement rawElement) {
+        super(rawElement);
     }
 
     @Override

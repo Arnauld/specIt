@@ -5,8 +5,8 @@ package specit.element;
  *
  */
 public class Fragment extends ExecutablePart {
-    public Fragment(RawPart rawPart) {
-        super(rawPart);
+    public Fragment(RawElement rawElement) {
+        super(rawElement);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class Fragment extends ExecutablePart {
     }
 
     public String getFragmentReference() {
-        String remaining = getRawPart().contentAfterAlias();
+        String remaining = getRawElement().contentAfterAlias();
         return remaining.trim();
     }
 }

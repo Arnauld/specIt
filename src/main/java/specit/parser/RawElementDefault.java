@@ -3,7 +3,7 @@ package specit.parser;
 import specit.element.Comment;
 import specit.element.InvalidElementDefinitionException;
 import specit.element.Keyword;
-import specit.element.RawPart;
+import specit.element.RawElement;
 import specit.element.RepeatParameters;
 import specit.element.Table;
 import specit.element.Token;
@@ -12,7 +12,7 @@ import specit.util.Equals;
 
 import java.util.List;
 
-public class RawPartDefault implements RawPart {
+public class RawElementDefault implements RawElement {
 
     private final int offset;
     private final Keyword keyword;
@@ -24,19 +24,19 @@ public class RawPartDefault implements RawPart {
     private Table exampleTable;
     private RepeatParameters repeatParameters;
 
-    public RawPartDefault(int offset,
-                          Keyword keyword,
-                          String rawContent,
-                          String keywordAlias)
+    public RawElementDefault(int offset,
+                             Keyword keyword,
+                             String rawContent,
+                             String keywordAlias)
     {
         this(offset, keyword, rawContent, keywordAlias, null);
     }
 
-    public RawPartDefault(int offset,
-                          Keyword keyword,
-                          String rawContent,
-                          String keywordAlias,
-                          ParserConf parserConf)
+    public RawElementDefault(int offset,
+                             Keyword keyword,
+                             String rawContent,
+                             String keywordAlias,
+                             ParserConf parserConf)
     {
         super();
         integrityCheck(keyword, rawContent, keywordAlias);
@@ -109,7 +109,7 @@ public class RawPartDefault implements RawPart {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        RawPartDefault other = (RawPartDefault) obj;
+        RawElementDefault other = (RawElementDefault) obj;
         return (offset == other.offset)
                 && Equals.areEquals(rawContent, other.rawContent)
                 // noT required but they both contribute to the object's state
@@ -119,7 +119,7 @@ public class RawPartDefault implements RawPart {
 
     @Override
     public String toString() {
-        return "RawPart{"
+        return "RawElement{"
                 + "offset=" + offset
                 + ", rawContent='" + rawContent + '\''
                 + '}';

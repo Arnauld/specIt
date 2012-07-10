@@ -5,8 +5,8 @@ package specit.element;
  *
  */
 public class Scenario extends ExecutablePart {
-    public Scenario(RawPart rawPart) {
-        super(rawPart);
+    public Scenario(RawElement rawElement) {
+        super(rawElement);
     }
 
     @Override

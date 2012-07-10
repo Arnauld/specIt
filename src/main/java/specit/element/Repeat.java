@@ -4,8 +4,8 @@ package specit.element;
  *
  */
 public class Repeat extends Step {
-    public Repeat(RawPart rawPart) {
-        super(rawPart);
+    public Repeat(RawElement rawElement) {
+        super(rawElement);
     }
 
     @Override
@@ -15,7 +15,7 @@ public class Repeat extends Step {
     }
 
     public RepeatParameters getRepeatParameters() {
-        return getRawPart().getRepeatParameters();
+        return getRawElement().getRepeatParameters();
     }
 
     public String toString() {

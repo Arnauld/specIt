@@ -4,23 +4,23 @@ package specit.element;
  *
  */
 public abstract class Element {
-    private final RawPart rawPart;
+    private final RawElement rawElement;
     private Element parent;
 
     Element() {
         this(null);
     }
 
-    public Element(RawPart rawPart) {
-        this.rawPart = rawPart;
+    public Element(RawElement rawElement) {
+        this.rawElement = rawElement;
     }
 
-    public RawPart getRawPart() {
-        return rawPart;
+    public RawElement getRawElement() {
+        return rawElement;
     }
 
     public boolean hasRawPart() {
-        return rawPart != null;
+        return rawElement != null;
     }
 
     public abstract void traverse(ElementVisitor visitor);
@@ -34,7 +34,7 @@ public abstract class Element {
     }
 
     public boolean endsWithBlankLine() {
-        return rawPart.endsWithBlankLine();
+        return rawElement.endsWithBlankLine();
     }
 
     public Fragment findFragment(String fragmentRef, boolean searchInChildren) {
@@ -42,10 +42,10 @@ public abstract class Element {
     }
 
     public String getKeywordAlias() {
-        return getRawPart().getKeywordAlias();
+        return getRawElement().getKeywordAlias();
     }
 
     public Keyword getKeyword() {
-        return getRawPart().getKeyword();
+        return getRawElement().getKeyword();
     }
 }

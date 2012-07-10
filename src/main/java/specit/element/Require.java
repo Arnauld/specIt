@@ -3,8 +3,8 @@ package specit.element;
 /**
  */
 public class Require extends Element {
-    public Require(RawPart rawPart) {
-        super(rawPart);
+    public Require(RawElement rawElement) {
+        super(rawElement);
     }
 
     @Override

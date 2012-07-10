@@ -5,8 +5,8 @@ package specit.element;
  */
 public class Background extends ExecutablePart {
 
-    public Background(RawPart rawPart) {
-        super(rawPart);
+    public Background(RawElement rawElement) {
+        super(rawElement);
     }
 
     @Override

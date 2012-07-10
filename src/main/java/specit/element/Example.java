@@ -6,8 +6,8 @@ package specit.element;
  */
 public class Example extends Element {
 
-    public Example(RawPart rawPart) {
-        super(rawPart);
+    public Example(RawElement rawElement) {
+        super(rawElement);
     }
 
     @Override
@@ -17,6 +17,6 @@ public class Example extends Element {
     }
 
     public Table getExampleTable() {
-        return getRawPart().getExampleTable();
+        return getRawElement().getExampleTable();
     }
 }

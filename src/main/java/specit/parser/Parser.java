@@ -4,7 +4,7 @@ import static specit.util.CharSequences.startsWithIgnoringChars;
 
 import specit.element.Alias;
 import specit.element.Keyword;
-import specit.element.RawPart;
+import specit.element.RawElement;
 import specit.util.CharIterator;
 import specit.util.CharIterators;
 
@@ -77,13 +77,13 @@ public class Parser {
     }
 
     private void emitPart(Listener listener, int offset, String keywordAlias, Keyword keyword, String content) {
-        RawPart rawPart = new RawPartDefault(
+        RawElement rawElement = new RawElementDefault(
                 offset,
                 keyword,
                 content,
                 keywordAlias,
                 conf);
-        listener.on(rawPart);
+        listener.on(rawElement);
     }
 
     private static boolean isNewlineCharacter(int read) {

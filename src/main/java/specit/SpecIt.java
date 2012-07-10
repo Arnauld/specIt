@@ -13,7 +13,7 @@ import specit.element.ExecutablePart;
 import specit.element.InvocationContext;
 import specit.element.InvokableStep;
 import specit.element.Keyword;
-import specit.element.RawPart;
+import specit.element.RawElement;
 import specit.element.Scenario;
 import specit.element.Story;
 import specit.element.StoryBuilder;
@@ -215,8 +215,8 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
     private Listener toParserListener(final StoryBuilder builder) {
         return new Listener() {
             @Override
-            public void on(RawPart rawPart) {
-                builder.append(rawPart);
+            public void on(RawElement rawElement) {
+                builder.append(rawElement);
             }
         };
     }
