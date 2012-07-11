@@ -1,7 +1,6 @@
 package specit.invocation;
 
-import specit.annotation.UserContextFactory;
-import specit.annotation.UserContextScope;
+import specit.annotation.UserContext;
 
 import java.lang.reflect.Method;
 
@@ -10,15 +9,15 @@ import java.lang.reflect.Method;
 public class UserContextFactorySupport {
     private final Class<?> klazz;
     private final Method method;
-    private final UserContextFactory factoryAnnotation;
+    private final UserContext.Factory factoryAnnotation;
 
-    public UserContextFactorySupport(Class<?> klazz, Method method, UserContextFactory factoryAnnotation) {
+    public UserContextFactorySupport(Class<?> klazz, Method method, UserContext.Factory factoryAnnotation) {
         this.klazz = klazz;
         this.method = method;
         this.factoryAnnotation = factoryAnnotation;
     }
 
-    public UserContextScope scope() {
+    public UserContext.Scope scope() {
         return factoryAnnotation.scope();
     }
 

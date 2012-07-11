@@ -4,7 +4,6 @@ import specit.BasicContext;
 import specit.ScenarioContext;
 import specit.StoryContext;
 import specit.annotation.UserContext;
-import specit.annotation.UserContextScope;
 import specit.invocation.CandidateStep;
 import specit.invocation.InvocationException;
 import specit.invocation.Lifecycle;
@@ -129,7 +128,7 @@ public class InvocationContext {
                 + "}");
     }
 
-    public void discardUserContexts(UserContextScope scope) {
+    public void discardUserContexts(UserContext.Scope scope) {
         Iterator<UserContextSupport> userContextIt = userContexts.iterator();
         while (userContextIt.hasNext()) {
             UserContextSupport userContext = userContextIt.next();

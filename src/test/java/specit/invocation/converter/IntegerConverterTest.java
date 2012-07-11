@@ -22,18 +22,34 @@ public class IntegerConverterTest {
 
     @Test(expected = SpecItRuntimeException.class)
     public void fromString_nullValue() {
-        converter.fromString(null);
+        converter.fromString(int.class, null);
+    }
+
+    @Test(expected = SpecItRuntimeException.class)
+    public void fromString_nullType() {
+        converter.fromString(null, "12");
+    }
+
+    @Test(expected = SpecItRuntimeException.class)
+    public void fromString_invalidType() {
+        converter.fromString(String.class, "12");
     }
 
     @Test
     public void fromString_validValues() {
-        Object value = converter.fromString("2012");
+        Object value = converter.fromString(Integer.class, "2012");
+        assertThat(value).isNotNull().isInstanceOf(Integer.class).isEqualTo(2012);
+    }
+
+    @Test
+    public void fromString_validValues_subType() {
+        Object value = converter.fromString(Number.class, "2012");
         assertThat(value).isNotNull().isInstanceOf(Integer.class).isEqualTo(2012);
     }
 
     @Test(expected = SpecItRuntimeException.class)
     public void fromString_invalidValues() {
-        converter.fromString("2012/a07/09");
+        converter.fromString(Integer.class, "2012/a07/09");
     }
 
     @Test

@@ -32,12 +32,22 @@ public class DateConverterTest {
 
     @Test(expected = SpecItRuntimeException.class)
     public void fromString_nullValue() {
-        converter.fromString(null);
+        converter.fromString(Date.class, null);
+    }
+
+    @Test(expected = SpecItRuntimeException.class)
+    public void fromString_nullType() {
+        converter.fromString(null, "2012/07/09");
+    }
+
+    @Test(expected = SpecItRuntimeException.class)
+    public void fromString_invalidType() {
+        converter.fromString(String.class, "2012/07/09");
     }
 
     @Test
     public void fromString_validValues() {
-        Object value = converter.fromString("2012/07/09");
+        Object value = converter.fromString(Date.class, "2012/07/09");
 
         assertThat(value).isNotNull().isInstanceOf(Date.class);
         LocalDate date = new LocalDate(((Date)value).getTime());
@@ -48,7 +58,7 @@ public class DateConverterTest {
 
     @Test(expected = SpecItRuntimeException.class)
     public void fromString_invalidValues() {
-        converter.fromString("2012/a07/09");
+        converter.fromString(Date.class, "2012/a07/09");
     }
 
     @Test

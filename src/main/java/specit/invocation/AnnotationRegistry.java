@@ -1,7 +1,6 @@
 package specit.invocation;
 
-import specit.annotation.UserContextFactory;
-import specit.annotation.UserContextScope;
+import specit.annotation.UserContext;
 import specit.annotation.lifecycle.AfterScenario;
 import specit.annotation.lifecycle.AfterStory;
 import specit.annotation.lifecycle.BeforeScenario;
@@ -65,8 +64,8 @@ public class AnnotationRegistry {
             AfterStory afterStory = (AfterStory) annotation;
             register(klazz, method, afterStory);
         }
-        else if (annotationType.equals(UserContextFactory.class)) {
-            UserContextFactory factory = (UserContextFactory) annotation;
+        else if (annotationType.equals(UserContext.Factory.class)) {
+            UserContext.Factory factory = (UserContext.Factory) annotation;
             register(new UserContextFactorySupport(klazz, method, factory));
         }
     }
@@ -80,7 +79,7 @@ public class AnnotationRegistry {
         userContextFactorySupports.add(userContextFactorySupport);
     }
 
-    public List<UserContextFactorySupport> getUserContextFactories(UserContextScope scope) {
+    public List<UserContextFactorySupport> getUserContextFactories(UserContext.Scope scope) {
         List<UserContextFactorySupport> selected = New.arrayList();
         for (UserContextFactorySupport factorySupport : userContextFactorySupports) {
             if (factorySupport.scope() == scope) {

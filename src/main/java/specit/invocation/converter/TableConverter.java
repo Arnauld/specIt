@@ -1,6 +1,7 @@
 package specit.invocation.converter;
 
 import specit.SpecItRuntimeException;
+import specit.element.Table;
 import specit.invocation.Converter;
 import specit.parser.TableParser;
 
@@ -17,7 +18,19 @@ public class TableConverter implements Converter {
     }
 
     @Override
-    public Object fromString(String value) {
+    public boolean canConvertTo(Class<?> requiredType) {
+        return (requiredType != null)
+                && requiredType.isAssignableFrom(Table.class);
+    }
+
+    @Override
+    public Object fromString(Class<?> requiredType, String value) {
+        if (requiredType == null) {
+            throw new SpecItRuntimeException("RequiredType <null> is not assignable from Table");
+        }
+        if(!requiredType.isAssignableFrom(Table.class)) {
+            throw new SpecItRuntimeException("Incompatible required type, expected assignable from Table");
+        }
         if (value == null) {
             throw new SpecItRuntimeException("Value <null> is not a valid table value");
         }

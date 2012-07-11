@@ -2,7 +2,7 @@ package specit;
 
 import static specit.report.Reporters.asInvocationContextListener;
 
-import specit.annotation.UserContextScope;
+import specit.annotation.UserContext;
 import specit.annotation.lifecycle.AfterScenario;
 import specit.annotation.lifecycle.AfterStory;
 import specit.annotation.lifecycle.BeforeScenario;
@@ -32,6 +32,8 @@ import specit.invocation.Lifecycle;
 import specit.invocation.MappingConf;
 import specit.invocation.ParameterMappingException;
 import specit.invocation.UserContextFactorySupport;
+import specit.invocation.converter.DateConverter;
+import specit.invocation.converter.EnumByNameConverter;
 import specit.invocation.converter.IntegerConverter;
 import specit.invocation.converter.StringConverter;
 import specit.parser.CommentParser;
@@ -41,11 +43,14 @@ import specit.parser.ParserConf;
 import specit.parser.RepeatParametersParser;
 import specit.parser.TableParser;
 import specit.report.Reporter;
+import specit.util.DateFormats;
 import specit.util.New;
 import specit.util.Proxies;
 import specit.util.TemplateEngine;
 
 import java.lang.annotation.Annotation;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -183,7 +188,43 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
     protected void registerDefaultConverters(ConverterRegistry registry) {
         registry.registerConverter(String.class, new StringConverter());
         registry.registerConverter(Integer.class, new IntegerConverter());
+        registry.registerConverter(Date.class, new DateConverter(defaultDateFormats()));
         registry.registerConverter(int.class, new IntegerConverter());
+        registry.registerConverter(new EnumByNameConverter());
+    }
+
+    /**
+     * <pre>
+     *     "yyyy/MM/dd",
+     *     "yyyy-MM-dd",
+     *     "yyyy/MM/dd'T'HH:mm:ss",
+     *     "yyyy/MM/dd' 'HH:mm:ss",
+     *     "yyyy-MM-dd'T'HH:mm:ssz",
+     *     "yyyy-MM-dd' 'HH:mm:ssz",
+     *     "dd/MM/yyyy",
+     *     "dd-MM-yyyy",
+     *     "dd/MM/yyyy'T'HH:mm:ss",
+     *     "dd/MM/yyyy' 'HH:mm:ss",
+     *     "dd-MM-yyyy'T'HH:mm:ssz",
+     *     "dd-MM-yyyy' 'HH:mm:ssz"
+     * </pre>
+     *
+     */
+    protected List<DateFormat> defaultDateFormats() {
+        return DateFormats.toDateFormats(
+                "yyyy/MM/dd",
+                "yyyy-MM-dd",
+                "yyyy/MM/dd'T'HH:mm:ss",
+                "yyyy/MM/dd' 'HH:mm:ss",
+                "yyyy-MM-dd'T'HH:mm:ssz",
+                "yyyy-MM-dd' 'HH:mm:ssz",
+                "dd/MM/yyyy",
+                "dd-MM-yyyy",
+                "dd/MM/yyyy'T'HH:mm:ss",
+                "dd/MM/yyyy' 'HH:mm:ss",
+                "dd-MM-yyyy'T'HH:mm:ssz",
+                "dd-MM-yyyy' 'HH:mm:ssz"
+        );
     }
 
     public SpecIt scanAnnotations(Class<?> annotationDefinitions) throws ParameterMappingException {
@@ -245,14 +286,14 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
         @Override
         public void beginStory(Story story) {
             reporterDispatch.startStory(story);
-            doCreateUserContexts(UserContextScope.Story);
+            doCreateUserContexts(UserContext.Scope.Story);
             doInvokeLifecycles(BeforeStory.class);
         }
 
         @Override
         public void endStory(Story story) {
             doInvokeLifecycles(AfterStory.class);
-            doDiscardUserContexts(UserContextScope.Story);
+            doDiscardUserContexts(UserContext.Scope.Story);
             reporterDispatch.endStory(story);
         }
 
@@ -265,14 +306,14 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
                 reporterDispatch.startBackground((Background) scenarioOrBackground);
             }
             invocationContext.beginScenarioOrBackground(scenarioOrBackground);
-            doCreateUserContexts(UserContextScope.Scenario);
+            doCreateUserContexts(UserContext.Scope.Scenario);
             doInvokeLifecycles(BeforeScenario.class);
         }
 
         @Override
         public void endScenario(ExecutablePart scenarioOrBackground, InterpreterContext context) {
             doInvokeLifecycles(AfterScenario.class);
-            doDiscardUserContexts(UserContextScope.Scenario);
+            doDiscardUserContexts(UserContext.Scope.Scenario);
             invocationContext.endScenarioOrBackground(scenarioOrBackground);
             if (scenarioOrBackground instanceof Scenario) {
                 reporterDispatch.endScenario((Scenario) scenarioOrBackground);
@@ -298,13 +339,13 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
             }
         }
 
-        private void doCreateUserContexts(UserContextScope scope) {
+        private void doCreateUserContexts(UserContext.Scope scope) {
             for (UserContextFactorySupport factory : annotationRegistry.getUserContextFactories(scope)) {
                 invoker.invoke(invocationContext, factory);
             }
         }
 
-        private void doDiscardUserContexts(UserContextScope scope) {
+        private void doDiscardUserContexts(UserContext.Scope scope) {
             invocationContext.discardUserContexts(scope);
         }
 

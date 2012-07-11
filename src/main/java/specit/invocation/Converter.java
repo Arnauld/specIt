@@ -5,7 +5,23 @@ package specit.invocation;
  *
  */
 public interface Converter {
-    Object fromString(String value);
+
+    /**
+     * Indicates whether this converter can converter a string to the suitable type.
+     *
+     * @param requiredType
+     * @return
+     */
+    boolean canConvertTo(Class<?> requiredType);
+
+    /**
+     * Convert the <code>code</code> into a suitable type.
+     *
+     * @param requiredType
+     * @param value
+     * @return
+     */
+    Object fromString(Class<?> requiredType, String value);
 
     /**
      * Hints method that returns completion suggestions for the given input.

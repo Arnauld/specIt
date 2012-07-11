@@ -83,7 +83,7 @@ public class ParameterMapping {
         else if (hasVariableName()) {
             Converter converter = getConverter(converterRegistry);
             String variableValue = variableValues.get(getVariableName());
-            return converter.fromString(variableValue);
+            return converter.fromString(getParameterType(), variableValue);
         }
         else {
             throw new ParameterMappingRuntimeException(

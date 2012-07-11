@@ -22,12 +22,23 @@ public class StringConverterTest {
 
     @Test(expected = SpecItRuntimeException.class)
     public void fromString_nullValue() {
-        converter.fromString(null);
+        converter.fromString(String.class, null);
+    }
+
+    @Test(expected = SpecItRuntimeException.class)
+    public void fromString_nullType() {
+        converter.fromString(null, "bob");
     }
 
     @Test
     public void fromString_validValues() {
-        Object value = converter.fromString("2012");
+        Object value = converter.fromString(String.class, "2012");
+        assertThat(value).isNotNull().isInstanceOf(String.class).isEqualTo("2012");
+    }
+
+    @Test
+    public void fromString_validValues_subType() {
+        Object value = converter.fromString(CharSequence.class, "2012");
         assertThat(value).isNotNull().isInstanceOf(String.class).isEqualTo("2012");
     }
 

@@ -3,8 +3,6 @@ package specit.invocation;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import specit.annotation.UserContext;
-import specit.annotation.UserContextFactory;
-import specit.annotation.UserContextScope;
 import specit.annotation.lifecycle.AfterScenario;
 import specit.annotation.lifecycle.AfterStory;
 import specit.annotation.lifecycle.BeforeScenario;
@@ -41,19 +39,19 @@ public class AnnotationRegistryTest {
         annotationRegistry.scan(Case1.class);
 
         // Then
-        assertThat(annotationRegistry.getUserContextFactories(UserContextScope.Story))
+        assertThat(annotationRegistry.getUserContextFactories(UserContext.Scope.Story))
                 .isNotNull()
                 .isEmpty();
 
         List<UserContextFactorySupport> userContextFactories =
-                annotationRegistry.getUserContextFactories(UserContextScope.Scenario);
+                annotationRegistry.getUserContextFactories(UserContext.Scope.Scenario);
         assertThat(userContextFactories)
                 .isNotNull()
                 .hasSize(1);
         UserContextFactorySupport userContextFactorySupport = userContextFactories.get(0);
         assertThat(userContextFactorySupport.getOwningType()).isEqualTo((Class)Case1.class);
         assertThat(userContextFactorySupport.getMethod().getName()).isEqualTo("context");
-        assertThat(userContextFactorySupport.scope()).isEqualTo(UserContextScope.Scenario);
+        assertThat(userContextFactorySupport.scope()).isEqualTo(UserContext.Scope.Scenario);
     }
 
     @Test
@@ -131,7 +129,7 @@ public class AnnotationRegistryTest {
         public void afterScenario () {
         }
 
-        @UserContextFactory(scope = UserContextScope.Scenario)
+        @UserContext.Factory(scope = UserContext.Scope.Scenario)
         public Map<String,String> context() {
             return New.hashMap();
         }

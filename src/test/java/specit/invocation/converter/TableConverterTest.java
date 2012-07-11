@@ -27,7 +27,7 @@ public class TableConverterTest {
 
     @Test(expected = SpecItRuntimeException.class)
     public void fromString_nullValue() {
-        converter.fromString(null);
+        converter.fromString(Table.class, null);
     }
 
     @Test
@@ -36,7 +36,7 @@ public class TableConverterTest {
                          "| bob  |     12|\n" +
                          "| alice|   1257|\n";
 
-        Object parsed = converter.fromString(content);
+        Object parsed = converter.fromString(Table.class, content);
         assertThat(parsed).isNotNull().isInstanceOf(Table.class);
 
         Table table = (Table)parsed;
@@ -49,7 +49,7 @@ public class TableConverterTest {
     public void parse_invalidInput_noDelimiter() {
         String content = "yuk";
 
-        Object parsed = converter.fromString(content);
+        Object parsed = converter.fromString(Table.class, content);
         assertThat(parsed).isNotNull().isInstanceOf(Table.class);
 
         Table table = (Table)parsed;
@@ -64,7 +64,7 @@ public class TableConverterTest {
                 "| bob  |     12|\n" +
                 "| alice|   125";
 
-        Object parsed = converter.fromString(content);
+        Object parsed = converter.fromString(Table.class, content);
         assertThat(parsed).isNotNull().isInstanceOf(Table.class);
 
         Table table = (Table)parsed;

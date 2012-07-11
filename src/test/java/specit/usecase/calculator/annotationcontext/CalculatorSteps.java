@@ -1,6 +1,5 @@
 package specit.usecase.calculator.annotationcontext;
 
-import specit.ScenarioContext;
 import specit.annotation.*;
 import specit.annotation.lifecycle.AfterScenario;
 import specit.usecase.calculator.Calculator;
@@ -22,12 +21,12 @@ public class CalculatorSteps {
         }
     }
 
-    @UserContextFactory(scope=UserContextScope.Scenario)
+    @UserContext.Factory(scope= UserContext.Scope.Scenario)
     public ExceptionHolder exceptionHolder() {
         return new ExceptionHolder();
     }
 
-    @UserContextFactory(scope=UserContextScope.Scenario)
+    @UserContext.Factory(scope= UserContext.Scope.Scenario)
     public Calculator scenarioCalculator() {
         Calculator calculator = new Calculator();
         return calculator;

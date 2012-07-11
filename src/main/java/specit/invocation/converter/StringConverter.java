@@ -3,6 +3,8 @@ package specit.invocation.converter;
 import specit.SpecItRuntimeException;
 import specit.invocation.Converter;
 
+import java.util.Date;
+
 /**
  *
  *
@@ -10,7 +12,19 @@ import specit.invocation.Converter;
 public class StringConverter implements Converter {
 
     @Override
-    public Object fromString(String value) {
+    public boolean canConvertTo(Class<?> requiredType) {
+        return (requiredType != null)
+                && requiredType.isAssignableFrom(String.class);
+    }
+
+    @Override
+    public Object fromString(Class<?> requiredType, String value) {
+        if (requiredType == null) {
+            throw new SpecItRuntimeException("RequiredType <null> is not assignable from String");
+        }
+        if(!requiredType.isAssignableFrom(String.class)) {
+            throw new SpecItRuntimeException("Incompatible required type, expected assignable from String");
+        }
         if (isValid(value)) {
             return value;
         }

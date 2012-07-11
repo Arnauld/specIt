@@ -1,7 +1,6 @@
 package specit.invocation;
 
 import specit.annotation.UserContext;
-import specit.annotation.UserContextScope;
 
 /**
  *
@@ -16,7 +15,7 @@ public class UserContextSupport {
     }
 
 
-    public UserContextScope scope() {
+    public UserContext.Scope scope() {
         return factory.scope();
     }
 
