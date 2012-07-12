@@ -46,8 +46,8 @@ public @interface UserContext {
     }
 
     /**
-     * Indicates that the annotated method creates an instance for the specified scope ({@link #scope()}).
-     * This instance will then be available within the corresponding scope by marking corresponding method
+     * Indicates that the annotated method creates an instance for the specified contextScope ({@link #scope()}).
+     * This instance will then be available within the corresponding contextScope by marking corresponding method
      * parameter with {@link specit.annotation.UserContext} annotation.
      */
     @Documented

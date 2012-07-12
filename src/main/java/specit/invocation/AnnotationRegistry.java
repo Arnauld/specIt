@@ -82,7 +82,7 @@ public class AnnotationRegistry {
     public List<UserContextFactorySupport> getUserContextFactories(UserContext.Scope scope) {
         List<UserContextFactorySupport> selected = New.arrayList();
         for (UserContextFactorySupport factorySupport : userContextFactorySupports) {
-            if (factorySupport.scope() == scope) {
+            if (factorySupport.contextScope() == scope) {
                 selected.add(factorySupport);
             }
         }

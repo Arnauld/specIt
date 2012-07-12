@@ -103,7 +103,8 @@ public class InvocationContext {
         listener.stepInvoked(invokableStep, candidateStep);
     }
 
-    public void defineUserContext(UserContextSupport userContextSupport) {
+    public void defineUserContext(UserContext.Scope scope, String name, Object data) {
+        UserContextSupport userContextSupport = new UserContextSupport(scope, name, data);
         listener.userContextDefined(userContextSupport);
         userContexts.add(userContextSupport);
     }

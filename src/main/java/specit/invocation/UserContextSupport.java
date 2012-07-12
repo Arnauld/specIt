@@ -7,16 +7,17 @@ import specit.annotation.UserContext;
  */
 public class UserContextSupport {
     private final Object userContext;
-    private final UserContextFactorySupport factory;
+    private final UserContext.Scope scope;
+    private final String name;
 
-    public UserContextSupport(Object userContext, UserContextFactorySupport factory) {
+    public UserContextSupport(UserContext.Scope scope, String name, Object userContext) {
+        this.scope = scope;
+        this.name = name;
         this.userContext = userContext;
-        this.factory = factory;
     }
 
-
     public UserContext.Scope scope() {
-        return factory.scope();
+        return scope;
     }
 
     public Object getUserContext() {

@@ -28,10 +28,10 @@ public class Invoker {
         try {
 
             Object instance = instanceProvider.getInstance(factory.getOwningType());
-            Method method = factory.getMethod();
+            Method method = factory.factoryMethod();
 
-            Object userContext = method.invoke(instance);
-            invocationContext.defineUserContext(new UserContextSupport(userContext, factory));
+            Object data = method.invoke(instance);
+            invocationContext.defineUserContext(factory.contextScope(), factory.contextName(), data);
         }
         catch (Exception e) {
             throw new SpecItRuntimeException(e);

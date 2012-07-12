@@ -17,15 +17,19 @@ public class UserContextFactorySupport {
         this.factoryAnnotation = factoryAnnotation;
     }
 
-    public UserContext.Scope scope() {
+    public UserContext.Scope contextScope() {
         return factoryAnnotation.scope();
+    }
+
+    public String contextName () {
+        return factoryAnnotation.name();
     }
 
     public Class<?> getOwningType() {
         return klazz;
     }
 
-    public Method getMethod() {
+    public Method factoryMethod() {
         return method;
     }
 }

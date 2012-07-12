@@ -50,8 +50,8 @@ public class AnnotationRegistryTest {
                 .hasSize(1);
         UserContextFactorySupport userContextFactorySupport = userContextFactories.get(0);
         assertThat(userContextFactorySupport.getOwningType()).isEqualTo((Class) Case1.class);
-        assertThat(userContextFactorySupport.getMethod().getName()).isEqualTo("context");
-        assertThat(userContextFactorySupport.scope()).isEqualTo(UserContext.Scope.Scenario);
+        assertThat(userContextFactorySupport.factoryMethod().getName()).isEqualTo("context");
+        assertThat(userContextFactorySupport.contextScope()).isEqualTo(UserContext.Scope.Scenario);
     }
 
     @Test
