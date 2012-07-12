@@ -6,6 +6,10 @@ public final class CharIterators {
     }
 
     public static CharIterator createFrom(final CharSequence text) {
+        if(text==null) {
+            throw new IllegalArgumentException("Text cannot be null");
+        }
+
         return new CharIterator() {
             private int pos = 0;
 
@@ -14,7 +18,7 @@ public final class CharIterators {
                 if (pos < text.length()) {
                     return text.charAt(pos++);
                 }
-                return -1;
+                return CharIterator.EOF;
             }
         };
     }

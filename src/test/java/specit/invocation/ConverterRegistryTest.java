@@ -45,4 +45,67 @@ public class ConverterRegistryTest {
         Object value = converter.fromString(Number.class, "15");
         assertThat(value).isNotNull().isInstanceOf(Integer.class).isEqualTo(15);
     }
+
+    @Test(expected = ConverterException.class)
+    public void getConverterForType_none() throws ConverterException {
+        registry.getConverterForType(TimeUnit.class);
+    }
+
+    @Test(expected = ConverterException.class)
+    public void getConverterForType_missing() throws ConverterException {
+        registry.registerConverter(new IntegerConverter());
+
+        registry.getConverterForType(TimeUnit.class);
+    }
+
+    @Test
+    public void getConverter_instanciateOnDemand() throws ConverterException {
+        Converter c1 = registry.getConverter(InternalConverter.class);
+        assertThat(c1).isNotNull().isInstanceOf(InternalConverter.class);
+
+        Converter c2 = registry.getConverter(InternalConverter.class);
+        assertThat(c2).isSameAs(c1);
+    }
+
+    @Test(expected = ConverterException.class)
+    public void getConverter_failGracefullyOnInstanciationFailure() throws ConverterException {
+        registry.getConverter(InternalConverterWithPrivateCtor.class);
+    }
+
+    public static class InternalConverter implements Converter {
+        @Override
+        public boolean canConvertTo(Class<?> requiredType) {
+            return true;
+        }
+
+        @Override
+        public Object fromString(Class<?> requiredType, String value) {
+            return null;
+        }
+
+        @Override
+        public String[] suggest(String input) {
+            return new String[0];
+        }
+    }
+
+    public static class InternalConverterWithPrivateCtor implements Converter {
+        private InternalConverterWithPrivateCtor() {
+        }
+
+        @Override
+        public boolean canConvertTo(Class<?> requiredType) {
+            return true;
+        }
+
+        @Override
+        public Object fromString(Class<?> requiredType, String value) {
+            return null;
+        }
+
+        @Override
+        public String[] suggest(String input) {
+            return new String[0];
+        }
+    }
 }
