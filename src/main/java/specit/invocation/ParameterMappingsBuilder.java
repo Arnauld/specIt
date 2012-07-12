@@ -1,7 +1,5 @@
 package specit.invocation;
 
-import specit.ScenarioContext;
-import specit.StoryContext;
 import specit.annotation.UserContext;
 import specit.annotation.Variable;
 import specit.element.InvocationContext;
@@ -152,7 +150,7 @@ public class ParameterMappingsBuilder {
     }
 
     private static boolean isParameterSpecial(Method method, int parameterIndex) {
-        return isPredefinedContext(method.getParameterTypes()[parameterIndex])
+        return isSpecItContext(method.getParameterTypes()[parameterIndex])
                 || hasContextAnnotation(method.getParameterAnnotations()[parameterIndex]);
     }
 
@@ -165,10 +163,8 @@ public class ParameterMappingsBuilder {
         return false;
     }
 
-    private static boolean isPredefinedContext(Class<?> parameterType) {
-        return StoryContext.class.isAssignableFrom(parameterType)
-                || ScenarioContext.class.isAssignableFrom(parameterType)
-                || InvocationContext.class.isAssignableFrom(parameterType);
+    private static boolean isSpecItContext(Class<?> parameterType) {
+        return InvocationContext.class.isAssignableFrom(parameterType);
     }
 
     private Map<String, Integer> generateVariableNameToParameterIndex(Annotation[][] parameterAnnotations)

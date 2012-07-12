@@ -1,7 +1,5 @@
 package specit.invocation;
 
-import specit.ScenarioContext;
-import specit.StoryContext;
 import specit.annotation.UserContext;
 import specit.element.InvocationContext;
 
@@ -73,12 +71,6 @@ public class ParameterMapping {
         }
         else if (parameterType.equals(InvocationContext.class)) {
             return context;
-        }
-        else if (parameterType.equals(ScenarioContext.class)) {
-            return context.getScenarioContext();
-        }
-        else if (parameterType.equals(StoryContext.class)) {
-            return context.getStoryContext();
         }
         else if (hasVariableName()) {
             Converter converter = getConverter(converterRegistry);

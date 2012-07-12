@@ -1,8 +1,5 @@
 package specit.element;
 
-import specit.BasicContext;
-import specit.ScenarioContext;
-import specit.StoryContext;
 import specit.annotation.UserContext;
 import specit.invocation.CandidateStep;
 import specit.invocation.InvocationException;
@@ -27,10 +24,6 @@ public class InvocationContext {
     private Scenario currentScenario;
     private boolean lifecycleInError;
     private boolean stepInError;
-    // Contexts
-    private ScenarioContext scenarioContext;
-    private StoryContext storyContext;
-
 
     public InvocationContext(InvocationContext parent, Story currentStory, InvocationContextListener listener) {
         this.parent = parent;
@@ -46,6 +39,10 @@ public class InvocationContext {
         return currentStory;
     }
 
+    public Scenario getCurrentScenario() {
+        return currentScenario;
+    }
+
     public <T> T get(Object key) {
         return (T) values.get(key);
     }
@@ -57,11 +54,6 @@ public class InvocationContext {
 
     public boolean isLifecycleInError() {
         return lifecycleInError;
-    }
-
-    public void lifecycleInvocationFailed(Lifecycle lifecycle, String message) {
-        lifecycleInError = true;
-        listener.lifecycleInvocationFailed(lifecycle, message);
     }
 
     public void lifecycleInvocationFailed(Lifecycle lifecycle, String message, Exception cause) {
@@ -139,17 +131,6 @@ public class InvocationContext {
         }
     }
 
-    public ScenarioContext getScenarioContext() {
-        if (scenarioContext == null) {
-            scenarioContext = new BasicScenarioContext();
-        }
-        return scenarioContext;
-    }
-
-    public StoryContext getStoryContext() {
-        return storyContext;
-    }
-
     public void beginScenarioOrBackground(ExecutablePart scenarioOrBackground) {
         if (scenarioOrBackground instanceof Scenario) {
             this.currentScenario = (Scenario) scenarioOrBackground;
@@ -162,22 +143,4 @@ public class InvocationContext {
         }
     }
 
-    private class BasicScenarioContext extends BasicContext implements ScenarioContext {
-        @Override
-        public Scenario getCurrentScenario() {
-            return InvocationContext.this.currentScenario;
-        }
-
-        @Override
-        public StoryContext getStoryContext() {
-            return InvocationContext.this.getStoryContext();
-        }
-    }
-
-    private class BasicStoryContext extends BasicContext implements StoryContext {
-        @Override
-        public Story getCurrentStory() {
-            return InvocationContext.this.getCurrentStory();
-        }
-    }
 }
