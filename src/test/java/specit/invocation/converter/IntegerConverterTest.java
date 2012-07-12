@@ -16,7 +16,7 @@ public class IntegerConverterTest {
     private IntegerConverter converter;
 
     @Before
-    public void setUp () {
+    public void setUp() {
         converter = new IntegerConverter();
     }
 

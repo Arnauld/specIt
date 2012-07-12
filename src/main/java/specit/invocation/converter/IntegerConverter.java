@@ -3,8 +3,6 @@ package specit.invocation.converter;
 import specit.SpecItRuntimeException;
 import specit.invocation.Converter;
 
-import java.util.Date;
-
 /**
  *
  *
@@ -22,8 +20,9 @@ public class IntegerConverter implements Converter {
         if (requiredType == null) {
             throw new SpecItRuntimeException("RequiredType <null> is not assignable from Integer");
         }
-        if(!requiredType.isAssignableFrom(int.class)
-                && !requiredType.isAssignableFrom(Integer.class)) {
+        if (!requiredType.isAssignableFrom(int.class)
+                && !requiredType.isAssignableFrom(Integer.class))
+        {
             throw new SpecItRuntimeException("Incompatible required type, expected assignable from int or Integer");
         }
         if (value == null) {

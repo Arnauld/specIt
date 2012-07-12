@@ -1,16 +1,18 @@
 package specit.usecase.calculator.manualcontext;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static specit.usecase.calculator.manualcontext.CalculatorContext.calculator;
+import static specit.usecase.calculator.manualcontext.CalculatorContext.context;
+
 import specit.annotation.Given;
 import specit.annotation.Then;
 import specit.annotation.Variable;
 import specit.annotation.When;
 import specit.annotation.lifecycle.AfterScenario;
 import specit.annotation.lifecycle.BeforeScenario;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static specit.usecase.calculator.manualcontext.CalculatorContext.calculator;
-import static specit.usecase.calculator.manualcontext.CalculatorContext.context;
 
 public class CalculatorSteps {
 
@@ -32,14 +34,17 @@ public class CalculatorSteps {
 
     @When("I add $value to $variable")
     public void addValueToVariable(@Variable("variable") String variable,
-                                   @Variable("value") String value) {
+                                   @Variable("value") String value)
+    {
         try {
             if (value.matches("\\d+")) {
                 calculator().addToVariable(variable, Integer.parseInt(value));
-            } else {
+            }
+            else {
                 calculator().addToVariable(variable, value);
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             context().setLastError(e);
         }
     }

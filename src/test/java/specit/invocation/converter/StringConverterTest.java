@@ -16,7 +16,7 @@ public class StringConverterTest {
     private StringConverter converter;
 
     @Before
-    public void setUp () {
+    public void setUp() {
         converter = new StringConverter();
     }
 

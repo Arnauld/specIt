@@ -1,14 +1,18 @@
 package specit.usecase.incubation;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.Test;
 import specit.SpecIt;
-import specit.element.*;
+import specit.element.DumpVisitor;
+import specit.element.ExecutablePart;
+import specit.element.InvokableStep;
+import specit.element.Keyword;
+import specit.element.Story;
 import specit.interpreter.InterpreterContext;
 import specit.interpreter.InterpreterListener;
 import specit.interpreter.StoryInterpreter;
 
+import org.apache.commons.io.IOUtils;
+import org.junit.Before;
+import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -61,7 +65,8 @@ public class IncubationDumpTest {
 
             @Override
             public void invokeStep(InvokableStep invokableStep, InterpreterContext context) {
-                System.out.println("IncubationDumpTest.stepInvoked(" + invokableStep.getKeyword() + ":" + invokableStep.getAdjustedInput() + ")");
+                System.out.println("IncubationDumpTest.stepInvoked(" + invokableStep.getKeyword() + ":"
+                        + invokableStep.getAdjustedInput() + ")");
             }
 
             @Override
@@ -76,7 +81,8 @@ public class IncubationDumpTest {
         InputStream stream = IncubationDumpTest.class.getResourceAsStream(resourceName);
         try {
             return IOUtils.toString(stream, "UTF-8");
-        } finally {
+        }
+        finally {
             IOUtils.closeQuietly(stream);
         }
     }

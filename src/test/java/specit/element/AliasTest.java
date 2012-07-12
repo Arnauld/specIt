@@ -2,7 +2,6 @@ package specit.element;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-import org.fest.assertions.api.MapAssert;
 import org.junit.Test;
 
 /**
@@ -33,7 +32,8 @@ public class AliasTest {
                 .isNotEqualTo(new Alias(Keyword.Given, ""))
                 .isNotEqualTo(new Alias(Keyword.Then, "hop"))
                 .isNotEqualTo(null)
-                .isNotEqualTo(new Alias(Keyword.Given, "hop") {})
+                .isNotEqualTo(new Alias(Keyword.Given, "hop") {
+                })
         ;
     }
 }

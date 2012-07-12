@@ -45,9 +45,10 @@ public class ConverterRegistry {
     public Converter getConverterForType(Class<?> toType) throws ConverterException {
         Converter converter = converterPerType.get(toType);
         if (converter == null) {
-            for(Converter c : converters) {
-                if(c.canConvertTo(toType))
+            for (Converter c : converters) {
+                if (c.canConvertTo(toType)) {
                     return c;
+                }
             }
             throw new ConverterException("No converter defined for type <" + toType + ">");
         }

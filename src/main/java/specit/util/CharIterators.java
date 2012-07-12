@@ -6,7 +6,7 @@ public final class CharIterators {
     }
 
     public static CharIterator createFrom(final CharSequence text) {
-        if(text==null) {
+        if (text == null) {
             throw new IllegalArgumentException("Text cannot be null");
         }
 

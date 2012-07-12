@@ -1,14 +1,16 @@
 package specit.invocation;
 
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import specit.annotation.Variable;
 import specit.element.InvocationContext;
 import specit.util.ParametrizedString;
 
+import org.junit.Test;
 import java.lang.reflect.Method;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  *
@@ -74,7 +76,9 @@ public class ParameterMappingsBuilderTest {
     }
 
     @Test(expected = ParameterMappingException.class)
-    public void mappings_twoParameters_twoVariables_withVariableAnnotations_variableNamesMismatched() throws ParameterMappingException {
+    public void mappings_twoParameters_twoVariables_withVariableAnnotations_variableNamesMismatched()
+            throws ParameterMappingException
+    {
         mappings(
                 "twoParametersWithVariableAnnotations", "content with $quantity and $firstname");
     }
@@ -95,7 +99,9 @@ public class ParameterMappingsBuilderTest {
     }
 
     @Test
-    public void mappings_twoParameters_twoVariables_withVariableAnnotations_reversedOrder() throws ParameterMappingException {
+    public void mappings_twoParameters_twoVariables_withVariableAnnotations_reversedOrder()
+            throws ParameterMappingException
+    {
         ParameterMapping[] parameterMappings = mappings(
                 "twoParametersWithVariableAnnotations", "content with $name and $amount");
         assertThat(parameterMappings, notNullValue());
@@ -125,7 +131,9 @@ public class ParameterMappingsBuilderTest {
     }
 
     @Test
-    public void mappings_threeParameters_twoVariables_oneSpecial_noVariableAnnotations() throws ParameterMappingException {
+    public void mappings_threeParameters_twoVariables_oneSpecial_noVariableAnnotations()
+            throws ParameterMappingException
+    {
         ParameterMapping[] parameterMappings = mappings(
                 "threeParametersNoVariableAnnotationsWithSpecial", "content with $name and $amount");
         assertThat(parameterMappings, notNullValue());
@@ -144,7 +152,9 @@ public class ParameterMappingsBuilderTest {
     }
 
     @Test
-    public void mappings_threeParameters_twoVariables_oneSpecial_withVariableAnnotations() throws ParameterMappingException {
+    public void mappings_threeParameters_twoVariables_oneSpecial_withVariableAnnotations()
+            throws ParameterMappingException
+    {
         ParameterMapping[] parameterMappings = mappings(
                 "threeParametersWithVariableAnnotationsWithSpecial", "content with $name and $amount");
         assertThat(parameterMappings, notNullValue());
@@ -165,7 +175,9 @@ public class ParameterMappingsBuilderTest {
 
     // ---
 
-    private static ParameterMapping[] mappings(String methodName, String pStringContent) throws ParameterMappingException {
+    private static ParameterMapping[] mappings(String methodName, String pStringContent)
+            throws ParameterMappingException
+    {
         return new ParameterMappingsBuilder(sampleMethodByName(methodName), pString(pStringContent)).getParameterMappings();
     }
 
@@ -175,8 +187,9 @@ public class ParameterMappingsBuilderTest {
 
     private static Method sampleMethodByName(String methodName) {
         for (Method method : Sample.class.getMethods()) {
-            if (method.getName().equals(methodName))
+            if (method.getName().equals(methodName)) {
                 return method;
+            }
         }
         throw new IllegalArgumentException("No method found matching <" + methodName + ">");
     }
@@ -193,10 +206,16 @@ public class ParameterMappingsBuilderTest {
         public void twoParametersNoVariableAnnotationsWithSpecial(InvocationContext context, int intValue) {
         }
 
-        public void threeParametersNoVariableAnnotationsWithSpecial(String param, InvocationContext context, int intValue) {
+        public void threeParametersNoVariableAnnotationsWithSpecial(String param,
+                                                                    InvocationContext context,
+                                                                    int intValue)
+        {
         }
 
-        public void threeParametersWithVariableAnnotationsWithSpecial(@Variable("amount") int intValue, InvocationContext context, @Variable("name") String param) {
+        public void threeParametersWithVariableAnnotationsWithSpecial(@Variable("amount") int intValue,
+                                                                      InvocationContext context,
+                                                                      @Variable("name") String param)
+        {
         }
 
         public void twoParametersNoVariableAnnotations(int intValue, String param) {
@@ -205,10 +224,14 @@ public class ParameterMappingsBuilderTest {
         public void notEnoughVariableAnnotation(@Variable("amount") int intValue, String param) {
         }
 
-        public void twoParametersWithVariableAnnotations(@Variable("amount") int intValue, @Variable("name") String param) {
+        public void twoParametersWithVariableAnnotations(@Variable("amount") int intValue,
+                                                         @Variable("name") String param)
+        {
         }
 
-        public void duplicateNameVariableAnnotations(@Variable("amount") int intValue, @Variable("amount") String param) {
+        public void duplicateNameVariableAnnotations(@Variable("amount") int intValue,
+                                                     @Variable("amount") String param)
+        {
         }
     }
 }

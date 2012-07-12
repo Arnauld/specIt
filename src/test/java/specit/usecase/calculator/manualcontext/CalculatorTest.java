@@ -1,10 +1,11 @@
 package specit.usecase.calculator.manualcontext;
 
-import org.junit.Before;
-import org.junit.Test;
 import specit.SpecIt;
 import specit.element.Keyword;
 import specit.invocation.ParameterMappingException;
+
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  *

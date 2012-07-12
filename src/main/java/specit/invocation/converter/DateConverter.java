@@ -51,7 +51,7 @@ public class DateConverter implements Converter {
             synchronized (dateFormat) {
                 date = dateFormat.parse(trimmed, pos);
             }
-            if(isValid(trimmed, date, pos)) {
+            if (isValid(trimmed, date, pos)) {
                 return date;
             }
         }

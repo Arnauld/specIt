@@ -17,7 +17,7 @@ public class EnumByNameConverterTest {
     private EnumByNameConverter converter;
 
     @Before
-    public void setUp () {
+    public void setUp() {
         converter = new EnumByNameConverter();
     }
 

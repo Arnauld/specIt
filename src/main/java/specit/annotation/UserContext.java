@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * Indicates that the annotated parameter is a user defined context.
  * A user context is usually defined through the {@link Factory} annotation.
  * A name can be added if several instance of the same class can exists at the same time.
- *
+ * <p/>
  * <pre>
  *     @UserContext.Factory(scope=UserContext.Scope.Story)
  *     public Calculator newCalculatator() {

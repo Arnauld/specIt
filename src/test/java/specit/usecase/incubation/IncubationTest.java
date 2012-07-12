@@ -1,13 +1,13 @@
 package specit.usecase.incubation;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.Test;
 import specit.SpecIt;
 import specit.element.Keyword;
 import specit.invocation.ParameterMappingException;
 import specit.report.ConsoleColoredReporter;
 
+import org.apache.commons.io.IOUtils;
+import org.junit.Before;
+import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -44,7 +44,8 @@ public class IncubationTest {
         InputStream stream = IncubationTest.class.getResourceAsStream(resourceName);
         try {
             return IOUtils.toString(stream, "UTF-8");
-        } finally {
+        }
+        finally {
             IOUtils.closeQuietly(stream);
         }
     }

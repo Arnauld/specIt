@@ -1,16 +1,16 @@
 package specit.parser;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+
 import specit.SpecIt;
 import specit.element.Keyword;
 import specit.element.RawElement;
 
+import org.junit.Before;
+import org.junit.Test;
 import java.util.List;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 
 public class ParserTest {
     private static final String NL = "\n";

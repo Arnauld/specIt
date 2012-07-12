@@ -1,19 +1,19 @@
 package specit.util;
 
-import org.junit.Test;
-import specit.util.ParametrizedString.Token;
-import specit.util.ParametrizedString.WeightChain;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
+
+import specit.util.ParametrizedString.Token;
+import specit.util.ParametrizedString.WeightChain;
+
+import org.junit.Test;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class ParametrizedStringTest {
 

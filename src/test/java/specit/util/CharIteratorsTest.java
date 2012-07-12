@@ -24,9 +24,9 @@ public class CharIteratorsTest {
     @Test
     public void createFrom_basicString() {
         CharIterator iterator = CharIterators.createFrom("abc");
-        assertThat(iterator.read()).isEqualTo((int)'a');
-        assertThat(iterator.read()).isEqualTo((int)'b');
-        assertThat(iterator.read()).isEqualTo((int)'c');
+        assertThat(iterator.read()).isEqualTo((int) 'a');
+        assertThat(iterator.read()).isEqualTo((int) 'b');
+        assertThat(iterator.read()).isEqualTo((int) 'c');
         assertThat(iterator.read()).isEqualTo(CharIterator.EOF);
     }
 

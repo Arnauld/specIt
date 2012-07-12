@@ -1,12 +1,12 @@
 package specit.element;
 
-import org.junit.Test;
-
-import specit.parser.RawElementDefault;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+
+import specit.parser.RawElementDefault;
+
+import org.junit.Test;
 
 /**
  *

@@ -21,12 +21,12 @@ public class EnumByNameConverter implements Converter {
         if (requiredType == null) {
             throw new SpecItRuntimeException("RequiredType <null> is required!");
         }
-        if(!requiredType.isEnum()) {
+        if (!requiredType.isEnum()) {
             throw new SpecItRuntimeException("RequiredType <null> must refers to an enum!");
         }
 
         // cast to remove annoying generic issue!
-        return Enum.valueOf((Class)requiredType, value);
+        return Enum.valueOf((Class) requiredType, value);
     }
 
     @Override

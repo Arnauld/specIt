@@ -17,8 +17,9 @@ public class DumpVisitor extends ElementVisitor {
 
     private String indent() {
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < indent; i++)
+        for (int i = 0; i < indent; i++) {
             builder.append("  ");
+        }
         return builder.toString();
     }
 

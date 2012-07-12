@@ -1,20 +1,26 @@
 package specit.interpreter;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import specit.SpecIt;
 import specit.element.Keyword;
 import specit.element.RawElement;
 import specit.element.Story;
 import specit.element.StoryBuilder;
-import specit.interpreter.InterpreterListenerRecorder.*;
+import specit.interpreter.InterpreterListenerRecorder.BeginScenario;
+import specit.interpreter.InterpreterListenerRecorder.BeginStory;
+import specit.interpreter.InterpreterListenerRecorder.EndScenario;
+import specit.interpreter.InterpreterListenerRecorder.EndStory;
+import specit.interpreter.InterpreterListenerRecorder.Event;
+import specit.interpreter.InterpreterListenerRecorder.InvokeRequire;
+import specit.interpreter.InterpreterListenerRecorder.InvokeStep;
 import specit.parser.RawElementDefault;
 
+import org.junit.Before;
+import org.junit.Test;
 import java.util.Iterator;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  *
@@ -242,7 +248,8 @@ public class StoryInterpreterTest {
                     text,
                     keywordAlias,
                     specIt);
-        } finally {
+        }
+        finally {
             offset += text.length();
         }
     }

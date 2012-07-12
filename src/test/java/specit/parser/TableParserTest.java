@@ -1,14 +1,14 @@
 package specit.parser;
 
-import org.junit.Test;
-import specit.SpecIt;
-import specit.element.Table;
-
-import java.util.Map;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
+
+import specit.SpecIt;
+import specit.element.Table;
+
+import org.junit.Test;
+import java.util.Map;
 
 /**
  *

@@ -208,7 +208,6 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
      *     "dd-MM-yyyy'T'HH:mm:ssz",
      *     "dd-MM-yyyy' 'HH:mm:ssz"
      * </pre>
-     *
      */
     protected List<DateFormat> defaultDateFormats() {
         return DateFormats.toDateFormats(

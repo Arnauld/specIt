@@ -1,13 +1,14 @@
 package specit.parser;
 
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.fail;
+
 import specit.element.InvalidElementDefinitionException;
 import specit.element.Keyword;
 import specit.element.RawElement;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import org.junit.Test;
 
 public class RawPartDefaultTest {
 
@@ -24,8 +25,9 @@ public class RawPartDefaultTest {
     @Test
     public void integrity_noKeywordAlias_notUnknownKeyword_mustThrowAnException() {
         for (Keyword kw : Keyword.values()) {
-            if (kw != Keyword.Unknown)
+            if (kw != Keyword.Unknown) {
                 assertExceptionIsThrownWithNullAlias("" + kw + " should not be allowed with null alias", kw);
+            }
         }
     }
 
@@ -33,7 +35,8 @@ public class RawPartDefaultTest {
         try {
             new RawElementDefault(17, kw, "  \t When a user clicks \n", null);
             fail(message);
-        } catch (InvalidElementDefinitionException e) {
+        }
+        catch (InvalidElementDefinitionException e) {
             // ok :)
         }
     }

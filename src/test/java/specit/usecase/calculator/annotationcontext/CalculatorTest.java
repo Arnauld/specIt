@@ -1,11 +1,12 @@
 package specit.usecase.calculator.annotationcontext;
 
-import org.junit.Before;
-import org.junit.Test;
 import specit.SpecIt;
 import specit.element.Keyword;
 import specit.invocation.ParameterMappingException;
 import specit.report.ConsoleColoredReporter;
+
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  *

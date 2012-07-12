@@ -24,7 +24,7 @@ public class AnnotationRegistryTest {
     private AnnotationRegistry annotationRegistry;
 
     @Before
-    public void setUp () {
+    public void setUp() {
         annotationRegistry = new AnnotationRegistry();
     }
 
@@ -49,7 +49,7 @@ public class AnnotationRegistryTest {
                 .isNotNull()
                 .hasSize(1);
         UserContextFactorySupport userContextFactorySupport = userContextFactories.get(0);
-        assertThat(userContextFactorySupport.getOwningType()).isEqualTo((Class)Case1.class);
+        assertThat(userContextFactorySupport.getOwningType()).isEqualTo((Class) Case1.class);
         assertThat(userContextFactorySupport.getMethod().getName()).isEqualTo("context");
         assertThat(userContextFactorySupport.scope()).isEqualTo(UserContext.Scope.Scenario);
     }
@@ -72,8 +72,8 @@ public class AnnotationRegistryTest {
         // Then
         List<Lifecycle> lifecycles = annotationRegistry.getLifecycles(AfterStory.class);
         assertThat(lifecycles).isNotNull().hasSize(1);
-        assertThat(lifecycles.get(0).getLifecycleType()).isEqualTo((Class)AfterStory.class);
-        assertThat(lifecycles.get(0).getOwningType()).isEqualTo((Class)Case1.class);
+        assertThat(lifecycles.get(0).getLifecycleType()).isEqualTo((Class) AfterStory.class);
+        assertThat(lifecycles.get(0).getOwningType()).isEqualTo((Class) Case1.class);
         assertThat(lifecycles.get(0).getMethod().getName()).isEqualTo("afterStory");
     }
 
@@ -95,8 +95,8 @@ public class AnnotationRegistryTest {
         // Then
         List<Lifecycle> lifecycles = annotationRegistry.getLifecycles(AfterScenario.class);
         assertThat(lifecycles).isNotNull().hasSize(1);
-        assertThat(lifecycles.get(0).getLifecycleType()).isEqualTo((Class)AfterScenario.class);
-        assertThat(lifecycles.get(0).getOwningType()).isEqualTo((Class)Case1.class);
+        assertThat(lifecycles.get(0).getLifecycleType()).isEqualTo((Class) AfterScenario.class);
+        assertThat(lifecycles.get(0).getOwningType()).isEqualTo((Class) Case1.class);
         assertThat(lifecycles.get(0).getMethod().getName()).isEqualTo("afterScenario");
     }
 
@@ -122,15 +122,15 @@ public class AnnotationRegistryTest {
         }
 
         @BeforeScenario
-        public void beforeScenario2(@UserContext Map<String,String> context) {
+        public void beforeScenario2(@UserContext Map<String, String> context) {
         }
 
         @AfterScenario
-        public void afterScenario () {
+        public void afterScenario() {
         }
 
         @UserContext.Factory(scope = UserContext.Scope.Scenario)
-        public Map<String,String> context() {
+        public Map<String, String> context() {
             return New.hashMap();
         }
     }

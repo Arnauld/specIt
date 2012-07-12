@@ -7,7 +7,6 @@ import specit.parser.TableParser;
 
 /**
  * Convert a <code>String</code> into {@link Table} based on configured {@link Table} definition settings.
- *
  */
 public class TableConverter implements Converter {
 
@@ -28,7 +27,7 @@ public class TableConverter implements Converter {
         if (requiredType == null) {
             throw new SpecItRuntimeException("RequiredType <null> is not assignable from Table");
         }
-        if(!requiredType.isAssignableFrom(Table.class)) {
+        if (!requiredType.isAssignableFrom(Table.class)) {
             throw new SpecItRuntimeException("Incompatible required type, expected assignable from Table");
         }
         if (value == null) {

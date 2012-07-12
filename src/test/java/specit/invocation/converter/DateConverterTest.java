@@ -6,10 +6,8 @@ import static org.joda.time.chrono.GregorianChronology.getInstanceUTC;
 import specit.SpecItRuntimeException;
 import specit.util.Time;
 
-import org.joda.time.Chronology;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
-import org.joda.time.chrono.GregorianChronology;
 import org.junit.Before;
 import org.junit.Test;
 import java.text.DateFormat;
@@ -25,7 +23,7 @@ public class DateConverterTest {
     private DateConverter converter;
 
     @Before
-    public void setUp () {
+    public void setUp() {
         DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
         converter = new DateConverter(df);
     }
@@ -50,7 +48,7 @@ public class DateConverterTest {
         Object value = converter.fromString(Date.class, "2012/07/09");
 
         assertThat(value).isNotNull().isInstanceOf(Date.class);
-        LocalDate date = new LocalDate(((Date)value).getTime());
+        LocalDate date = new LocalDate(((Date) value).getTime());
         assertThat(date.getDayOfMonth()).isEqualTo(9);
         assertThat(date.getMonthOfYear()).isEqualTo(7);
         assertThat(date.getYear()).isEqualTo(2012);
