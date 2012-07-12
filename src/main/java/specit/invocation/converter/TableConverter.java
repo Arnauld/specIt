@@ -6,7 +6,7 @@ import specit.invocation.Converter;
 import specit.parser.TableParser;
 
 /**
- *
+ * Convert a <code>String</code> into {@link Table} based on configured {@link Table} definition settings.
  *
  */
 public class TableConverter implements Converter {

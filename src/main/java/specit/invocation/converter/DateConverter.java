@@ -11,8 +11,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *
- *
+ * Converter a String into a {@link Date}. All specified patterns are tried one by one
+ * according to their definition order until one can actually parse the date.
  */
 public class DateConverter implements Converter {
 
@@ -45,16 +45,14 @@ public class DateConverter implements Converter {
         }
 
         for (DateFormat dateFormat : dateFormats) {
+            String trimmed = value.trim();
+            ParsePosition pos = new ParsePosition(0);
+            Date date;
             synchronized (dateFormat) {
-                String trimmed = value.trim();
-                ParsePosition pos = new ParsePosition(0);
-                Date parse = dateFormat.parse(trimmed, pos);
-                if (parse != null
-                        // make sure there is no remaining!
-                        && pos.getIndex() == trimmed.length())
-                {
-                    return parse;
-                }
+                date = dateFormat.parse(trimmed, pos);
+            }
+            if(isValid(trimmed, date, pos)) {
+                return date;
             }
         }
         throw new SpecItRuntimeException("Value <" + value + "> is not a valid date value");
@@ -81,13 +79,15 @@ public class DateConverter implements Converter {
         return new String[0];
     }
 
-    protected boolean isValid(DateFormat dateFormat, String trimmed) {
-        synchronized (dateFormat) {
-            ParsePosition pos = new ParsePosition(0);
-            Date parse = dateFormat.parse(trimmed, pos);
-            return parse != null
-                    // make sure there is no remaining!
-                    && pos.getIndex() == trimmed.length();
-        }
+    private static boolean isValid(String parsed, Date date, ParsePosition pos) {
+        return date != null
+                // make sure there is no remaining!
+                && pos.getIndex() == parsed.length();
+    }
+
+    private static boolean isValid(DateFormat dateFormat, String trimmed) {
+        ParsePosition pos = new ParsePosition(0);
+        Date parse = dateFormat.parse(trimmed, pos);
+        return isValid(trimmed, parse, pos);
     }
 }
