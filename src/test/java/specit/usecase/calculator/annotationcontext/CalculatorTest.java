@@ -34,7 +34,7 @@ public class CalculatorTest {
     @Test
     public void scenario1() throws ParameterMappingException {
         specIt.scanAnnotations(CalculatorSteps.class);
-        specIt.executeStory(SCENARIO_1);
+        specIt.executeStoryContent(SCENARIO_1);
     }
 
 }

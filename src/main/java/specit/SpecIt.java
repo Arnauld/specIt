@@ -66,6 +66,7 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
     private ConverterRegistry converterRegistry;
     private AnnotationRegistry annotationRegistry;
     private final List<Reporter> reporters = New.arrayList();
+    private StoryLoader storyLoader;
 
     @Override
     public String ignoredCharactersOnPartStart() {
@@ -137,7 +138,12 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
         return new Parser(this);
     }
 
-    public void executeStory(String storyContent) {
+    public SpecIt withStoryLoader(StoryLoader storyLoader) {
+        this.storyLoader = storyLoader;
+        return this;
+    }
+
+    public void executeStoryContent(String storyContent) {
         Reporter reporterDispatch = getReporterDispatch();
         Story story = parseAndBuildStory(storyContent);
         interpretStory(story, reporterDispatch);
@@ -259,6 +265,10 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
                 builder.append(rawElement);
             }
         };
+    }
+
+    public String[] storyPaths() {
+        return new String[0];
     }
 
     private static class InterpreterListenerAdapter extends InterpreterListener {

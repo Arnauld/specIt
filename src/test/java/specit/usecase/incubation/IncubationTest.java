@@ -37,7 +37,7 @@ public class IncubationTest {
         String resourceName = "/stories/incubation/complete_usecase_003_fragment_light.story";
         specIt.withReporter(new ConsoleColoredReporter());
         specIt.scanAnnotations(IncubationSteps.class);
-        specIt.executeStory(resourceAsString(resourceName));
+        specIt.executeStoryContent(resourceAsString(resourceName));
     }
 
     private static String resourceAsString(String resourceName) throws IOException {
