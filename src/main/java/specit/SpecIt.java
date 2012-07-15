@@ -67,6 +67,7 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
     private AnnotationRegistry annotationRegistry;
     private final List<Reporter> reporters = New.arrayList();
     private StoryLoader storyLoader;
+    private String[] storyPaths;
 
     @Override
     public String ignoredCharactersOnPartStart() {
@@ -138,25 +139,43 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
         return new Parser(this);
     }
 
+    public String[] storyPaths() {
+        return storyPaths;
+    }
+
+    public SpecIt withStoryPaths(String... storyPaths) {
+        this.storyPaths = storyPaths;
+        return this;
+    }
+
     public SpecIt withStoryLoader(StoryLoader storyLoader) {
         this.storyLoader = storyLoader;
         return this;
     }
 
-    public void executeStoryContent(String storyContent) {
-        Reporter reporterDispatch = getReporterDispatch();
-        Story story = parseAndBuildStory(storyContent);
-        interpretStory(story, reporterDispatch);
+    public Story loadStory(String storyPath) {
+        String storyContent = storyLoader.loadStoryAsText(storyPath);
+        return parseAndBuildStory(storyContent);
     }
 
-    protected void interpretStory(Story story, Reporter reporterDispatch) {
+    public void executeStoryContent(String storyContent) {
+        Story story = parseAndBuildStory(storyContent);
+        interpretStory(story, invokerInterpreterListener(story));
+    }
+
+    public void interpretStory(Story story, InterpreterListener interpreterListener) {
+        new StoryInterpreter(this).interpretStory(story, interpreterListener);
+    }
+
+    public InterpreterListener invokerInterpreterListener(Story story) {
+        Reporter reporterDispatch = getReporterDispatch();
         InvocationContext invocationContext = newInvocationContext(null, story, reporterDispatch);
         InstanceProvider instanceProvider = new InstanceProviderBasic();
 
-        new StoryInterpreter(this).interpretStory(story, interpreterListener(
+        return interpreterListener(
                 invocationContext,
                 newInvoker(instanceProvider),
-                reporterDispatch));
+                reporterDispatch);
     }
 
     public Story parseAndBuildStory(String storyContent) {
@@ -265,10 +284,6 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
                 builder.append(rawElement);
             }
         };
-    }
-
-    public String[] storyPaths() {
-        return new String[0];
     }
 
     private static class InterpreterListenerAdapter extends InterpreterListener {

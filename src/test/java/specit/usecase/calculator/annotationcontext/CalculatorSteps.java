@@ -34,13 +34,11 @@ public class CalculatorSteps {
 
     @UserContext.Factory(scope = UserContext.Scope.Scenario)
     public Calculator scenarioCalculator() {
-        Calculator calculator = new Calculator();
-        return calculator;
+        return new Calculator();
     }
 
     @AfterScenario
     public void disposeScenario(@UserContext Calculator calculator) {
-        System.out.println("CalculatorSteps.disposeScenario(" + calculator + ")");
         calculator.clearVariables();
     }
 
@@ -87,7 +85,6 @@ public class CalculatorSteps {
 
     @Then("the calculator should not be in error")
     public void assertNoErrorMessageIsDisplayed(@UserContext ExceptionHolder exceptionHolder) {
-        System.out.println("CalculatorSteps.assertNoErrorMessageIsDisplayed");
         assertThat(exceptionHolder.getException(), nullValue());
     }
 

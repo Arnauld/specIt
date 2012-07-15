@@ -19,6 +19,20 @@ public class CalculatorTest {
             "Given a variable x with value 2\n" + //
             "When I add 2 to x\n" + //
             "Then x should equal to 4";
+
+    private static String SCENARIO_2 = "Scenario: Additions using repeat and table\n" + //
+            "\n" + //
+            "  Fragment: Add Value\n" + //
+            "  When I add <value> to <variable>\n" + //
+            "\n" + //
+            "  Given a variable x with value 2\n" + //
+            "  Repeat [Add Value] with:\n" + //
+            "    | value | variable |\n" + //
+            "    |   3   |        x |\n" + //
+            "    |   5   |        x |\n" + //
+            "    |   7   |        x |\n" + //
+            "  Then x should equal to 17";
+
     private SpecIt specIt;
 
     @Before
@@ -28,6 +42,8 @@ public class CalculatorTest {
                 .withAlias(Keyword.Given, "Given")
                 .withAlias(Keyword.When, "When")
                 .withAlias(Keyword.Then, "Then")
+                .withAlias(Keyword.Fragment, "Fragment:")
+                .withAlias(Keyword.Repeat, "Repeat")
                 .withReporter(new ConsoleColoredReporter());
     }
 
@@ -35,6 +51,12 @@ public class CalculatorTest {
     public void scenario1() throws ParameterMappingException {
         specIt.scanAnnotations(CalculatorSteps.class);
         specIt.executeStoryContent(SCENARIO_1);
+    }
+
+    @Test
+    public void scenario2() throws ParameterMappingException {
+        specIt.scanAnnotations(CalculatorSteps.class);
+        specIt.executeStoryContent(SCENARIO_2);
     }
 
 }

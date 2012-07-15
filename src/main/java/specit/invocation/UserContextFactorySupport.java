@@ -21,7 +21,7 @@ public class UserContextFactorySupport {
         return factoryAnnotation.scope();
     }
 
-    public String contextName () {
+    public String contextName() {
         return factoryAnnotation.name();
     }
 

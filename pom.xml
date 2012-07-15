@@ -92,7 +92,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit-dep</artifactId>
-      <scope>test</scope>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
@@ -142,7 +142,6 @@
         <groupId>junit</groupId>
         <artifactId>junit-dep</artifactId>
         <version>4.10</version>
-        <scope>test</scope>
       </dependency>
 
       <dependency>

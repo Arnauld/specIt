@@ -146,4 +146,8 @@ public abstract class ExecutablePart extends Element implements FragmentHolder {
             throw new InvalidCallException("Current ExecutablePart was not a Fragment!");
         }
     }
+
+    public String getTitle() {
+        return getRawElement().contentAfterAlias();
+    }
 }

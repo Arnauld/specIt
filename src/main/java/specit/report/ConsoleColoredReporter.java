@@ -20,6 +20,7 @@ import specit.element.Story;
 import specit.invocation.CandidateStep;
 import specit.invocation.Lifecycle;
 import specit.invocation.UserContextSupport;
+import specit.util.BashStyle;
 import specit.util.Java;
 import specit.util.New;
 import specit.util.ParametrizedString;
@@ -40,12 +41,49 @@ public class ConsoleColoredReporter implements Reporter {
     private PrintStream out = System.out;
     private List<InvokableStep> suggestedSteps = New.arrayList();
 
+    private boolean applyStyle;
+
+    public ConsoleColoredReporter() {
+        this(true);
+    }
+
+    public ConsoleColoredReporter(boolean applyStyle) {
+        this.applyStyle = applyStyle;
+    }
+
+    private String open(BashStyle style) {
+        if (applyStyle) {
+            return style.open();
+        }
+        else {
+            return "";
+        }
+    }
+
+    private String close(BashStyle style) {
+        if (applyStyle) {
+            return style.close();
+        }
+        else {
+            return "";
+        }
+    }
+
+    private String stylize(BashStyle style, String content) {
+        if (applyStyle) {
+            return style.stylize(content);
+        }
+        else {
+            return content;
+        }
+    }
+
     @Override
     public void lifecycleInvocationFailed(Lifecycle lifecycle, String message) {
-        out.print(Red.open());
+        out.print(open(Red));
         out.print(
                 "Error during " + lifecycle.getLifecycleAnnotation().annotationType().getName() + ": " + message + "");
-        out.println(Red.close());
+        out.println(close(Red));
     }
 
     @Override
@@ -54,7 +92,7 @@ public class ConsoleColoredReporter implements Reporter {
         out.println(
                 "Error during " + lifecycle.getLifecycleAnnotation().annotationType().getName() + ": " + message + "");
         cause.printStackTrace(out);
-        out.println(Red.close());
+        out.println(close(Red));
     }
 
     @Override
@@ -63,18 +101,18 @@ public class ConsoleColoredReporter implements Reporter {
 
     @Override
     public void lifecycleSkipped(Lifecycle lifecycle) {
-        out.print(Red.open());
+        out.print(open(Red));
         out.print("Skipped: " + lifecycle.getLifecycleAnnotation().annotationType().getName());
-        out.println(Red.close());
+        out.println(close(Red));
     }
 
     @Override
     public void startStory(Story story) {
-        out.println("(" + Yellow.stylize(story.getStoryPath()) + ")");
+        out.println("(" + stylize(Yellow, story.getStoryPath()) + ")");
         Narrative narrative = story.getNarrative();
         if (narrative != null && narrative.hasRawPart()) {
             RawElement rawElement = narrative.getRawElement();
-            out.print(Bold.stylize(rawElement.getKeywordAlias()));
+            out.print(stylize(Bold, rawElement.getKeywordAlias()));
             out.print(rawElement.contentAfterAlias());
         }
     }
@@ -82,14 +120,14 @@ public class ConsoleColoredReporter implements Reporter {
     @Override
     public void startBackground(Background background) {
         RawElement rawElement = background.getRawElement();
-        out.print(Yellow.open());
-        out.print(Bold.stylize(rawElement.getKeywordAlias()));
+        out.print(open(Yellow));
+        out.print(stylize(Bold, rawElement.getKeywordAlias()));
         out.print(rawElement.contentAfterAlias());
         if (rawElement.endsWithBlankLine()) {
-            out.println(Yellow.close());
+            out.println(close(Yellow));
         }
         else {
-            out.print(Yellow.close());
+            out.print(close(Yellow));
         }
     }
 
@@ -102,10 +140,10 @@ public class ConsoleColoredReporter implements Reporter {
         suggestedSteps.clear();
 
         RawElement rawElement = scenario.getRawElement();
-        out.print(Yellow.open());
-        out.print(Bold.stylize(rawElement.getKeywordAlias()));
+        out.print(open(Yellow));
+        out.print(stylize(Bold, rawElement.getKeywordAlias()));
         out.print(rawElement.contentAfterAlias().trim());
-        out.println(Yellow.close());
+        out.println(close(Yellow));
     }
 
     @Override
@@ -113,18 +151,18 @@ public class ConsoleColoredReporter implements Reporter {
         String keywordAlias = invokableStep.getUnderlying().getKeywordAlias();
         String stepInput = invokableStep.getAdjustedInput();
 
-        out.print(Yellow.open());
-        out.print(Bold.stylize(keywordAlias));
+        out.print(open(Yellow));
+        out.print(stylize(Bold, keywordAlias));
         out.print(' ');
         for (ParametrizedString.StringToken stringToken : candidateStep.getPattern().tokenize(stepInput)) {
             if (stringToken.isIdentifier()) {
-                out.print(Bold.stylize(stringToken.getValue()));
+                out.print(stylize(Bold, stringToken.getValue()));
             }
             else {
                 out.print(stringToken.getValue());
             }
         }
-        out.println(Yellow.close());
+        out.println(close(Yellow));
     }
 
     @Override
@@ -133,18 +171,18 @@ public class ConsoleColoredReporter implements Reporter {
         String stepInput = invokableStep.getAdjustedInput();
 
 
-        out.print(Green.open());
-        out.print(Bold.stylize(keywordAlias));
+        out.print(open(Green));
+        out.print(stylize(Bold, keywordAlias));
         out.print(' ');
         for (ParametrizedString.StringToken stringToken : candidateStep.getPattern().tokenize(stepInput)) {
             if (stringToken.isIdentifier()) {
-                out.print(Bold.stylize(stringToken.getValue()));
+                out.print(stylize(Bold, stringToken.getValue()));
             }
             else {
                 out.print(stringToken.getValue());
             }
         }
-        out.println(Green.close());
+        out.println(close(Green));
     }
 
     @Override
@@ -156,12 +194,12 @@ public class ConsoleColoredReporter implements Reporter {
         String keywordAlias = invokableStep.getUnderlying().getKeywordAlias();
         String stepInput = invokableStep.getAdjustedInput();
 
-        out.print(Red.open());
-        out.print(Bold.stylize(keywordAlias));
+        out.print(open(Red));
+        out.print(stylize(Bold, keywordAlias));
         out.print(' ');
         for (ParametrizedString.StringToken stringToken : candidateStep.getPattern().tokenize(stepInput)) {
             if (stringToken.isIdentifier()) {
-                out.print(Bold.stylize(stringToken.getValue()));
+                out.print(stylize(Bold, stringToken.getValue()));
             }
             else {
                 out.print(stringToken.getValue());
@@ -190,7 +228,7 @@ public class ConsoleColoredReporter implements Reporter {
         }
         cause.setStackTrace(selected.toArray(new StackTraceElement[selected.size()]));
         cause.printStackTrace(out);
-        out.println(Red.close());
+        out.println(close(Red));
     }
 
     @Override
@@ -198,21 +236,21 @@ public class ConsoleColoredReporter implements Reporter {
         String keywordAlias = invokableStep.getUnderlying().getKeywordAlias();
         String stepInput = invokableStep.getAdjustedInput();
 
-        out.print(Red.open());
-        out.print(Bold.stylize(keywordAlias));
+        out.print(open(Red));
+        out.print(stylize(Bold, keywordAlias));
         out.print(' ');
         out.print(stepInput);
-        out.print(Red.close());
-        out.print(RedHi.open());
+        out.print(close(Red));
+        out.print(open(RedHi));
         if (candidateSteps.isEmpty()) {
             suggestedSteps.add(invokableStep);
-            out.print(" " + Bold.stylize("(no matching step defined)"));
+            out.print(" " + stylize(Bold, "(no matching step defined)"));
         }
         else if (candidateSteps.size() > 0) {
-            out.print(" " + Bold.stylize("(Ambiguous steps #" + candidateSteps.size() + " matches)"));
+            out.print(" " + stylize(Bold, "(Ambiguous steps #" + candidateSteps.size() + " matches)"));
         }
         //out.println("Ouch! " + message);
-        out.println(RedHi.close());
+        out.println(close(RedHi));
     }
 
     @Override
@@ -229,11 +267,11 @@ public class ConsoleColoredReporter implements Reporter {
             suggestions.add(suggestion);
         }
 
-        out.print(Blue.open());
+        out.print(open(Blue));
         for (String suggestion : suggestions) {
-            out.println(Italic.stylize(suggestion));
+            out.println(stylize(Italic, suggestion));
         }
-        out.print(Blue.close());
+        out.print(close(Blue));
     }
 
     private static final String NL = "\n";
@@ -277,9 +315,9 @@ public class ConsoleColoredReporter implements Reporter {
 
     @Override
     public void userContextDefined(UserContextSupport userContextSupport) {
-        out.print(Grey.open());
+        out.print(open(Grey));
         out.print("UserContext  " + userContextSupport.scope() + ", " + userContextSupport.getUserContext());
-        out.println(Grey.close());
+        out.println(close(Grey));
     }
 
     @Override
