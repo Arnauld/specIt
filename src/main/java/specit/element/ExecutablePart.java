@@ -30,7 +30,9 @@ public abstract class ExecutablePart extends Element implements FragmentHolder {
 
     @Override
     public Fragment findFragment(String fragmentRef, boolean searchInChildren) {
+        System.out.println("ExecutablePart.findFragment(" + fragmentRef + ", #" + fragments.size() + ")");
         for (Fragment fragment : fragments) {
+            System.out.println("ExecutablePart.findFragment(" + fragment.getFragmentReference() + ")");
             if (fragmentRef.equalsIgnoreCase(fragment.getFragmentReference())) {
                 return fragment;
             }

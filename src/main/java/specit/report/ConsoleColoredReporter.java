@@ -42,6 +42,7 @@ public class ConsoleColoredReporter implements Reporter {
     private List<InvokableStep> suggestedSteps = New.arrayList();
 
     private boolean applyStyle;
+    private boolean printUserContext = false;
 
     public ConsoleColoredReporter() {
         this(true);
@@ -49,6 +50,19 @@ public class ConsoleColoredReporter implements Reporter {
 
     public ConsoleColoredReporter(boolean applyStyle) {
         this.applyStyle = applyStyle;
+    }
+
+    /**
+     * This allows to print information about <code>UserContext</code> such as when they are defined or discarded
+     * and their value (according to their <code>toString()</code> method).
+     * By default <code>UserContext</code> information is not printed.
+     *
+     * @param shouldPrintUserContext
+     * @return <code>this</code> for chaining purpose
+     */
+    public ConsoleColoredReporter printUserContext(boolean shouldPrintUserContext) {
+        this.printUserContext = shouldPrintUserContext;
+        return this;
     }
 
     private String open(BashStyle style) {
@@ -88,7 +102,7 @@ public class ConsoleColoredReporter implements Reporter {
 
     @Override
     public void lifecycleInvocationFailed(Lifecycle lifecycle, String message, Exception cause) {
-        out.print(Red.open());
+        out.print(open(Red));
         out.println(
                 "Error during " + lifecycle.getLifecycleAnnotation().annotationType().getName() + ": " + message + "");
         cause.printStackTrace(out);
@@ -108,7 +122,10 @@ public class ConsoleColoredReporter implements Reporter {
 
     @Override
     public void startStory(Story story) {
-        out.println("(" + stylize(Yellow, story.getStoryPath()) + ")");
+        String storyPath = story.getStoryPath();
+        if(storyPath==null)
+            storyPath = "n/a";
+        out.println("(" + stylize(Yellow, storyPath) + ")");
         Narrative narrative = story.getNarrative();
         if (narrative != null && narrative.hasRawPart()) {
             RawElement rawElement = narrative.getRawElement();
@@ -122,6 +139,7 @@ public class ConsoleColoredReporter implements Reporter {
         RawElement rawElement = background.getRawElement();
         out.print(open(Yellow));
         out.print(stylize(Bold, rawElement.getKeywordAlias()));
+        out.print(' ');
         out.print(rawElement.contentAfterAlias());
         if (rawElement.endsWithBlankLine()) {
             out.println(close(Yellow));
@@ -142,6 +160,7 @@ public class ConsoleColoredReporter implements Reporter {
         RawElement rawElement = scenario.getRawElement();
         out.print(open(Yellow));
         out.print(stylize(Bold, rawElement.getKeywordAlias()));
+        out.print(' ');
         out.print(rawElement.contentAfterAlias().trim());
         out.println(close(Yellow));
     }
@@ -152,6 +171,9 @@ public class ConsoleColoredReporter implements Reporter {
         String stepInput = invokableStep.getAdjustedInput();
 
         out.print(open(Yellow));
+        if(!this.applyStyle) {
+            out.print("[SKIPPED] ");
+        }
         out.print(stylize(Bold, keywordAlias));
         out.print(' ');
         for (ParametrizedString.StringToken stringToken : candidateStep.getPattern().tokenize(stepInput)) {
@@ -172,6 +194,9 @@ public class ConsoleColoredReporter implements Reporter {
 
 
         out.print(open(Green));
+        if(!this.applyStyle) {
+            out.print("[OK] ");
+        }
         out.print(stylize(Bold, keywordAlias));
         out.print(' ');
         for (ParametrizedString.StringToken stringToken : candidateStep.getPattern().tokenize(stepInput)) {
@@ -195,6 +220,9 @@ public class ConsoleColoredReporter implements Reporter {
         String stepInput = invokableStep.getAdjustedInput();
 
         out.print(open(Red));
+        if(!this.applyStyle) {
+            out.print("[KO] ");
+        }
         out.print(stylize(Bold, keywordAlias));
         out.print(' ');
         for (ParametrizedString.StringToken stringToken : candidateStep.getPattern().tokenize(stepInput)) {
@@ -237,6 +265,9 @@ public class ConsoleColoredReporter implements Reporter {
         String stepInput = invokableStep.getAdjustedInput();
 
         out.print(open(Red));
+        if(!this.applyStyle) {
+            out.print("[KO] ");
+        }
         out.print(stylize(Bold, keywordAlias));
         out.print(' ');
         out.print(stepInput);
@@ -311,10 +342,14 @@ public class ConsoleColoredReporter implements Reporter {
 
     @Override
     public void endStory(Story story) {
+        out.println();
     }
 
     @Override
     public void userContextDefined(UserContextSupport userContextSupport) {
+        if(!printUserContext) {
+            return;
+        }
         out.print(open(Grey));
         out.print("UserContext  " + userContextSupport.scope() + ", " + userContextSupport.getUserContext());
         out.println(close(Grey));

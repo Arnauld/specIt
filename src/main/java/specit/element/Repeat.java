@@ -29,6 +29,9 @@ public class Repeat extends Step {
 
         Element parent = getParent();
         while (parent != null) {
+
+            System.out.println("Repeat.findParentInStoryTree(" + fragmentRef + ", " + parent + ")");
+
             Fragment fragment = parent.findFragment(fragmentRef, false);
             if (fragment != null) {
                 return fragment;

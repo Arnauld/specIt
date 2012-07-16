@@ -94,6 +94,26 @@ public class ParserTest {
         assertThat(steps.get(2), equalTo(rawPart(40, Keyword.And, "And yet an other one", "And")));
     }
 
+    @Test
+    public void scan_fragmentAndRepeat() {
+        String story =
+                "Fragment: Add Value" + NL +
+                        "When I add 2 to x" + NL +
+                        NL+
+                        "Repeat [Add Value] 3 times";
+
+        specIt.withAlias(Keyword.Fragment, "Fragment:");
+        specIt.withAlias(Keyword.When, "When");
+        specIt.withAlias(Keyword.Repeat, "Repeat");
+        parser.scan(story, listener);
+
+        List<RawElement> steps = listener.getSteps();
+        assertThat(steps, hasSize(3));
+        assertThat(steps.get(0), equalTo(rawPart(0, Keyword.Fragment, "Fragment: Add Value\n", "Fragment:")));
+        assertThat(steps.get(1), equalTo(rawPart(20, Keyword.When, "When I add 2 to x\n\n", "When")));
+        assertThat(steps.get(2), equalTo(rawPart(39, Keyword.Repeat, "Repeat [Add Value] 3 times", "Repeat")));
+    }
+
     private static RawElement rawPart(int offset, Keyword kw, String rawContent, String alias) {
         return new RawElementDefault(offset, kw, rawContent, alias);
     }

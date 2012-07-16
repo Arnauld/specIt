@@ -50,6 +50,7 @@ import specit.util.TemplateEngine;
 
 import java.lang.annotation.Annotation;
 import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -93,6 +94,11 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
 
     public SpecIt withReporter(Reporter reporter) {
         reporters.add(reporter);
+        return this;
+    }
+
+    public SpecIt withReporters(Reporter...reporters) {
+        this.reporters.addAll(Arrays.asList(reporters));
         return this;
     }
 
@@ -160,6 +166,10 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
 
     public void executeStoryContent(String storyContent) {
         Story story = parseAndBuildStory(storyContent);
+        interpretStory(story);
+    }
+
+    public void interpretStory(Story story) {
         interpretStory(story, invokerInterpreterListener(story));
     }
 

@@ -128,14 +128,7 @@ public class Story extends Element implements FragmentHolder {
     }
 
     public void addFragment(Fragment fragment) {
-        if (currentExecutablePart.empty()) {
-            fragments.add(fragment);
-            fragment.setParent(this);
-            currentExecutablePart.push(fragment);
-        }
-        else {
-            currentExecutablePart.peek().addFragment(fragment);
-        }
+        executablePart().addFragment(fragment);
     }
 
     @Override
