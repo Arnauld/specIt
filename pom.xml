@@ -1,9 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.technbolts</groupId>
   <artifactId>specIt</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  
+
   <!-- ************************************************ -->
   <!-- *~~~~~~~~~~~~~~~~~PROPERTIES~~~~~~~~~~~~~~~~~~~* -->
   <!-- ************************************************ -->
@@ -168,6 +169,32 @@
   <build>
     <plugins>
 
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <!-- ~~~~~~~~~~~~~~Docco~~~~~~~~~~~~~~~~ -->
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <plugin>
+        <!-- https://bitbucket.org/doklovic_atlassian/atlassian-docco/wiki/docco-maven -->
+        <groupId>com.atlassian.docco</groupId>
+        <artifactId>atlassian-docco-maven</artifactId>
+        <version>1.0-beta1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>docco</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>src/test/java/**/sample/**</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <!-- ~~~~~~~~~~~~~~~Site~~~~~~~~~~~~~~~~ -->
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
@@ -245,5 +272,22 @@
 
     </plugins>
   </build>
+
+  <!-- ************************************************ -->
+  <!-- *~~~~~~~~~~~~~PLUGIN REPOSITORIES~~~~~~~~~~~~~~* -->
+  <!-- ************************************************ -->
+  <pluginRepositories>
+    <pluginRepository>
+      <id>atlassian-public</id>
+      <url>https://maven.atlassian.com/content/groups/public/</url>
+      <releases>
+        <checksumPolicy>fail</checksumPolicy>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <checksumPolicy>fail</checksumPolicy>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
 
 </project>
