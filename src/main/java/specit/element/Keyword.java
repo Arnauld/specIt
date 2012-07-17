@@ -25,6 +25,14 @@ public enum Keyword {
     Fragment,
     Repeat;
 
+    public static Keyword findByNameIgnoringCase(String name) {
+        for(Keyword keyword : Keyword.values()) {
+            if(name.equalsIgnoreCase(keyword.name()))
+                return keyword;
+        }
+        return null;
+    }
+
     public boolean isStep() {
         return this == Given || this == When || this == Then || this == And;
     }

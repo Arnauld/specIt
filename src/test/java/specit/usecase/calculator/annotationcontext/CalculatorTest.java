@@ -100,7 +100,7 @@ public class CalculatorTest {
                 "    |   7   |        x |\n" + //
                 "  Then x should equal to 17";
         specIt.scanAnnotations(CalculatorSteps.class);
-        Story story = specIt.parseAndBuildStory(storyContent);
+        Story story = specIt.parseAndBuildStory("test-name", storyContent);
         //story.traverse(new DumpVisitor());
         specIt.interpretStory(story);
         assertNoFailure();

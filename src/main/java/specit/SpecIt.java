@@ -54,13 +54,17 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  *
  */
 public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
 
+    public static final String ALIAS_SEPARATOR = "aliasSeparator";
+    
     private final Map<String, Alias> aliases = new HashMap<String, Alias>();
     private final TemplateEngine templateEngine = new TemplateEngine();
     private CandidateStepRegistry candidateStepRegistry;
@@ -69,6 +73,44 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
     private final List<Reporter> reporters = New.arrayList();
     private StoryLoader storyLoader;
     private String[] storyPaths;
+
+    public SpecIt() {
+        initAliasesWithDefault();
+    }
+
+    public SpecIt initAliasesWithDefault() {
+        return initAliasesWithDefault(Locale.getDefault());
+    }
+
+    public SpecIt initAliasesWithDefault(Locale locale) {
+        ResourceBundle bundle = ResourceBundle.getBundle("specit.i18n.aliases", locale);
+        String aliasSeparator = getOrDefault(bundle, ALIAS_SEPARATOR, ",");
+        for(String keywordAsString : bundle.keySet()) {
+            if(keywordAsString.equals(ALIAS_SEPARATOR)) {
+                continue;
+            }
+
+            Keyword keyword = Keyword.valueOf(keywordAsString);
+            if(keyword==null) {
+                continue;
+            }
+
+            String inlinedAliases = bundle.getString(keywordAsString);
+            for(String alias : inlinedAliases.split(aliasSeparator)) {
+                withAlias(keyword, alias.trim());
+            }
+        }
+        return this;
+    }
+
+    private static String getOrDefault(ResourceBundle bundle, String key, String defaultValue) {
+        if(bundle.containsKey(key)) {
+            return bundle.getString(key);
+        }
+        else {
+            return defaultValue;
+        }
+    }
 
     @Override
     public String ignoredCharactersOnPartStart() {
@@ -80,11 +122,21 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
         return "|";
     }
 
+    /**
+     * @see #withAliases(specit.element.Keyword, String...)
+     * @see #aliases()
+     * @see #initAliasesWithDefault()
+     */
     public SpecIt withAlias(Keyword kw, String value) {
         aliases.put(value, new Alias(kw, value));
         return this;
     }
 
+    /**
+     * @see #withAlias(specit.element.Keyword, String)
+     * @see #aliases()
+     * @see #initAliasesWithDefault()
+     */
     public SpecIt withAliases(Keyword kw, String... values) {
         for (String value : values) {
             withAlias(kw, value);
@@ -106,6 +158,11 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
         return Proxies.proxyDispatch(reporters, Reporter.class);
     }
 
+    /**
+     * @see #withAlias(specit.element.Keyword, String)
+     * @see #withAliases(specit.element.Keyword, String...)
+     * @see #initAliasesWithDefault()
+     */
     @Override
     public Iterable<Alias> aliases() {
         return aliases.values();
@@ -145,15 +202,27 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
         return new Parser(this);
     }
 
+    /**
+     * @see #withStoryPaths(String...)
+     * @see #withStoryLoader(StoryLoader)
+     */
     public String[] storyPaths() {
         return storyPaths;
     }
 
+    /**
+     * @see #storyPaths()
+     * @see #withStoryLoader(StoryLoader)
+     */
     public SpecIt withStoryPaths(String... storyPaths) {
         this.storyPaths = storyPaths;
         return this;
     }
 
+    /**
+     * @see #storyPaths()
+     * @see #withStoryPaths(String...)
+     */
     public SpecIt withStoryLoader(StoryLoader storyLoader) {
         this.storyLoader = storyLoader;
         return this;
@@ -161,11 +230,11 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
 
     public Story loadStory(String storyPath) {
         String storyContent = storyLoader.loadStoryAsText(storyPath);
-        return parseAndBuildStory(storyContent);
+        return parseAndBuildStory(storyPath, storyContent);
     }
 
     public void executeStoryContent(String storyContent) {
-        Story story = parseAndBuildStory(storyContent);
+        Story story = parseAndBuildStory("", storyContent);
         interpretStory(story);
     }
 
@@ -188,8 +257,8 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
                 reporterDispatch);
     }
 
-    public Story parseAndBuildStory(String storyContent) {
-        StoryBuilder builder = new StoryBuilder();
+    public Story parseAndBuildStory(String storyPath, String storyContent) {
+        StoryBuilder builder = new StoryBuilder(storyPath);
         newParser().scan(storyContent, toParserListener(builder));
         return builder.getStory();
     }
@@ -296,6 +365,9 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
         };
     }
 
+    /**
+     *
+     */
     private static class InterpreterListenerAdapter extends InterpreterListener {
 
         private final InvocationContext invocationContext;
@@ -404,5 +476,4 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
             invoker.invoke(invocationContext, invokableStep, candidateStep);
         }
     }
-
 }

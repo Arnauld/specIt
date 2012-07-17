@@ -40,7 +40,7 @@ public class IncubationDumpTest {
     @Test
     public void scenario1() throws IOException {
         String resourceName = "/stories/incubation/complete_usecase_003_fragment_light.story";
-        Story story = specIt.parseAndBuildStory(resourceAsString(resourceName));
+        Story story = specIt.parseAndBuildStory("test-name", resourceAsString(resourceName));
         story.traverse(new DumpVisitor());
         new StoryInterpreter(specIt).interpretStory(story, new InterpreterListener() {
             @Override

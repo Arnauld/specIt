@@ -4,7 +4,15 @@ package specit.element;
  *
  */
 public class StoryBuilder {
-    private final Story story = new Story();
+    private final Story story;
+
+    public StoryBuilder() {
+        this(null);
+    }
+
+    public StoryBuilder(String storyPath) {
+        story = new Story(storyPath);
+    }
 
     public StoryBuilder append(RawElement rawElement) {
         switch (rawElement.getKeyword()) {

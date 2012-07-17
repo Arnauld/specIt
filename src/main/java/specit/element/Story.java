@@ -13,11 +13,15 @@ public class Story extends Element implements FragmentHolder {
 
     private Stack<ExecutablePart> currentExecutablePart = New.stack();
     //
-    private String storyPath;
+    private final String storyPath;
     private Narrative narrative;
     private List<ExecutablePart> scenarioList = New.arrayList();
     private List<ExecutablePart> backgroundList = New.arrayList();
     private List<Fragment> fragments = New.arrayList();
+
+    public Story(String storyPath) {
+        this.storyPath = storyPath;
+    }
 
     @Override
     public void traverse(ElementVisitor visitor) {
@@ -139,4 +143,5 @@ public class Story extends Element implements FragmentHolder {
     public String getStoryPath() {
         return storyPath;
     }
+
 }
