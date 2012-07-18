@@ -31,3 +31,5 @@ Incomings:
   * `conf/idea_codestyles.xml` to copy in Intellij preferences
   * [Sharing (Export/Import) IntelliJ IDEA Code Style Formatters](http://navinpeiris.com/2011/09/11/sharing-exportimport-intellij-idea-code-style-formatters/)
 
+* Docco
+  * To quickly generate Docco documentation: `mvn process-resources -Ddocco.phase=process-resources`
