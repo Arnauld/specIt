@@ -25,6 +25,7 @@
 
     <!-- docco -->
     <docco.confdir>${project.basedir}/src/main/docco</docco.confdir>
+    <docco.phase>package</docco.phase>
   </properties>
 
   <!-- ************************************************ -->
@@ -182,7 +183,8 @@
         <version>1.0-beta1</version>
         <executions>
           <execution>
-            <phase>process-resources</phase>
+            <!-- process-resources -->
+            <phase>${docco.phase}</phase>
             <goals>
               <goal>docco</goal>
             </goals>
