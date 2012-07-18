@@ -22,6 +22,9 @@
     <!-- plugin versions -->
     <checkstyle.version>2.9.1</checkstyle.version>
     <pmd.version>2.7.1</pmd.version>
+
+    <!-- docco -->
+    <docco.confdir>${project.basedir}/src/main/docco</docco.confdir>
   </properties>
 
   <!-- ************************************************ -->
@@ -179,11 +182,16 @@
         <version>1.0-beta1</version>
         <executions>
           <execution>
-            <phase>package</phase>
+            <phase>process-resources</phase>
             <goals>
               <goal>docco</goal>
             </goals>
             <configuration>
+              <horizontalTemplate>${docco.confdir}/template/atlassian-docco-h.soy</horizontalTemplate>
+              <verticalTemplate>${docco.confdir}/template/atlassian-docco-v.soy</verticalTemplate>
+              <customResources>
+                <customResource>${docco.confdir}/resources</customResource>
+              </customResources>
               <includes>
                 <include>src/test/java/**/sample/**</include>
               </includes>
@@ -218,6 +226,7 @@
                 <report>scm</report>
               </reports>
             </plugin>
+
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-javadoc-plugin</artifactId>
