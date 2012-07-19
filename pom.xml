@@ -198,8 +198,17 @@
               </customResources>
               <sourceDirectory>src/test</sourceDirectory>
               <includes>
-                <include>*Test.java</include>
+                <include>**/sample/**/*Test.java</include>
+                <include>**/sample/**/*.story</include>
               </includes>
+              <customMappings>
+                <customMapping>
+                  <extension>story</extension>
+                  <commentType>code</commentType>
+                  <syntax>specit_en</syntax>
+                  <stripJavadoc>true</stripJavadoc>
+                </customMapping>
+              </customMappings>
             </configuration>
           </execution>
         </executions>

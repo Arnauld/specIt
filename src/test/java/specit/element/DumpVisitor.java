@@ -152,7 +152,7 @@ public class DumpVisitor extends ElementVisitor {
 
     private void printPart(Element element) {
         indent++;
-        out.println(indent() + element.getRawElement().getRawContent().replace("\n", "\n" + indent()));
+        out.println(indent() + element.getRawElement().rawContent().replace("\n", "\n" + indent()));
         indent--;
     }
 

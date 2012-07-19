@@ -11,7 +11,7 @@ public interface RawElement {
      *
      * @return
      */
-    int getOffset();
+    int offset();
 
     /**
      * Returns the raw content of this part. It contains the keyword alias, comments,
@@ -19,7 +19,18 @@ public interface RawElement {
      *
      * @return
      */
-    String getRawContent();
+    String rawContent();
+
+
+    /**
+     * Returns the raw content of this part without the comments. But is still contains the keyword alias,
+     * trailing or ending newlines...
+     * @see #rawContent()
+     * @see #nestedComments()
+     * @see #contentAfterAliasWithoutComment()
+     */
+    String rawContentWithoutComment();
+
 
     /**
      * Return the keyword that part belongs to. The keyword is ususally defined from the
@@ -38,17 +49,31 @@ public interface RawElement {
      * @see #getKeyword()
      * @see Keyword
      */
+
     String getKeywordAlias();
 
     /**
      * Returns the part content after the Keyword alias. Since the Keyword alias depends on the configuration,
      * it is useful to retrieve the content afterwards for code mapping.
      *
-     * @return
-     * @see #getRawContent()
+     * @return the content of the element after the alias, possibly with nested comments.
+     * @see #contentAfterAliasWithoutComment()
+     * @see #rawContent()
      * @see #getKeywordAlias()
      */
     String contentAfterAlias();
+
+    /**
+     * Returns the part content after the Keyword alias. All comments are discarded from the resulting string.
+     * Since the Keyword alias depends on the configuration, it is useful to retrieve the content afterwards
+     * for code mapping.
+     *
+     * @return the content of the element after the alias, wihout any comments
+     * @see #contentAfterAlias()
+     * @see #rawContentWithoutComment()
+     * @see #getKeywordAlias()
+     */
+    String contentAfterAliasWithoutComment();
 
     /**
      * Return the {@link Table} defined within the {@link #contentAfterAlias()}.
@@ -73,7 +98,7 @@ public interface RawElement {
      *
      * @return
      */
-    List<Comment> getNestedComments();
+    List<Comment> nestedComments();
 
     /**
      * Indicates if this part ends with at least one blank line. A line is considered as blank if

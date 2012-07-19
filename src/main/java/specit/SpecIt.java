@@ -458,18 +458,18 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
         }
 
         private void doInvokeStep(InvokableStep invokableStep) {
-            String resolved = invokableStep.getAdjustedInput();
+            String resolvedWithoutComment = invokableStep.getAdjustedInputWithoutComment();
             Keyword keyword = invokableStep.getKeyword();
 
-            List<CandidateStep> candidateSteps = candidateStepRegistry.find(keyword, resolved);
+            List<CandidateStep> candidateSteps = candidateStepRegistry.find(keyword, resolvedWithoutComment);
             if (candidateSteps.isEmpty()) {
                 invocationContext.stepInvocationFailed(invokableStep, candidateSteps,
-                        "No step matching <" + resolved + "> with keyword <" + keyword + ">");
+                        "No step matching <" + resolvedWithoutComment + "> with keyword <" + keyword + ">");
                 return;
             }
             else if (candidateSteps.size() > 1) {
                 invocationContext.stepInvocationFailed(invokableStep, candidateSteps,
-                        "More than one step matching <" + resolved + "> with keyword <" + keyword + "> got: "
+                        "More than one step matching <" + resolvedWithoutComment + "> with keyword <" + keyword + "> got: "
                                 + candidateSteps);
                 return;
             }

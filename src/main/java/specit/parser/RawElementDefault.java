@@ -64,13 +64,18 @@ public class RawElementDefault implements RawElement {
     }
 
     @Override
-    public final int getOffset() {
+    public final int offset() {
         return offset;
     }
 
     @Override
-    public final String getRawContent() {
+    public final String rawContent() {
         return rawContent;
+    }
+
+    @Override
+    public final String rawContentWithoutComment() {
+        return parserConf.commentParser().contentWithoutComment(rawContent());
     }
 
     @Override
@@ -135,6 +140,11 @@ public class RawElementDefault implements RawElement {
     }
 
     @Override
+    public String contentAfterAliasWithoutComment() {
+        return parserConf.commentParser().contentWithoutComment(contentAfterAlias());
+    }
+
+    @Override
     public Table getExampleTable() {
         if (keyword != Keyword.Example) {
             throw new IllegalStateException("Cannot retrieve an ExampleTable from a " + keyword + " part!");
@@ -158,7 +168,7 @@ public class RawElementDefault implements RawElement {
     }
 
     @Override
-    public List<Comment> getNestedComments() {
+    public List<Comment> nestedComments() {
         if (nestedComments == null) {
             nestedComments = parserConf.commentParser().parseComments(offset, rawContent);
         }

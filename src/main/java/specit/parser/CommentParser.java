@@ -15,8 +15,17 @@ public class CommentParser {
 
     private Pattern commentsPattern;
 
+    /**
+     * The default comment regex, that supports the following <strong>single line comment</strong> format
+     * <pre>
+     *   // This is a C-style single line comment
+     *
+     *   # This is a bash-style single line comment
+     * </pre>
+     * @return
+     */
     public String commentsRegex() {
-        return "(?:" + "(#)(.*)$" + ")|(?:" + "(//)(.*)$" + ")";
+        return "(?:" + "(#)(.*)$" + ")|(?:" + "(//)(.*)$" + ")|(?:(?s)" + "(/\\*)(.*)\\*/" + ")";
     }
 
     protected void invalidatePattern() {
@@ -41,7 +50,7 @@ public class CommentParser {
         Matcher matcher = pattern.matcher(rawContent);
         while (matcher.find()) {
             int groupCount = matcher.groupCount();
-            for (int i = 1; i < groupCount; i++) {
+            for (int i = 1; i < groupCount; i+=2) {
                 String delimiter = matcher.group(i);
                 int delimiterStart = matcher.start(i);
                 if (delimiter != null) {

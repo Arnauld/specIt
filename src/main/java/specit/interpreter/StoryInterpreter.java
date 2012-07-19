@@ -14,6 +14,7 @@ import specit.element.Step;
 import specit.element.Story;
 import specit.element.Table;
 import specit.util.New;
+import specit.util.TemplateEngine;
 
 import java.util.HashMap;
 import java.util.List;
@@ -132,11 +133,17 @@ public class StoryInterpreter {
      * Resolves any variables and invoke the <code>Step</code> directive.
      */
     private void invokeStep(InterpreterContext context, Step step, InterpreterListener listener) {
-        String rawContent = step.getRawElement().contentAfterAlias().trim();
         Map<String, String> variables = context.getVariables();
-        String resolved = conf.templateEngine().resolve(rawContent, variables).toString();
+        RawElement rawElement = step.getRawElement();
+        TemplateEngine templateEngine = conf.templateEngine();
 
-        listener.invokeStep(new InvokableStep(step, resolved), context);
+        String rawContent = rawElement.contentAfterAlias().trim();
+        String resolved = templateEngine.resolve(rawContent, variables).toString();
+
+        String rawContentWithoutComment = rawElement.contentAfterAliasWithoutComment().trim();
+        String resolvedWithoutComment = templateEngine.resolve(rawContentWithoutComment, variables).toString();
+
+        listener.invokeStep(new InvokableStep(step, resolved, resolvedWithoutComment), context);
     }
 
     /**

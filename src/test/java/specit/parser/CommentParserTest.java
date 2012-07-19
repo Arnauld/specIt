@@ -33,7 +33,20 @@ public class CommentParserTest {
     }
 
     @Test
-    public void contentWihoutComments() {
+    public void parse_multilineComments() {
+        String content = "Hey ho! /* salutation" + NL +
+                "What's happen?" + NL +
+                " nothing? */Hey?";
+
+        CommentParser parser = new CommentParser();
+        List<Comment> comments = parser.parseComments(17, content);
+
+        assertThat(comments.size(), is(1));
+        assertThat(comments.get(0), equalTo(new Comment(25, "/*", " salutation" + NL + "What's happen?" + NL + " nothing? ")));
+    }
+
+    @Test
+    public void contentWihoutComments_singleLineCases() {
         String content = "Hey ho! # salutation" + NL +
                 "What's happen?" + NL +
                 "// a line fully commented";
@@ -43,5 +56,18 @@ public class CommentParserTest {
 
         assertThat(cleaned, notNullValue());
         assertThat(cleaned, equalTo("Hey ho! \nWhat's happen?\n"));
+    }
+
+    @Test
+    public void contentWihoutComments_multilineCase() {
+        String content = "Hey ho! /* salutation" + NL +
+                "What's happen?" + NL +
+                " nothing? */Hey?";
+
+        CommentParser parser = new CommentParser();
+        String cleaned = parser.contentWithoutComment(content);
+
+        assertThat(cleaned, notNullValue());
+        assertThat(cleaned, equalTo("Hey ho! Hey?"));
     }
 }
