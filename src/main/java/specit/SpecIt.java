@@ -1,6 +1,7 @@
 package specit;
 
 import static specit.report.Reporters.asInvocationContextListener;
+import static specit.util.ResourceBundles.getOrDefault;
 
 import specit.annotation.UserContext;
 import specit.annotation.lifecycle.AfterScenario;
@@ -78,10 +79,20 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
         initAliasesWithDefault();
     }
 
+    /**
+     *
+     * @see #initAliasesWithDefault(java.util.Locale)
+     * @see java.util.Locale#getDefault()
+     */
     public SpecIt initAliasesWithDefault() {
         return initAliasesWithDefault(Locale.getDefault());
     }
 
+    /**
+     *
+     * @param locale locale for which one will attempt to find localized alias
+     * @return
+     */
     public SpecIt initAliasesWithDefault(Locale locale) {
         ResourceBundle bundle = ResourceBundle.getBundle("specit.i18n.aliases", locale);
         String aliasSeparator = getOrDefault(bundle, ALIAS_SEPARATOR, ",");
@@ -101,15 +112,6 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
             }
         }
         return this;
-    }
-
-    private static String getOrDefault(ResourceBundle bundle, String key, String defaultValue) {
-        if(bundle.containsKey(key)) {
-            return bundle.getString(key);
-        }
-        else {
-            return defaultValue;
-        }
     }
 
     @Override
