@@ -11,6 +11,7 @@
   <link href="{$basePath}/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
   <link href="{$basePath}/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"/>
   <link href="{$basePath}/css/atlassian-docco.css" rel="stylesheet" type="text/css"/>
+  <link href="{$basePath}/css/custom.css" rel="stylesheet" type="text/css"/>
 {/template}
 
 /**
@@ -23,25 +24,26 @@
       {param title: $title /}
       {param basePath: $basePath /}
     {/call}
-    <link rel="stylesheet" class="codebrush light" title="IDEA" href="http://yandex.st/highlightjs/6.2/styles/idea.min.css"/>
-    <link rel="alternate stylesheet" class="codebrush light" title="Google Code" href="http://yandex.st/highlightjs/6.2/styles/googlecode.min.css"/>
-    <link rel="alternate stylesheet" class="codebrush light" title="GitHub" href="http://yandex.st/highlightjs/6.2/styles/github.min.css"/>
-    <link rel="alternate stylesheet" class="codebrush light" title="Visual Studio" href="http://yandex.st/highlightjs/6.2/styles/vs.min.css"/>
-    <link rel="alternate stylesheet" class="codebrush light" title="Magula" href="http://yandex.st/highlightjs/6.2/styles/magula.min.css"/>
+    <link rel="stylesheet" class="codebrush light" title="Magula" href="{$basePath}/css/highlightjs/6.2/styles/magula.min.css"/>
+    <link rel="alternate stylesheet" class="codebrush light" title="Google Code" href="{$basePath}/css/highlightjs/6.2/styles/googlecode.min.css"/>
+    <link rel="alternate stylesheet" class="codebrush light" title="GitHub" href="{$basePath}/css/highlightjs/6.2/styles/github.min.css"/>
+    <link rel="alternate stylesheet" class="codebrush light" title="Visual Studio" href="{$basePath}/css/highlightjs/6.2/styles/vs.min.css"/>
+    <link rel="alternate stylesheet" class="codebrush light" title="IDEA" href="{$basePath}/css/highlightjs/6.2/styles/idea.min.css"/>
 
-    <link rel="alternate stylesheet" class="codebrush dark" title="Zenburn" href="http://yandex.st/highlightjs/6.2/styles/zenburn.min.css"/>
-    <link rel="alternate stylesheet" class="codebrush dark" title="Arta" href="http://yandex.st/highlightjs/6.2/styles/arta.min.css"/>
-    <link rel="alternate stylesheet" class="codebrush dark" title="Monokai" href="http://yandex.st/highlightjs/6.2/styles/monokai.min.css"/>
-    <link rel="alternate stylesheet" class="codebrush dark" title="IR Black" href="http://yandex.st/highlightjs/6.2/styles/ir_black.min.css"/>
-    <link rel="alternate stylesheet" class="codebrush dark" title="Solarized Dark" href="http://yandex.st/highlightjs/6.2/styles/solarized_dark.min.css"/>
+    <link rel="alternate stylesheet" class="codebrush dark" title="Zenburn" href="{$basePath}/css/highlightjs/6.2/styles/zenburn.min.css"/>
+    <link rel="alternate stylesheet" class="codebrush dark" title="Arta" href="{$basePath}/css/highlightjs/6.2/styles/arta.min.css"/>
+    <link rel="alternate stylesheet" class="codebrush dark" title="Monokai" href="{$basePath}/css/highlightjs/6.2/styles/monokai.min.css"/>
+    <link rel="alternate stylesheet" class="codebrush dark" title="IR Black" href="{$basePath}/css/highlightjs/6.2/styles/ir_black.min.css"/>
+    <link rel="alternate stylesheet" class="codebrush dark" title="Solarized Dark" href="{$basePath}/css/highlightjs/6.2/styles/solarized_dark.min.css"/>
 
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="http://yandex.st/highlightjs/6.2/highlight.min.js"></script>
+    <script type="text/javascript" src="{$basePath}/js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="{$basePath}/js/jqueryui-1.8.18.min.js"></script>
+    <script type="text/javascript" src="{$basePath}/js/highlight-6.2.min.js"></script>
 
     <script type="text/javascript" src="{$basePath}/js/jquery.cookie.js"></script>
     <script type="text/javascript" src="{$basePath}/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="{$basePath}/js/atlassian-docco.js"></script>
+    <script type="text/javascript" src="{$basePath}/js/custom.js"></script>
 {/template}
 
 /*! the main template */
