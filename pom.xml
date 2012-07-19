@@ -24,6 +24,8 @@
     <pmd.version>2.7.1</pmd.version>
 
     <!-- docco -->
+    <!-- 1.0-beta1 -->
+    <docco.maven.version>1.0.2-SNAPSHOT</docco.maven.version>
     <docco.confdir>${project.basedir}/src/main/docco</docco.confdir>
     <docco.phase>package</docco.phase>
   </properties>
@@ -180,7 +182,7 @@
         <!-- https://bitbucket.org/doklovic_atlassian/atlassian-docco/wiki/docco-maven -->
         <groupId>com.atlassian.docco</groupId>
         <artifactId>atlassian-docco-maven</artifactId>
-        <version>1.0-beta1</version>
+        <version>${docco.maven.version}</version>
         <executions>
           <execution>
             <!-- process-resources -->
@@ -194,8 +196,9 @@
               <customResources>
                 <customResource>${docco.confdir}/resources</customResource>
               </customResources>
+              <sourceDirectory>src/test</sourceDirectory>
               <includes>
-                <include>src/test/java/**/sample/**</include>
+                <include>*Test.java</include>
               </includes>
             </configuration>
           </execution>
