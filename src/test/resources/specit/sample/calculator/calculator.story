@@ -11,14 +11,31 @@ So that I can
    Let's start by a complete but yet simple scenario.
    First, one describes the intent of the scenario:
 
-   > be able to add a number to a predefined variable
+> be able to add a number to a predefined variable
  */
 Scenario: x+2
 
   /*!
+     By default, SpecIt supports the following comment syntax:
+
+     * bash-style single line comment: a line must starts with `#`
+     * C-style single line comment: a line must starts with `//`
+     * C-style block comment: the block starts with `/*` and ends with `*/`
+   */
+
+  #  This is a single line comment, the value will be ignored during execution
+  // This is an other single line comment
+
+  /**
+     This is
+     a
+     block
+     comment!
+   */
+
+  /*!
     `Given` ...
    */
-  # This is a single line comment, the value will be ignored during execution
   Given a variable x with value 2
   /*!
     `When` ...

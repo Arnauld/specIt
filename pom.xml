@@ -206,7 +206,7 @@
                   <extension>story</extension>
                   <commentType>code</commentType>
                   <syntax>specit_en</syntax>
-                  <stripJavadoc>true</stripJavadoc>
+                  <stripJavadoc>false</stripJavadoc>
                 </customMapping>
               </customMappings>
             </configuration>

@@ -4,11 +4,11 @@ hljs.LANGUAGES.specit_en = function() {
       contains: [
         {
           className: 'keyword',
-          begin: '^\\s*(But |And |Then |When |Given |\\* |Narrative:|Scenario:|Background:|Feature|Require|Example:|Fragment|Repeat)',
+          begin: '^\\s*(But |And |Then |When |Given |\\* |Narrative:|Scenario:|Background:|Feature|Require|Example:|Repeat)',
           relevance: 0
         },
         {
-          className: 'string',
+          className: 'localvars',
           begin: '\\[', end: '\\]',
           relevance: 0
         },
@@ -18,10 +18,20 @@ hljs.LANGUAGES.specit_en = function() {
           relevance: 0
         },
         {
-          className: 'string',
-          begin: '^\\s*(Fragment)',
+          className: 'localvars',
+          begin: '^\\s*Fragment',
+          end: '$',
+          returnBegin: true,
           excludeBegin: true,
-          relevance: 1
+          contains: [
+            {
+                className: 'keyword',
+                begin: '^\\s*Fragment',
+                end:' ',
+                relevance: 0
+            }
+          ],
+          relevance: 10
         },
         {
           className: 'string',
@@ -29,6 +39,8 @@ hljs.LANGUAGES.specit_en = function() {
           relevance: 0
         },
         hljs.HASH_COMMENT_MODE,
+        hljs.C_LINE_COMMENT_MODE,
+        hljs.C_BLOCK_COMMENT_MODE,
         {
           className: 'string',
           begin: '"""', end: '"""',
