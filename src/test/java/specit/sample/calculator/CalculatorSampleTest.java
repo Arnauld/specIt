@@ -3,7 +3,6 @@ package specit.sample.calculator;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import specit.SpecIt;
-import specit.StoryLoader;
 import specit.annotation.Given;
 import specit.annotation.Then;
 import specit.annotation.UserContext;
@@ -83,14 +82,14 @@ public class CalculatorSampleTest {
                    be anything as long as the corresponding `StoryLoader` knows how to handle it.
                    **Usually they simply refer to resource or file names.**
                 */
-                .withStoryPaths("simple_additions.story")
+                .withStoryPaths(/*"simple_addition.story",*/ "calculator.story")
                 /*!
-                   The Story loader used. In this cas, one create a basic one.
+                   The Story loader used.
                    Creating a `StoryLoader` is a really simple thing to do. It may be usefull
                    to write your own if the default ones doesn't fulfills your needs.
                    e.g. load stories from a remote location or from a database...
                 */
-                .withStoryLoader(createStoryLoader())
+                .withStoryLoader(new ResourceStoryLoader("/specit/sample/calculator"))
                 /*!
                    Defines a Simple Console output.
 
@@ -99,58 +98,6 @@ public class CalculatorSampleTest {
                 */
                 .withReporter(new ConsoleColoredReporter(!IDE.isExecutedWithinIDE()))
                 ;
-    }
-
-    /*!
-       A build-in story loader that will provides our stories directly from string.
-     */
-    /*!
-       <small>
-       Whereas this is not a usual case, and `specit.support.ResourceStoryLoader` should be
-       preferred, one uses this approach to show how simple it is to write a `StoryLoader`,
-       and to keep all the data in this single class.
-       </small>
-
-       There are predefined implementation such as `ResourceStoryLoader` that allows
-       to load story based on resource classpath.
-     */
-
-    /**
-     * @see ResourceStoryLoader
-     */
-    public static StoryLoader createStoryLoader() {
-        return new StoryLoader() {
-            @Override
-            public String loadStoryAsText(String storyPath) {
-                /*!
-                   When the story path is `simple_additions`.
-
-                   This is roughly equivalent to store the content in a file `simple_addition.story`
-
-                    Scenario: 2+2
-
-                      Given a variable x with value 2
-                       When I add 2 to x
-                       Then x should equal to 4
-
-                   and to use the `ResourceStoryLoader` instead of our custom one.
-
-                 */
-                if ("simple_additions.story".equals(storyPath)) {
-                    return "Scenario: 2+2\n" +
-                            "\n" +
-                            "  Given a variable x with value 2\n" +
-                            "   When I add 2 to x\n" +
-                            "   Then x should equal to 4";
-                }
-
-
-                /*!
-                   Let's be a bit paranoid ;)
-                 */
-                throw new RuntimeException("No story found at path <" + storyPath + ">");
-            }
-        };
     }
 
     /*!

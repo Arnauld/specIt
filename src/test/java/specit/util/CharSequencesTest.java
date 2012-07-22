@@ -30,4 +30,13 @@ public class CharSequencesTest {
         assertThat(CharSequences.endsWithBlankLine("    youpla boom\n   \n"), is(true));
         assertThat(CharSequences.endsWithBlankLine("    youpla boom\n  \t \n"), is(true));
     }
+
+    @Test
+    public void endsWithBlankLine_trailingWhitespaces() {
+        assertThat(CharSequences.endsWithBlankLine("    youpla boom\n\n "), is(true));
+        assertThat(CharSequences.endsWithBlankLine("    youpla boom\n\n\t"), is(true));
+        assertThat(CharSequences.endsWithBlankLine("    youpla boom\n\n\t "), is(true));
+        assertThat(CharSequences.endsWithBlankLine("    youpla boom\n  \n "), is(true));
+        assertThat(CharSequences.endsWithBlankLine("    youpla boom\n\t\n\t"), is(true));
+    }
 }

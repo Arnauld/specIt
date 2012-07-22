@@ -1,12 +1,19 @@
 package specit.element;
 
+import static java.util.Arrays.asList;
+
 import specit.annotation.UserContext;
+import specit.annotation.lifecycle.AfterScenario;
+import specit.annotation.lifecycle.AfterStory;
+import specit.annotation.lifecycle.BeforeScenario;
+import specit.annotation.lifecycle.BeforeStory;
 import specit.invocation.CandidateStep;
 import specit.invocation.InvocationException;
 import specit.invocation.Lifecycle;
 import specit.invocation.UserContextSupport;
 import specit.util.New;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +29,9 @@ public class InvocationContext {
     private final List<UserContextSupport> userContexts = New.arrayList();
     private final Story currentStory;
     private Scenario currentScenario;
-    private boolean lifecycleInError;
+    // ~
+    private boolean scenarioLifecycleInError;
+    private boolean storyLifecycleInError;
     private boolean stepInError;
 
     public InvocationContext(InvocationContext parent, Story currentStory, InvocationContextListener listener) {
@@ -53,16 +62,31 @@ public class InvocationContext {
     }
 
     public boolean isLifecycleInError() {
-        return lifecycleInError;
+        return scenarioLifecycleInError || storyLifecycleInError;
     }
 
     public void lifecycleInvocationFailed(Lifecycle lifecycle, String message, Exception cause) {
-        lifecycleInError = true;
+        if(isScenarioLifecycle(lifecycle)) {
+            scenarioLifecycleInError = true;
+        }
+        else if(isStoryLifecycle(lifecycle)) {
+            storyLifecycleInError = true;
+        }
         listener.lifecycleInvocationFailed(lifecycle, message, cause);
     }
 
+    private boolean isStoryLifecycle(Lifecycle lifecycle) {
+        return asList(BeforeStory.class, AfterStory.class).contains(lifecycle.getLifecycleType());
+    }
+
+    private boolean isScenarioLifecycle(Lifecycle lifecycle) {
+        return asList(BeforeScenario.class, AfterScenario.class).contains(lifecycle.getLifecycleType());
+    }
+
     public boolean canInvokeLifecycle(Lifecycle lifecycle) {
-        return !isLifecycleInError() && !isStepInError();
+        // even if a lifecycle is in error
+        // all other should still be invoked see junit's tearDown
+        return true;
     }
 
     public void lifecycleSkipped(Lifecycle lifecycle) {
@@ -88,7 +112,7 @@ public class InvocationContext {
     }
 
     public boolean canInvokeStep(InvokableStep invokableStep, CandidateStep candidateStep) {
-        return !lifecycleInError && !stepInError;
+        return !isLifecycleInError() && !isStepInError();
     }
 
     public void stepSkipped(InvokableStep invokableStep, CandidateStep candidateStep) {
@@ -135,6 +159,10 @@ public class InvocationContext {
     public void beginScenarioOrBackground(ExecutablePart scenarioOrBackground) {
         if (scenarioOrBackground instanceof Scenario) {
             this.currentScenario = (Scenario) scenarioOrBackground;
+
+            // reset stepError flag: one starts a new sequence of steps
+            this.stepInError = false;
+            this.scenarioLifecycleInError = false;
         }
     }
 

@@ -4,6 +4,9 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import specit.element.Comment;
 
@@ -69,5 +72,22 @@ public class CommentParserTest {
 
         assertThat(cleaned, notNullValue());
         assertThat(cleaned, equalTo("Hey ho! Hey?"));
+    }
+
+    @Test
+    public void tokenize_multipleComments() {
+        String content = "Hey ho! # salutation" + NL +
+                "What's happen?" + NL +
+                "// a line fully commented";
+
+        CommentParser.Callback callback = mock(CommentParser.Callback.class);
+
+        new CommentParser().tokenize(17, content, callback);
+
+        verify(callback).data(17, "Hey ho! ");
+        verify(callback).comment(25, "#", " salutation");
+        verify(callback).data(37, NL + "What's happen?" + NL);
+        verify(callback).comment(53, "//", " a line fully commented");
+        verifyNoMoreInteractions(callback);
     }
 }

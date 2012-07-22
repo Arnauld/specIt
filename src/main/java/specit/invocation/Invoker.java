@@ -71,10 +71,10 @@ public class Invoker {
             return;
         }
 
-        String input = invokableStep.getAdjustedInput();
+        String inputWithoutComment = invokableStep.getAdjustedInputWithoutComment();
 
         try {
-            Object[] arguments = prepareMethodArguments(context, input, candidateStep);
+            Object[] arguments = prepareMethodArguments(context, inputWithoutComment, candidateStep);
             Object instance = instanceProvider.getInstance(candidateStep.getOwningType());
             Method method = candidateStep.getMethod();
             method.invoke(instance, arguments);
@@ -82,19 +82,19 @@ public class Invoker {
         }
         catch (IllegalAccessException e) {
             context.stepInvocationFailed(invokableStep, candidateStep,
-                    "Failed to invoke step on input [" + input + "]", e);
+                    "Failed to invoke step on input [" + inputWithoutComment + "]", e);
         }
         catch (InvocationTargetException e) {
             context.stepInvocationFailed(invokableStep, candidateStep,
-                    "Failed to invoke step on input [" + input + "]", e);
+                    "Failed to invoke step on input [" + inputWithoutComment + "]", e);
         }
         catch (ConverterException e) {
             context.stepInvocationFailed(invokableStep, candidateStep,
-                    "Failed to invoke step on input [" + input + "]", e);
+                    "Failed to invoke step on input [" + inputWithoutComment + "]", e);
         }
         catch (InstanceProviderException e) {
             context.stepInvocationFailed(invokableStep, candidateStep,
-                    "Failed to invoke step on input [" + input + "]", e);
+                    "Failed to invoke step on input [" + inputWithoutComment + "]", e);
         }
     }
 

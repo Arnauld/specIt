@@ -31,6 +31,7 @@ public class CalculatorJunitRunnerTest {
                 .withStoryLoader(new ResourceStoryLoader("/specit/usecase/calculator"))
                 .withStoryPaths(
                         "calculator_simple.story",
-                        "calculator_repeat.story");
+                        "calculator_repeat.story",
+                        "calculator_multiplescenario.story");
     }
 }

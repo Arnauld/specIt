@@ -3,7 +3,6 @@ package specit.usecase.calculator.annotationcontext;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import specit.SpecIt;
-import specit.element.DumpVisitor;
 import specit.element.Keyword;
 import specit.element.Story;
 import specit.invocation.ParameterMappingException;
@@ -11,7 +10,6 @@ import specit.report.ConsoleColoredReporter;
 import specit.report.StatsReporter;
 import specit.util.IDE;
 
-import org.fest.assertions.api.IntegerAssert;
 import org.junit.Before;
 import org.junit.Test;
 

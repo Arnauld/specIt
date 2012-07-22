@@ -26,6 +26,7 @@ public class StorySuite extends SpecItSuite {
         this.runner = runner;
         this.storyPath = storyPath;
         this.story = runner.getSpecIt().loadStory(storyPath);
+        story.traverse(new specit.element.DumpVisitor());
     }
 
     @Override

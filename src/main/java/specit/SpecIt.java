@@ -240,6 +240,17 @@ public class SpecIt implements ParserConf, InterpreterConf, MappingConf {
         interpretStory(story);
     }
 
+    public void executeStories () {
+        for(String storyPath : storyPaths()) {
+            executeStory(storyPath);
+        }
+    }
+
+    private void executeStory(String storyPath) {
+        Story story = loadStory(storyPath);
+        interpretStory(story);
+    }
+
     public void interpretStory(Story story) {
         interpretStory(story, invokerInterpreterListener(story));
     }

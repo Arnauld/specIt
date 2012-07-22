@@ -13,6 +13,11 @@ import java.util.regex.Pattern;
  */
 public class CommentParser {
 
+    public interface Callback {
+        void comment(int offset, String delimiter, String content);
+        void data(int offset, CharSequence content);
+    }
+
     private Pattern commentsPattern;
 
     /**
@@ -22,14 +27,9 @@ public class CommentParser {
      *
      *   # This is a bash-style single line comment
      * </pre>
-     * @return
      */
     public String commentsRegex() {
-        return "(?:" + "(#)(.*)$" + ")|(?:" + "(//)(.*)$" + ")|(?:(?s)" + "(/\\*)(.*)\\*/" + ")";
-    }
-
-    protected void invalidatePattern() {
-        commentsPattern = null;
+        return "(?:" + "(#)(.*)$" + ")|(?:" + "(//)(.*)$" + ")|(?:(?s)" + "(/\\*)(.*?)\\*/" + ")";
     }
 
     private Pattern commentsPattern() {
@@ -64,4 +64,32 @@ public class CommentParser {
         return comments;
     }
 
+    public void tokenize(int baseOffset, CharSequence rawContent, Callback callback) {
+        Matcher matcher = commentsPattern().matcher(rawContent);
+
+        int prev = 0;
+        while (matcher.find()) {
+            int start = matcher.start();
+            int end = matcher.end();
+            if (start > prev) {
+                callback.data(baseOffset + prev, rawContent.subSequence(prev, start));
+            }
+
+            int groupCount = matcher.groupCount();
+            groupLoop: for (int i = 1; i < groupCount; i+=2) {
+                String delimiter = matcher.group(i);
+                int delimiterStart = matcher.start(i);
+                if (delimiter != null) {
+                    String content = matcher.group(i + 1);
+                    callback.comment(baseOffset + start, delimiter, content);
+                    break groupLoop;
+                }
+            }
+
+            prev = end;
+        }
+        if (prev < rawContent.length()) {
+            callback.data(baseOffset + prev, rawContent.subSequence(prev, rawContent.length()));
+        }
+    }
 }

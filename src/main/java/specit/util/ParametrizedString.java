@@ -57,7 +57,7 @@ public class ParametrizedString {
         while (matcher.find()) {
             int start = matcher.start();
             int end = matcher.end();
-            if (start > 0) {
+            if (start > prev) {
                 add(new Token(prev, start - prev, false));
             }
             end -= matcher.group(2).length();

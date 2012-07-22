@@ -3,6 +3,7 @@ package specit.parser;
 import static specit.util.CharSequences.startsWithIgnoringChars;
 
 import specit.element.Alias;
+import specit.element.Comment;
 import specit.element.Keyword;
 import specit.element.RawElement;
 import specit.util.CharIterator;
@@ -16,11 +17,23 @@ public class Parser {
         this.conf = conf;
     }
 
-    public void scan(CharSequence content, Listener listener) {
-        scan(CharIterators.createFrom(content), 0, listener);
+    public void scan(CharSequence rawContent, final Listener listener) {
+        int baseOffset = 0;
+
+        conf.commentParser().tokenize(baseOffset, rawContent, new CommentParser.Callback() {
+            @Override
+            public void comment(int offset, String delimiter, String content) {
+                listener.on(new Comment(offset, delimiter, content));
+            }
+
+            @Override
+            public void data(int offset, CharSequence content) {
+                scan(CharIterators.createFrom(content), offset, listener);
+            }
+        });
     }
 
-    public void scan(CharIterator it, int baseOffset, Listener listener) {
+    private void scan(CharIterator it, int baseOffset, Listener listener) {
 
         // temporary state kept during a scan.
         Alias lastAlias = null;

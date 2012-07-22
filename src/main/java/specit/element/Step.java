@@ -13,4 +13,8 @@ public class Step extends ExecutablePart {
         visitor.beginStep(this);
         visitor.endStep(this);
     }
+
+    public String toString() {
+        return "Step {" + getRawElement().rawContent().replace("\n", "\\n") + "}";
+    }
 }

@@ -4,8 +4,8 @@ hljs.LANGUAGES.specit_en = function() {
       contains: [
         {
           className: 'keyword',
-          begin: '^\\s*(But |And |Then |When |Given |\\* |Narrative:|Scenario:|Background:|Feature|Require|Example:|Repeat)',
-          relevance: 0
+          begin: '^\\s*(But |And |Then |When |Given |\\* |Feature|Require|Example:|Repeat|Narrative:|As a|I want to|In order to|So that|Scenario:|Background:)',
+          relevance: 10
         },
         {
           className: 'localvars',
